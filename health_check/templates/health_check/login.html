@@ -1,0 +1,31 @@
+{% extends "main.html" %}
+
+{% block content %}
+    <div class="center">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="email" class="form-label required">Email Address:</label>
+                <input type="email" name="email" class="form-control shadow" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label required">Password:</label>
+                <input type="password" name="password" class="form-control shadow" required>
+            </div>
+
+            <div class="mb-3 d-flex align-items-center">
+                <input type="checkbox" name="remember-me" class="me-2">
+                <label for="remember-me" class="mb-0">Remember me</label>
+            </div>
+
+            <button type="submit" class="login-btn d-block mx-auto">Login</button>
+        </form>
+
+        <div class="link">
+            <small>
+                <a href="#" class="d-block mt-3 mb-4 text-center">Forgot password</a>
+            </small>
+        </div>
+    </div>
+{% endblock content %}

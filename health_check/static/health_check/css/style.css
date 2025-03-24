@@ -1,0 +1,87 @@
+/* Logo styling */
+.logo {
+    width: 100px;
+    height: 55px;
+}
+
+/* Background color for the whole page */
+body {
+    background-color: #A3D4DE;
+}
+
+/* Navbar styling */
+.navbar {
+    background-color: #FFFFFF;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 15px 30px; 
+    border-radius: 8px; 
+}
+
+/* Left-side navbar links */
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-left a {
+    margin-right: 25px;
+    text-decoration: none;
+    color: #15818F;
+    font-size: 18px;
+    font-weight:500;
+}
+
+/* Right-side navbar links styled as buttons */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.navbar-right a {
+    margin-left: 15px;
+    text-decoration: none;
+    padding: 8px 15px;
+    background-color: #A3D4DE;
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 20px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+}
+
+.navbar-left a:hover {
+    text-decoration: underline;
+    text-decoration-color: green;
+}
+
+.navbar-right a:hover {
+    background-color: #89c2d0;
+}
+
+.center {
+    width: 300px;
+    margin: 40px auto;
+    padding: 40px;
+  }
+
+  button.login-btn {
+    background-color: #15818F;
+    color: white;
+    border: 2px solid #9AAD9A;
+    padding: 10px 10px;
+    border-radius: 7px;
+    font-size: 16px;
+}
+
+.link a{
+    color:black !important;
+}
+
+.required::before {
+    content: "*";
+    color: red;
+}
