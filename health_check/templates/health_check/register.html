@@ -34,10 +34,18 @@
                     <label for="email" class="required d-block">Email address</label>
                     <input type="email" name="email" id="email" required>
 
-                    <label for="password" class="d-block required">Password</label>
-                    <input type="password" name="password" required>
+                    <label for="password" minlength="8" class="d-block required">Password</label>
+                    <input type="password" id="psw" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
 
-                    <label for="password" class="required d-block">Confirm Password:</label>
+                    <div id="message">
+                        <h3>Password must contain the following:</h3>
+                        <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+                        <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+                        <p id="number" class="invalid">A <b>number</b></p>
+                        <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+                      </div>
+                      
+                    <label for="password" minlength="8" class="required d-block">Confirm Password:</label>
                     <input type="password" name="confirm-password">
                 </div>
                 <div class="step" id="step2">
@@ -80,11 +88,14 @@
                     <input type="text" name="name">
                     
                     <label for="phone" class="required d-block">Phone Number:</label>
-                    <input type="tel" name="phone" placeholder="+44" required>
+                    <input type="tel" name="phone" placeholder="+44" required size="20" >
+
+                    <label for="address" class="required d-block">Address:</label>
+                    <input type="text" name="name">
                 </div>
                 <div class="buttons">
-                    <button id="prev-btn" onclick="prevStep()" disabled>Previous</button>
-                    <button id="next-btn" onclick="nextStep()">Next</button>
+                    <button type="button" id="prev-btn" onclick="prevStep()" disabled>Previous</button>
+                    <button type="button" id="next-btn" onclick="nextStep()">Next</button>
                 </div>
                 <span id="result"></span>
             </div>

@@ -192,4 +192,48 @@ button[disabled]{
     border: 2px solid #000;
 }
 
+/*When the radio button is selected for roles*/ 
+.role-option input[type="radio"]:checked ~ * { 
+    background:rgb(255, 215, 104);
+}
+
+/* The message box is shown when the user clicks on the password field */
+#message {
+    display:none;
+    background: #f1f1f1;
+    color: #000;
+    position: relative;
+    padding: 20px;
+    margin-top: 10px;
+  }
+
+  #message h3{
+    font-size: 17px;
+  }
   
+  #message p {
+    padding: 10px 35px;
+    font-size: 16px;
+  }
+  
+  /*when the condition for password is wrong it shows red text with a ✔ symbol*/
+  .valid {
+    color: green;
+  }
+  
+  .valid:before {
+    position: relative;
+    left: -30px;
+    content: "✔";
+  }
+  
+  /*when the condition for password is wrong it shows red text with a ✖ symbol*/
+  .invalid {
+    color: red;
+  }
+  
+  .invalid:before {
+    position: relative;
+    left: -30px;
+    content: "✖";
+  }
