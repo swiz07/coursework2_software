@@ -1,0 +1,33 @@
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'health_check/css/navstyle.css'%}">
+</head>
+
+<nav class="col-auto col-md-3 col-xl-2   class1 navbar-right">
+    <div class="container-fluid p-0">
+
+        <!-- User Profile Section -->
+        <div class="col-auto col-md-3 col-xl-2   class2">
+
+            <!-- User Info -->
+            <div class="d-flex flex-column align-items-sm-start px-1 pt-2 text-white min-vh-100">
+                <div class="userprofile d-flex align-items-center p-2 mb-3">
+                    <img src="{% static 'health_check/images/biguser.png' %}" alt="" class="usericon me-2">
+                    <div class="d-flex flex-column">
+                        <p class="userinfo mb-0">user name</p>
+                        <p class="userinfo mb-0">user name</p>
+                    </div>
+                </div>
+
+
+                  <!-- Vote Progress -->
+                  {%if is_enginner or is_team_leader%}
+                <div class="progress d-flex align-items-center">
+                  
+                </div>
+                {%endif%}
+            </div>
+
+        </div>  
+    </div>  
+</nav>

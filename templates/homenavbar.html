@@ -1,0 +1,104 @@
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'health_check/css/navstyle.css'%}">
+</head>
+<nav class="col-auto col-md-3 col-xl-2 bg-dark class1 " >
+    <div class="container-fluid p-0">
+    <nav class= "navbar-left col-auto col-md-3 col-xl-2 bg-dark class1 ">
+        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+         
+        <div class="col-auto col-md-3 col-xl-2 bg-dark class1 ">
+
+            <!-- Sky Logo -->
+            <div class="d-flex flex-column align- align-items-sm-center px-1  pt-2 text-white" style="height: 100vh; width: 250px;">
+                <a href="{% url 'home' %}" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                    <img src="{% static 'health_check/images/logo.png' %}" alt="Sky Logo" class="logo">
+                </a>
+
+                <hr class="sidebar-divider"> 
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start  " id="menuone">
+
+
+                    <!-- Home -->
+                    <li>
+                        <a href="#"   class="nav-link  px-0 py-2align-middle">
+                            <i class="fs-4 bi-table"></i> 
+                            <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                            <span  class="ms-1 d-none d-sm-inline">
+                                
+                                Home</span> </a>
+                    </li>
+
+
+                    <!-- Voting page -->
+                    {%if is_enginner or is_team_leader%}
+                    <li>
+                        <a href="#" class="nav-link px-0 py-2 align-middle">
+                             
+                            <img src="{% static 'health_check/images/white_vote.png' %}" alt=""   class="navicon">
+                            <span class="ms-1 d-none d-sm-inline">Voting page</span></a>
+                    </li>
+                    {%endif%}
+
+
+
+                    <!-- Statistic page -->
+                    <li>
+                        <a href="#" class="nav-link px-0 py-2 align-middle">
+                            <i class="fs-4 bi-table"></i> 
+                            <img src="{% static 'health_check/images/white_Stats.png' %}" alt="" class="navicon">
+                            <span class="ms-1 d-none d-sm-inline">Statistic</span></a>
+                    </li>
+
+
+                    <!-- Manage Cards page -->
+                    {%if is_team_leader or is_dept_leader%}
+                    <li>
+                        <a href="#" class="nav-link px-0 py-2 align-middle">
+                            <i class="fs-4 bi-table"></i> 
+                            <img src="{% static 'health_check/images/white_cards.png' %}" alt="" class="navicon ">
+                            <span class="ms-1 d-none d-sm-inline">Manage Cards</span></a>
+                    </li>
+                    {%endif%}
+
+                </ul>
+
+
+                <hr class="sidebar-divider ">
+
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+
+
+                    <!-- profile -->
+                    <li>
+                        <a href="#" class="nav-link px-0 py-2 align-middle"  >
+                            <i class="fs-4 bi-table"></i>
+                            <img src="{% static 'health_check/images/white_user.png' %}" alt="" class="navicon ">
+                             <span class="ms-1 d-none d-sm-inline">User</span>
+                        </a>
+                    </li>
+
+
+                    <!-- Log out -->
+                    <li>
+                        <a href="#" class="nav-link px-0 py-2 align-middle">
+                            <i class="fs-4 bi-table"></i>
+                            <img src="{% static 'health_check/images/white_out.png' %}" alt="" class="navicon">
+                             <span class="ms-1 d-none d-sm-inline">Log out</span></a>
+                    </li>
+                </ul>
+
+            </div>
+
+        </div>
+
+        </div>
+    
+    </nav>
+
+    </div>
+
+</nav>
+
+  
+    

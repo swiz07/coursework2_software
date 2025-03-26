@@ -19,3 +19,5 @@ def register(request):
 # Home page view
 def home(request):
     return render(request, 'home.html')  # Make sure the template path is correct
+def enghome(request):
+    return render(request, 'enghome.html')
