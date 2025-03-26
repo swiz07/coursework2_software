@@ -1,0 +1,33 @@
+html, body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    flex-direction: row;
+     
+}
+.container-fluid{
+    height: 100%;
+    padding: 0px;
+    display: flex;
+    margin: 0;
+}
+.left,.right {
+    height: 100%;  
+    width: fit-content;  
+    padding: 0 !important;  
+    margin: 0 !important; 
+    overflow: hidden;  
+}
+.content{
+    height: 100%;
+    flex-grow: 1; 
+    padding: 0%;
+    margin: 0%;
+}
+.row   {
+    padding: 0px !important;
+    height:100%;
+    width: 100%;
+    margin: 0%;
+}
+ 
