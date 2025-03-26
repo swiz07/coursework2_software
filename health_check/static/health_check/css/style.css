@@ -125,8 +125,8 @@ button[disabled]{
     cursor:not-allowed;
 }
 
-.buttons button:hover{
-    background-color: #15818fc2;
+.buttons button:hover:not([disabled]) {
+    background-color: #15818f96 
 }
 
 .step-indicator{
@@ -148,3 +148,48 @@ button[disabled]{
 .step-indicator span.active{
     background-color: #15818F;
 }
+
+.role-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.role-option{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 140px;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    background-color: white;
+    padding: 10px;
+}
+
+.role-option img{
+    width: 60px;
+    height: 60px;
+    margin-bottom: 5px;
+}
+
+.role-option span{
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.role-option input[type="radio"]{
+    visibility: hidden;
+    height: 0;
+    width: 0;
+}
+
+.role-option:hover{
+    background-color: #7bc4d6c2;
+    border: 2px solid #000;
+}
+
+  

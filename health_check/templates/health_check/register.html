@@ -30,7 +30,7 @@
                     <span>3</span>
                 </div>
                 <div class="step active" id="step1">
-                    <p>STEP 1</p>
+                    <p class="mt-2">STEP 1</p>
                     <label for="email" class="required d-block">Email address</label>
                     <input type="email" name="email" id="email" required>
 
@@ -43,6 +43,36 @@
                 <div class="step" id="step2">
                     <p>STEP 2</p>
                     <p class="required">Select your role:</p>
+                    <div class="role-buttons">
+                        <!-- Engineer Option -->
+                        <label class="role-option">
+                            <input type="radio" id="engineer" name="role" value="engineer">
+                            <img src="{% static 'health_check/images/engineer.png' %}" alt="engineer Icon">
+                            <span>Engineer</span>
+                        </label>
+
+                        <!-- Team Leader Option -->
+                        <label class="role-option">
+                            <input type="radio" id="team-leader" name="role" value="Team Leader">
+                            <img src="{% static 'health_check/images/team_leader_icon.png' %}" alt="Team Leader Icon">
+                            <span>Team Leader</span>
+                        </label>
+
+                         <!-- Department Leader Option -->
+                         <label class="role-option">
+                            <input type="radio" id="department-leader" name="role" value="Department Leader">
+                             <img src="{% static 'health_check/images/department-leader.png' %}" alt="Department Leader Icon">
+                             <span>Department Leader</span>
+                         </label>
+                        
+                        <!-- Senior Manager Option -->
+                        <label class="role-option">
+                            <input type="radio" id="senior-manager" name="role" value="Senior Manager">
+                            <img src="{% static 'health_check/images/senior_manager_icon.png' %}" alt="Senior Manager Icon">
+                            <span>Senior Manager</span>
+                        </label>
+                
+                    </div>
                 </div>
                 <div class="step" id="step3">
                     <p>STEP 3</p>
@@ -60,6 +90,6 @@
             </div>
         </form>
     </div>
-    <script src=""></script>
+    <script src="{% static 'health_check/js/script.js' %}"></script>
 </body>
 </html>
