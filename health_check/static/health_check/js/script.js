@@ -14,6 +14,12 @@ function showStep(step){
     document.getElementById('prev-btn').disabled=step===1;
     document.getElementById('next-btn').innerHTML=step===3?
     'Finish': 'Next';
+    if(step ===3){
+      document.getElementById('next-btn').type='submit';
+    }
+    else{
+      document.getElementById('next-btn').type='button';
+    }
 }
 
 
@@ -36,6 +42,36 @@ function nextStep(){
         return;
     }
 
+    if(currentStep===1){
+      let username=document.querySelector('[name="username"]').value;
+      let email=document.querySelector('[name="email"]').value;
+      let password=document.querySelector('[name="password"]').value;
+      let confirmPassword=document.querySelector('[name="confirm-password"]').value;
+
+      if(!username || !email || !password || !confirmPassword){
+        document.getElementById("result").innerHTML="Please fill in all the required fields in step 1";
+        return;
+      }
+    }
+
+    if(currentStep===2){
+      let role=document.querySelector('input[name="role"]:checked');
+      if(!role){
+        document.getElementById("result").innerHTML="Please enter the required role for step 2";
+        return;
+      }
+    }
+
+    if(currentStep===3){
+      let name=document.querySelector('[name="name"]').value;
+      let phone=document.querySelector('[name="phone"]').value;
+      let address=document.querySelector('[name="address"]').value;
+
+      if(!name || !phone || !address){
+        document.getElementById("result").innerHTML="Please fill in all the required fields in step 3";
+        return;
+      }
+    }
     if(currentStep <3){
         currentStep++;
         showStep(currentStep);

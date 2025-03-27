@@ -197,6 +197,7 @@ button[disabled]{
     background:rgb(255, 215, 104);
 }
 
+
 /* The message box is shown when the user clicks on the password field */
 #message {
     display:none;
@@ -206,34 +207,28 @@ button[disabled]{
     padding: 20px;
     margin-top: 10px;
   }
-
-  #message h3{
-    font-size: 17px;
-  }
   
   #message p {
-    padding: 10px 35px;
+    padding: 5px 5px;
+    font-size: 15px;
+    display:inline;
+  }
+
+  #message h3{
     font-size: 16px;
   }
   
-  /*when the condition for password is wrong it shows red text with a ✔ symbol*/
+  /* Add a green text color and a checkmark when the requirements are right */
   .valid {
     color: green;
   }
   
   .valid:before {
     position: relative;
-    left: -30px;
     content: "✔";
   }
   
-  /*when the condition for password is wrong it shows red text with a ✖ symbol*/
+  /* Add a red text color and an "x" when the requirements are wrong */
   .invalid {
     color: red;
-  }
-  
-  .invalid:before {
-    position: relative;
-    left: -30px;
-    content: "✖";
   }

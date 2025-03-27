@@ -31,6 +31,9 @@
                 </div>
                 <div class="step active" id="step1">
                     <p class="mt-2">STEP 1</p>
+                    <label for="username" class="required d-block">Username:</label>
+                    <input type="text" name="username" required>
+
                     <label for="email" class="required d-block">Email address</label>
                     <input type="email" name="email" id="email" required>
 
@@ -46,7 +49,7 @@
                       </div>
                       
                     <label for="password" minlength="8" class="required d-block">Confirm Password:</label>
-                    <input type="password" name="confirm-password">
+                    <input type="password" name="confirm-password" required>
                 </div>
                 <div class="step" id="step2">
                     <p>STEP 2</p>
@@ -85,13 +88,13 @@
                 <div class="step" id="step3">
                     <p>STEP 3</p>
                     <label for="name" class="required d-block">Name:</label>
-                    <input type="text" name="name">
+                    <input type="text" name="name" required>
                     
                     <label for="phone" class="required d-block">Phone Number:</label>
-                    <input type="tel" name="phone" placeholder="+44" required size="20" >
+                    <input type="number" name="phone" placeholder="+44" required size="20" >
 
                     <label for="address" class="required d-block">Address:</label>
-                    <input type="text" name="name">
+                    <input type="text" name="address" required>
                 </div>
                 <div class="buttons">
                     <button type="button" id="prev-btn" onclick="prevStep()" disabled>Previous</button>
