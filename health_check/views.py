@@ -22,3 +22,13 @@ def home(request):
  
 def enghome(request):
     return render(request, 'enghome.html')
+
+
+def deptLeaderHome(request):
+    return render(request, 'DeptLeaderHome.html') 
+
+
+#def SenManagerHome(request):
+ #   return render(request, 'SenManagerHome.html')
+
+    
