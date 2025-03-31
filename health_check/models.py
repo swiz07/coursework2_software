@@ -30,6 +30,8 @@ class UserManager(BaseUserManager):
 class Role(models.Model):
     is_engineer = models.BooleanField(default=False)
     is_senior_manager = models.BooleanField(default=False)
+    is_team_leader=models.BooleanField(default=False)
+    is_department_leader=models.BooleanField(default=False)
     role_name = models.CharField(max_length=20)
 
     def __str__(self):
@@ -71,3 +73,49 @@ class Account(models.Model):
     account_status=models.BooleanField(default=True)
     account_type=models.CharField(max_length=50) 
 
+class Card(models.Model):
+    card_id=models.AutoField(primary_key=True)
+    card_name=models.TextField()
+    card_green_vote=models.TextField() #number of green votes
+    card_red_vote=models.TextField()
+    card_yellow_vote=models.TextField()
+    card_descrip=models.TextField()
+    card_progress=models.TextField()
+    colour_code=models.TextField() #has values like red, green and yellow
+    #session_id=models.ForeignKey()
+    
+class Session(models.Model):
+    session_id=models.AutoField(primary_key=True)
+    session_started=models.DateTimeField() #when it is created
+    session_deleted=models.DateTimeField() #when the session is deleted/ended
+    session_status=models.TextField()
+    #team_id=models.ForeignKey()
+    
+class Team(models.Model):
+    team_id=models.AutoField(primary_key=True)
+    team_name=models.TextField()
+    #created_at=models.DateTimeField() 
+    #department_id=models.ForeignKey() 
+
+class Department(models.Model):
+    department_id=models.AutoField(primary_key=True)
+    department_name=models.TextField()
+    
+class Vote:
+    vote_id=models.AutoField(primary_key=True)
+    vote_value=models.TextField()
+    vote_opinion=models.TextField() #progress note
+    #card_id=models.ForeignKey()
+    #session_id=models.ForeignKey()
+    #user_id=models.ForeignKey()
+
+class Summary:
+    summary_id=models.AutoField(primary_key=True)
+    overall_health_rating=models.TextField()
+    health_start_date=models.DateField()
+    health_end_date=models.DateField()
+    progress_over_time=models.TextField()
+    #team_id=models.ForeignKey()
+    #card_id=models.ForeignKey()
+    #department_id=models.ForeignKey()
+    
