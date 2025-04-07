@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin,BaseUs
 from django.contrib.auth.models import User
 
 class UserManager(BaseUserManager):
-    def _create_user(self, email, fullname, address, phone_number, password=None, is_staff=False, is_superuser=False, role=None):
+    def _create_user(self, email, fullname, address, phone_number, password=None, is_staff=False, is_superuser=False, role=None, username=None):
         if not email:
             raise ValueError('Users must have an email address')
         email = self.normalize_email(email)
@@ -15,7 +15,8 @@ class UserManager(BaseUserManager):
             phone_number=phone_number,
             is_staff=is_staff,
             is_superuser=is_superuser,
-            role=role
+            role=role,
+            username=username
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -46,9 +47,9 @@ class User(AbstractBaseUser , PermissionsMixin):
     email = models.EmailField(max_length=254, unique=True)
     fullname = models.CharField(max_length=254, null=True, blank=True)
     address = models.TextField()
-    phone_number = models.CharField(max_length=15)
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
+    phone_number = models.IntegerField()
+    is_staff = models.BooleanField(default=False) # for admin
+    is_superuser = models.BooleanField(default=False)# for admin
     role = models.ForeignKey(Role, related_name='users', on_delete=models.CASCADE)
 
     groups = models.ManyToManyField(Group, related_name='custom_user_groups')
@@ -69,6 +70,7 @@ class User(AbstractBaseUser , PermissionsMixin):
 class Account(models.Model):
     account_id=models.AutoField(primary_key=True)
     username=models.CharField(max_length=20, unique=True)
+    password=models.CharField(max_length=30, unique=True)
     account_update=models.DateField(auto_now=True)
     account_status=models.BooleanField(default=True)
     account_type=models.CharField(max_length=50) 
@@ -76,9 +78,9 @@ class Account(models.Model):
 class Card(models.Model):
     card_id=models.AutoField(primary_key=True)
     card_name=models.TextField()
-    card_green_vote=models.TextField() #number of green votes
-    card_red_vote=models.TextField()
-    card_yellow_vote=models.TextField()
+    card_green_vote=models.IntegerField() #number of green votes
+    card_red_vote=models.IntegerField()
+    card_yellow_vote=models.IntegerField()
     card_descrip=models.TextField()
     card_progress=models.TextField()
     colour_code=models.TextField() #has values like red, green and yellow
