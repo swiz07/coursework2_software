@@ -3,11 +3,14 @@
     width: 100px;
     height: 55px;
 }
-
 /* Background color for the whole page */
 body {
     background-color: #A3D4DE;
 }
+* {
+    box-sizing: border-box;
+  }
+  
 
 /* Navbar styling */
 .navbar {
@@ -232,3 +235,5 @@ button[disabled]{
   .invalid {
     color: red;
   }
+
+

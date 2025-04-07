@@ -1,4 +1,72 @@
-{%extends 'main.html'%}
-{%block content%}
-    <h1>Welcome to the Home Page</h1>
-{%endblock content%}
+{%extends 'main.html'%} {%block content%}
+<div class="row">
+    <div class="col-7">
+    <h3>Welcome to the home page!</h3>
+      <p>Track Improve. Thrive 
+        with our Health Check app.</p>
+      <div class="login">
+        <label for="email" class="form-label required">Email Address:</label>
+        <input type="email" name="email" class="form-control shadow" required>
+        <button type="submit" class="login-btn mx-auto">Log in/Register</button>
+      </div>
+    </div>
+    <div class="col-5">
+        <img
+        src="https://img.freepik.com/free-photo/fun-party-with-dj_23-2151108172.jpg?t=st=1744033521~exp=1744037121~hmac=1c9ebf9b48b05a3c0bb34ec856535621aec367ff8755176620aa9d1c94648283&w=996"
+        weight="300px"
+        height="200px"
+      /></div>
+  </div>
+  <!--use the same like the top and make the image big and the text should be small of different bg-colors-->
+  <div class="brief-container">
+    <h2>Brief on health check system:</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+    <div class="row">
+        <div class="col-sm-5"><img
+            src="https://img.freepik.com/free-photo/fun-party-with-dj_23-2151108172.jpg?t=st=1744033521~exp=1744037121~hmac=1c9ebf9b48b05a3c0bb34ec856535621aec367ff8755176620aa9d1c94648283&w=996"
+            weight="300px"
+            height="200px"
+          /></div>
+        <div class="col-sm-7 brief"> 
+            <p>Lorem ipsum dolor sit amet, 
+            consectetur adipiscing elit, sed do 
+            eiusmod tempor incididunt ut labore 
+            et dolore magna aliqua. Ut enim ad minim 
+            veniam, quis nostrud exercitation ullamco laboris
+             nisi ut aliquip ex ea commodo consequat. Duis aute irure 
+            dolor in reprehenderit in voluptate velit esse cillum dolore eu
+             fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+             proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></div>
+      </div>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+      </p>
+  </div>
+  <div class="faq">
+    <h2>FAQs:</h2>
+        <div>
+        <div>
+  </div>
+  <div class="contact">
+    <h2>Need Help</h2>
+    <form>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Full name:</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+          </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email address</label>
+          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Message</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+          </div>
+        <button type="submit" class="btn btn-primary">Contact us</button>
+      </form>
+  </div>
+      
+
+
+  {%endblock content%}
+</div>
