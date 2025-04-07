@@ -237,3 +237,7 @@ button[disabled]{
   }
 
 
+.visitor-footer{
+    background-color: #EEEEEE;
+    margin-top: 10px;
+}
