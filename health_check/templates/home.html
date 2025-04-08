@@ -47,11 +47,36 @@
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
       </p>
   </div>
-  <div class="faq">
-    <h2>FAQs:</h2>
-        <div>
-        <div>
-  </div>
+  <div class="faq-container">
+    <div class="row">
+        <div class="faq-wrapper">
+            <div class="header">
+                <h1>FAQs:</h1>
+            </div>
+            <div class="faq-inner">
+                <div class="faq-item">
+                    <h3>How do I register for an account?
+                        <span class="faq-plus">&plus;</span>
+                    </h3>
+                    <div class="faq-body">
+                        Just click on the  register button on the homepage
+                    </div>
+                </div>
+                <hr>
+                <div class="faq-item">
+                    <h3>How do I register for an account?
+                        <span class="faq-plus">&plus;</span>
+                    </h3>
+                    <div class="faq-body">
+                        Just click on the  register button on the homepage
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
+
   <div class="contact">
     <h1 style="color:#15818F; font-family:Averia Serif Libre;">Need Help</h1>
     <div class="contact-form">
@@ -81,4 +106,20 @@
     <a href="">Contact us</a>
    </footer>   
    </div>
+   <script>
+    document.querySelectorAll('.faq-plus').forEach(function(button){
+      button.addEventListener('click', function(){
+        const faqBody=this.closest('.faq-item').querySelector('.faq-body');
+        faqBody.classList.toggle('hidden');
+    
+      if(faqBody.classList.contains('hidden')){
+        this.textContent="-";
+      }
+      else{
+        this.textContent="+";
+      }
+    });
+  });
+  
+   </script>
   {%endblock content%}

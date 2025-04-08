@@ -333,3 +333,48 @@ button[disabled]{
     background-color: transparent;
 }
 
+/*faq*/
+.faq-container{
+    padding: 10px;
+    margin: 10px;
+}
+.faq-container .header{
+    color: white;
+}
+
+.faq-item{
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.faq-body{
+    display: none;
+    margin-top: 30px;
+}
+
+.faq-wrapper{
+    width: 85%;
+}
+
+.faq-inner{
+    padding: 30px;
+    background-color: #FFFFFF;
+    padding-right: 100px;
+    padding-left: 100px;
+}
+
+.faq-plus{
+    float: right;
+    font-size: 1.4em;
+    line-height: 1em;
+    cursor: pointer;
+}
+
+.faq-container hr{
+    background-color: #9b9b9b;
+}
+
+.faq-body.hidden{
+    display: block;
+    cursor: pointer;
+}
