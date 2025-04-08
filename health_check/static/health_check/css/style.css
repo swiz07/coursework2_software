@@ -6,6 +6,9 @@
 /* Background color for the whole page */
 body {
     background-color: #A3D4DE;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 * {
     box-sizing: border-box;
@@ -18,7 +21,7 @@ body {
     display: flex;
     justify-content: space-between; 
     align-items: center;
-    padding: 15px 30px; 
+    padding: 15px 20px; 
     border-radius: 8px; 
 }
 
@@ -240,4 +243,93 @@ button[disabled]{
 .visitor-footer{
     background-color: #EEEEEE;
     margin-top: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
 }
+
+.visitor-footer a{
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+    margin-right: 30px;
+}
+.intro-container{
+    padding: 10px;
+    margin: 20px;
+}
+
+.input-email{
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.welcome-message h1, .welcome-message h3{
+    color: #3A7D9A;
+}
+
+.login{
+    margin-top: 50px;
+}
+
+.brief-container{
+    background-color: #FFFFFF;
+    padding:10px;
+    margin-top: 10px;
+}
+
+.brief{
+    background-color: #A3D4DE;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+
+.contact{
+    background-color: #FFFFFF;
+    padding: 10px;
+}
+
+.contact input{
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+}
+
+.contact-form{
+    background-color: #A3D4DE;
+    margin: 20px;
+    padding: 20px;
+    font-family: 'Poppins',Arial, Helvetica, sans-serif;
+}
+
+.contact-form button{
+    background-color: #15818F;
+    border: 2px solid #9AAD9A;
+}
+#exampleFormControlTextarea1{
+    margin-bottom: 15px;
+}
+
+.contact-form .form-group input,
+.contact-form .form-group textarea{
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom:10px;
+}
+
+.contact-form .form-group textarea{
+    max-width: 400px;
+}
+
+.logo{
+    background-color: transparent;
+}
+
