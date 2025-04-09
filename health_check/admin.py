@@ -1,18 +1,18 @@
 # admin.py
 from django.contrib import admin
-from .models import User, Role
+from .models import User, Role, Account, Card, Session, Team, Department, Vote, Summary
 
 class RoleAdmin(admin.ModelAdmin):
     list_display = ('role_name', 'is_engineer', 'is_senior_manager')
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('email', 'fullname', 'is_staff', 'is_superuser', 'role')
-    list_filter = ('is_staff', 'is_superuser', 'role')
+    list_display = ('email', 'fullname', 'is_staff', 'is_superuser', 'role', 'team')
+    list_filter = ('is_staff', 'is_superuser', 'role', 'team')
     search_fields = ('email', 'fullname')
     ordering = ('email',)
     fieldsets = (
         (None, {
-            'fields': ('email', 'fullname', 'address', 'phone_number', 'password', 'role')
+            'fields': ('email', 'fullname', 'address', 'phone_number', 'password', 'role', 'team')
         }),
         ('Permissions', {
             'fields': ('is_staff', 'is_superuser', 'groups', 'user_permissions'),
@@ -21,10 +21,17 @@ class UserAdmin(admin.ModelAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'fullname', 'address', 'phone_number', 'password1', 'password2', 'role'),
+            'fields': ('email', 'fullname', 'address', 'phone_number', 'password1', 'password2', 'role', 'team'),
         }),
     )
     filter_horizontal = ('groups', 'user_permissions')
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Role, RoleAdmin)
+admin.site.register(Account)
+admin.site.register(Card)
+admin.site.register(Session)
+admin.site.register(Team)
+admin.site.register(Department)
+admin.site.register(Vote)
+admin.site.register(Summary)

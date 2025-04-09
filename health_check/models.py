@@ -29,14 +29,12 @@ class UserManager(BaseUserManager):
         return self._create_user(email, fullname, address, phone_number, password, True, True, role, **extra_fields)
     
 class Role(models.Model):
+    name=models.CharField(max_length=50, unique=True, null=True, blank=True)
     is_engineer = models.BooleanField(default=False)
     is_senior_manager = models.BooleanField(default=False)
     is_team_leader=models.BooleanField(default=False)
     is_department_leader=models.BooleanField(default=False)
     role_name = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.role_name
 
     def __str__(self):
         return self.role_name
@@ -51,6 +49,8 @@ class User(AbstractBaseUser , PermissionsMixin):
     is_staff = models.BooleanField(default=False) # for admin
     is_superuser = models.BooleanField(default=False)# for admin
     role = models.ForeignKey(Role, related_name='users', on_delete=models.CASCADE)
+    team=models.ForeignKey('Team', on_delete=models.CASCADE, null=True)
+    Account_id=models.ForeignKey('Account', on_delete=models.SET_NULL, null=True)
 
     groups = models.ManyToManyField(Group, related_name='custom_user_groups')
     user_permissions = models.ManyToManyField(Permission, related_name='custom_user_permissions')
@@ -70,7 +70,7 @@ class User(AbstractBaseUser , PermissionsMixin):
 class Account(models.Model):
     account_id=models.AutoField(primary_key=True)
     username=models.CharField(max_length=20, unique=True)
-    password=models.CharField(max_length=30, unique=True)
+    password=models.CharField(max_length=30, unique=True, null=True, blank=True)
     account_update=models.DateField(auto_now=True)
     account_status=models.BooleanField(default=True)
     account_type=models.CharField(max_length=50) 
@@ -84,40 +84,44 @@ class Card(models.Model):
     card_descrip=models.TextField()
     card_progress=models.TextField()
     colour_code=models.TextField() #has values like red, green and yellow
-    #session_id=models.ForeignKey()
+    session_id=models.ForeignKey('Session',on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.card_name
     
 class Session(models.Model):
     session_id=models.AutoField(primary_key=True)
     session_started=models.DateTimeField() #when it is created
     session_deleted=models.DateTimeField() #when the session is deleted/ended
     session_status=models.TextField()
-    #team_id=models.ForeignKey()
+    team_id=models.ForeignKey('Team',on_delete=models.CASCADE)
     
 class Team(models.Model):
     team_id=models.AutoField(primary_key=True)
     team_name=models.TextField()
-    #created_at=models.DateTimeField() 
-    #department_id=models.ForeignKey() 
+    created_at=models.DateTimeField() 
+    department_id=models.ForeignKey('Department', on_delete=models.CASCADE) 
 
 class Department(models.Model):
     department_id=models.AutoField(primary_key=True)
     department_name=models.TextField()
+    created_date=models.DateField()
     
-class Vote:
+class Vote(models.Model):
     vote_id=models.AutoField(primary_key=True)
     vote_value=models.TextField()
     vote_opinion=models.TextField() #progress note
-    #card_id=models.ForeignKey()
-    #session_id=models.ForeignKey()
-    #user_id=models.ForeignKey()
+    card_id=models.ForeignKey('Card',on_delete=models.CASCADE)
+    session_id=models.ForeignKey('Session', on_delete=models.CASCADE)
+    user_id=models.ForeignKey('User', on_delete=models.CASCADE)
 
-class Summary:
+class Summary(models.Model):
     summary_id=models.AutoField(primary_key=True)
     overall_health_rating=models.TextField()
     health_start_date=models.DateField()
     health_end_date=models.DateField()
     progress_over_time=models.TextField()
-    #team_id=models.ForeignKey()
-    #card_id=models.ForeignKey()
-    #department_id=models.ForeignKey()
+    team_id=models.ForeignKey('Team', on_delete=models.CASCADE)
+    card_id=models.ForeignKey('Card', on_delete=models.CASCADE)
+    department_id=models.ForeignKey('Department', on_delete=models.CASCADE)
     

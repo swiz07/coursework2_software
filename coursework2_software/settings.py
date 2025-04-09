@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'health_check',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
