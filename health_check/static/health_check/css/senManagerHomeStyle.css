@@ -1,96 +1,219 @@
-.container{
-    background-color: rgb(255, 255, 255);
-    min-height: 100vh;
-    flex-grow: 1; 
-    padding:2%;
-    
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border: 2px solid #c9e6ec;
-    border-radius:10px;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
-}
-.cardContainer{
-    width: 100%;
-    padding: 12px;
-    margin:5px;
-    background-color:#DBDCCF ;
-    border: 2px solid #ffffff;
-    border-radius:10px;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
-    height: auto;
-}
-.card{
-    background-color: #DCCFDC;
-}
 
- 
-  .LinearChart_Container{
-    background-color:#DBE9EA;
-    width: 430px; 
-    height: 200px;
-    padding: 15px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-    box-shadow: 0 5px 50px rgba(#000, 0.5);
-    border-radius: 12px;
-    border: 2px solid #ffffff;
-    overflow: hidden;
+
+  .maincontainer{
+      background-color: rgb(255, 255, 255);
+      min-height: fit-content;
+      flex-grow: 1; 
+      padding:2%;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border: 2px solid #c9e6ec;
+      border-radius:10px;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
   }
-  .box_Container{
-    background-color:#DBE9EA;
-    width: 100%; 
-    height:100vh;
-    padding: 15px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-    box-shadow: 0 5px 50px rgba(#000, 0.5);
-    border-radius: 12px;
-    border: 2px solid #ffffff;
-    overflow: hidden;
+  .cardContainer{
+      width: 100%;
+      padding: 12px;
+      margin:5px;
+      background-color:#DBDCCF ;
+      border: 2px solid #ffffff;
+      border-radius:10px;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+      height: auto;
   }
-  .summary {
-    position: relative;
-    width: 100%;
-    padding: 2px;
-    margin: 10px;
-    background-color: #fff;
-    box-sizing: border-box;
-    box-shadow: 0 5px 50px rgba(#000, 0.5);
-    border-radius: 12px;
-    border: 2px solid #3A7D9A;
-    overflow: hidden;
+  .card{
+      background-color: #DCCFDC;
   }
-  .box1 {
-    padding: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(50px, 3fr));
-    grid-gap: 30px;
-    box-sizing: border-box;
-  }
-  
-  .dept {
-    display: flex;
-    align-items: center;
+  .flip_btn {
     justify-content: center;
-    height: fit-content;
-    width: fit-content;
-    font-weight: 600;
-    color: #262626;
-    box-sizing: border-box;
-    box-shadow: 0 5px 50px rgba(#000, 0.5);
-    border-radius: 12px;
-    border: 2px solid #DBDCCF;
-    background-color: #3A7D9A;
-    padding: 12px;
-    margin: 10px;
+    align-items: center;
+    margin: 0;
+  }
+  .button {
+    width: 225px;  
+    height: 80px;
+  
+    perspective: 1800px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .qube {
+      position: relative;
+      height: 60px;;
+      width: 205px;
+      padding: 12px;
+      perspective: 1800px;
+      
+      
+
+      .front, .back {
+          backface-visibility: hidden;
+          transform-style: preserve-3d;
+          padding-left: 15px;
+          padding-right: 15px;
+          box-sizing: border-box;
+      box-shadow: 0 5px 50px rgba(#000, 0.5);
+      border-radius: 20px;
+      
+          transform: rotateX(-90deg);
+          transition: transform 0.3s ease;
+          position: absolute;
+          color: white;
+          line-height: 40px;;
+          text-align: center;
+          margin: 0;
+      }
+
+      .front {
+          background-color: #DBDCCF;
+          color: black;
+          font-family: Averia Serif Libre;
+          
+
+          &::before {
+            content: '';
+            display: block;
+            z-index: -1;
+          }
+
+          &::after {
+            background: white;
+            content: '';
+            height: 155px;
+            left: -75px;
+            opacity: .4;
+            position: absolute;
+            top: -50px;
+            transform: rotate(35deg);
+            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+            width: 50px;  
+            z-index: 1;
+          }
+      }
+
+      .back {
+          background-color: #DBDCCF;
+          color: black;
+          
+          font-family: Averia Serif Libre;
+          transform: rotateX(0deg) translateZ(30px);
+          
+      }
+      
+
+      &:hover {
+
+          .front {
+            transform: rotateX(0deg) translateZ( 30px );
+          }
+
+            .back {
+              transform: rotateX(90deg) translateZ( 30px );
+            }
+      }
+    }
+
+    &:active {
+
+      .front {
+        background-color: #3A7D9A;
+          color: #000000;
+          
+          font-family: Averia Serif Libre;
+        
+
+          &::before {
+            background-color:#3A7D9A;
+            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+          }
+
+          &::after {
+            left: 120%;
+            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+          }
+          
+      }
+      
+    }
+  }
+
+
+  #charts{
+    background-color:#DBE9EA;
+      width: 100%; 
+      height:480px;
+      box-sizing: border-box;
+      box-shadow: 0 5px 50px rgba(#000, 0.5);
+      border-radius: 12px;
+      border: 2px solid #ffffff;
+      transition: transform 0.6s, opacity 0.6s ease-in-out;
+    transform-style: preserve-3d;
+    transform: rotateY(0deg);
+  }
+  #charts.flipped {
+    transform: rotateY(180deg); /* Flip the container */
+  }
+
+  #charts.show {
+    opacity: 1; /* Show the container after flip */
     
   }
-  
-  .box2{
-    padding: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(50px, 3fr));
-    grid-gap: 30px;
+
+  #new-chart{
+    background-color:#DBE9EA;
+    width: 100; 
+    height: 480px;
+  padding: 10px;
     box-sizing: border-box;
+    box-shadow: 0 5px 50px rgba(#000, 0.5);
+    border-radius: 12px;
+    border: 2px solid #ffffff;
   }
+  #LinearChart_Container{
+
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    }
+    #container{
+      background-color:#DBE9EA;
+      width: 100%; 
+      height:480px; 
+      padding: 15px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      box-shadow: 0 5px 50px rgba(#000, 0.5);
+      border-radius: 12px;
+      border: 2px solid #ffffff;
+      
+    }
+    
+    #charts.flipped #container {
+      display: none; /* Hide initial chart after flip */
+    }
+    
+    #charts.flipped #new-chart {
+      transform: rotateY(180deg); 
+      display: block; /* Show new chart when flipped */
+    }
+
+    
+    
+    .box1 {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(50px, 3fr));
+      grid-gap: 30px;
+      box-sizing: border-box;
+    }
+    .box2{
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(50px, 3fr));
+      grid-gap: 30px;
+      box-sizing: border-box;
+    }
+    

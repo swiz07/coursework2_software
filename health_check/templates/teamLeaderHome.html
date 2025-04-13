@@ -1,7 +1,6 @@
-{%extends 'senManagerHomeMain.html'%} {%block content%}
-<div class="maincontainer">
- 
-
+{%extends 'teamLeaderHomeMain.html'%} {%block content%}
+<div class="container">
+  <h3>Welcome to the Home Page</h3>
   <div class="cardContainer d-flex flex-wrap gap-3">
     <div class="card" style="width: 10rem">
       <div class="card-body">
@@ -30,30 +29,35 @@
       </div>
     </div>
   </div>
-  <div class="flip_btn">
-    <a href="#" class="button">
-      <div class="qube">
-         <div class="front">Progress over time</div>
-         <div class="back">Current session Health</div>
-      </div>
-   </a>
-  </div>
 
-  <!-- 
-    -->
-
-  <!-- 
-      
-      -->
-  <div id="charts">
-    <div id="container"></div>
-
-    <div id="new-chart" class="d-flex flex-wrap gap-5" style="display: none">
-       
-        <div id="LinearChart_Container"> 
+  <div class="d-flex flex-wrap gap-5">
+    <div class="calendar_container">
+      <div class="calendar">
+        <div class="calendar-header">
+          <button id="prev-month">‹</button>
+          <div id="month-year"></div>
+          <button id="next-month">›</button>
+        </div>
+        <div class="calendar-body">
+          <div class="calendar-weekdays">
+            <div>S</div>
+            <div>M</div>
+            <div>T</div>
+            <div>W</div>
+            <div>T</div>
+            <div>F</div>
+            <div>S</div>
+          </div>
+          <div class="calendar-dates">
+            <!-- Dates  -->
+          </div>
+        </div>
       </div>
     </div>
+    <div class="pieChart_container"></div>
   </div>
+
+  <div class="LinearChart_Container"></div>
 </div>
 
 {%endblock content%}
