@@ -1,0 +1,108 @@
+.container{
+    background-color: rgb(255, 255, 255);
+    min-height: 100vh;
+    flex-grow: 1; 
+    padding:2%;
+    
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border: 2px solid #c9e6ec;
+    border-radius:10px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+}
+.cardContainer{
+    width: 100%;
+    padding: 12px;
+    margin:5px;
+    background-color:#DBDCCF ;
+    border: 2px solid #ffffff;
+    border-radius:10px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+    height: auto;
+}
+.calendar_container{
+    background-color:#3A7D9A;
+    width: 330px; 
+    height: 290px;
+    padding: 15px;
+    box-sizing: border-box;
+    box-shadow: 0 5px 50px rgba(#000, 0.5);
+    border-radius: 12px;
+    border: 2px solid #c9e6ec;
+    overflow: hidden;
+}
+.calendar {
+    position: relative;
+    width: 300px;
+    background-color: #fff;
+    box-sizing: border-box;
+    box-shadow: 0 5px 50px rgba(#000, 0.5);
+    border-radius: 12px;
+    border: 2px solid #3A7D9A;
+    overflow: hidden;
+  }
+  .calendar__date {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(25px, 1fr));
+    grid-gap: 10px;
+    box-sizing: border-box;
+  }
+  
+  .calendar__day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 25px;
+    font-weight: 600;
+    color: #262626;
+    
+    &:nth-child(7) {
+      color: #ff685d;
+    }
+  }
+  
+  .calendar__number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 25px;
+    color: #262626;
+  
+    &:nth-child(7n) {
+      color: #ff685d;
+      font-weight: 700;
+    }
+    
+    &--current,
+    &:hover {
+      background-color: #009688;
+      color: #fff !important;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  } 
+  .pieChart_container{
+    background-color:#c9e6ec;
+    width: 330px; 
+    height: 290px;
+    padding: 15px;
+    box-sizing: border-box;
+    box-shadow: 0 5px 50px rgba(#000, 0.5);
+    border-radius: 12px;
+    border: 2px solid #ffffff;
+    overflow: hidden;
+
+  } 
+  .LinearChart_Container{
+    background-color:#DBE9EA;
+    width: auto; 
+    height:100vh;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 5px 50px rgba(#000, 0.5);
+    border-radius: 12px;
+    border: 2px solid #ffffff;
+    overflow: hidden;
+  }

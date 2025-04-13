@@ -1,10 +1,9 @@
 # Create your models here.
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin,BaseUserManager,Group,Permission
-from django.contrib.auth.models import User
 
 class UserManager(BaseUserManager):
-    def _create_user(self, email, fullname, address, phone_number, password=None, is_staff=False, is_superuser=False, role=None, username=None):
+    def _create_user(self, email, fullname, address, phone_number, password=None, is_staff=False, is_superuser=False, role=None, username=None, department=None, team=None):
         if not email:
             raise ValueError('Users must have an email address')
         email = self.normalize_email(email)
@@ -16,7 +15,9 @@ class UserManager(BaseUserManager):
             is_staff=is_staff,
             is_superuser=is_superuser,
             role=role,
-            username=username
+            username=username,
+            department=department,
+            team=team
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -49,11 +50,11 @@ class User(AbstractBaseUser , PermissionsMixin):
     is_staff = models.BooleanField(default=False) # for admin
     is_superuser = models.BooleanField(default=False)# for admin
     role = models.ForeignKey(Role, related_name='users', on_delete=models.CASCADE)
-    team=models.ForeignKey('Team', on_delete=models.CASCADE, null=True)
+    team=models.ForeignKey('Team', on_delete=models.CASCADE, null=True, blank=True)
     Account_id=models.ForeignKey('Account', on_delete=models.SET_NULL, null=True)
 
     groups = models.ManyToManyField(Group, related_name='custom_user_groups')
-    user_permissions = models.ManyToManyField(Permission, related_name='custom_user_permissions')
+    user_permissions = models.ManyToManyField(Permission, related_name='custom_user_permissions', blank=True)
 
     USERNAME_FIELD = 'email'  # Use email as the username field
     REQUIRED_FIELDS = ['fullname', 'address', 'phone_number']  # Required fields for createsuperuser
