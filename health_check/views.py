@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
-from .models import User, Role, Department, Team 
+from .models import *
 
 def register(request):
     if request.method == 'POST':
@@ -11,12 +11,9 @@ def register(request):
         address = request.POST['address']
         phone_number = request.POST['phone']
         role_name = request.POST['role']
-        department_name=request.POST['department']
-        team_name=request.POST['team']
-
-        role=Role.objects.get(role_name=role_name)
-        department=Department.objects.get(department_name=department_name)
-        team=Team.objects.get(team_name=team_name)
+        username=request.POST['username']
+        
+        role=Role.objects.get(name=role_name)
 
         # Create the user with the role
         user = User.objects.create_user(
@@ -26,9 +23,10 @@ def register(request):
             address=address,
             phone_number=phone_number,
             role=role,
-            department=department,
-            team=team
         )
+        
+        user.set_password(password)
+        user.save()
 
         # Log the user in after registration
         auth_login(request, user)

@@ -66,11 +66,8 @@ function nextStep(){
       let name=document.querySelector('[name="name"]').value;
       let phone=document.querySelector('[name="phone"]').value;
       let address=document.querySelector('[name="address"]').value;
-      let department=document.querySelector('[name="department"]').value;
-      let team=document.querySelector('[name="team"]').value;
 
-
-      if(!name || !phone || !address || !department || !team){
+      if(!name || !phone || !address){
         document.getElementById("result").innerHTML="Please fill in all the required fields in step 3";
         return;
       }

@@ -256,10 +256,6 @@ button[disabled]{
     font-weight: bold;
     margin-right: 30px;
 }
-
-#underline:hover{
-    text-decoration: underline;
-}
 .intro-container{
     padding: 10px;
     margin: 20px;

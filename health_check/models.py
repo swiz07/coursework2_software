@@ -15,8 +15,6 @@ class UserManager(BaseUserManager):
             is_staff=is_staff,
             is_superuser=is_superuser,
             role=role,
-            username=username,
-            department=department,
             team=team
         )
         user.set_password(password)
@@ -49,7 +47,7 @@ class User(AbstractBaseUser , PermissionsMixin):
     phone_number = models.IntegerField()
     is_staff = models.BooleanField(default=False) # for admin
     is_superuser = models.BooleanField(default=False)# for admin
-    role = models.ForeignKey(Role, related_name='users', on_delete=models.CASCADE)
+    role = models.ForeignKey('Role', on_delete=models.CASCADE)
     team=models.ForeignKey('Team', on_delete=models.CASCADE, null=True, blank=True)
     Account_id=models.ForeignKey('Account', on_delete=models.SET_NULL, null=True)
 

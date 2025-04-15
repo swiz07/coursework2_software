@@ -3,8 +3,9 @@ from django.contrib import admin
 from .models import User, Role, Account, Card, Session, Team, Department, Vote, Summary
 
 class RoleAdmin(admin.ModelAdmin):
-    list_display = ('role_name', 'is_engineer', 'is_senior_manager')
-
+    list_display = ('role_name', 'is_engineer', 'is_senior_manager', 'is_team_leader', 'is_senior_manager')
+    
+    
 class UserAdmin(admin.ModelAdmin):
     list_display = ('email', 'fullname', 'is_staff', 'is_superuser', 'role', 'team')
     list_filter = ('is_staff', 'is_superuser', 'role', 'team')
