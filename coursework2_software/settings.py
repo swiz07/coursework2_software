@@ -82,7 +82,12 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'health_check.User'
 
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default backend
+]
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -125,4 +130,3 @@ STATICFILES_DIRS=[os.path.join(BASE_DIR,'health_check/static')]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#LOGIN_REDIRECT_URL = 'home'
