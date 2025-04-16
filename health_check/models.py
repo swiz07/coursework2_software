@@ -26,6 +26,11 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, False, False, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('username', 'admin')
+        extra_fields.setdefault('fullname', 'Admin User')
+        extra_fields.setdefault('address', 'Admin Address')
+        extra_fields.setdefault('phone_number', '0000000000')
+
         user = self._create_user(email, password, True, True, **extra_fields)
         user.save(using=self._db)
         return user
@@ -33,11 +38,12 @@ class UserManager(BaseUserManager):
 
 #Create your models here.
 class User(AbstractBaseUser, PermissionsMixin):
-    username=models.CharField(max_length=25)
+    username = models.CharField(max_length=25, unique=True)
     email=models.EmailField(max_length=254, unique=True)
     fullname=models.CharField(max_length=254, null=True, blank=True)
     address=models.TextField()
     phone_number=models.CharField(max_length=15)
+    is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     
@@ -53,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['email', 'fullname', 'address', 'phone_number']
 
     objects = UserManager()
 
@@ -72,3 +78,37 @@ class User(AbstractBaseUser, PermissionsMixin):
 #             return User.get_email(self.user) + " - is_student"   
 #         else:
 #             return User.get_email(self.user) + " - is_senior_manager"
+
+
+class Card(models.Model):
+    """
+    Represents a 'health check' card that users can vote on.
+    E.g., 'System Stability', 'Codebase Health', etc.
+    """
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    # aggregator fields
+    red_votes = models.PositiveIntegerField(default=0)
+    yellow_votes = models.PositiveIntegerField(default=0)
+    green_votes = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.title
+
+class Vote(models.Model):
+    """
+    Stores a user's vote for a specific card.
+    """
+    VOTE_CHOICES = [
+        ('Red', 'Unsatisfied'),
+        ('Yellow', 'Partially Satisfied'),
+        ('Green', 'Satisfied'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
+    vote_choice = models.CharField(max_length=10, choices=VOTE_CHOICES)
+    reason = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} → {self.card.title} [{self.vote_choice}]"

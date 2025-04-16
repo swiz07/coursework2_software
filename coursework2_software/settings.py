@@ -126,3 +126,8 @@ STATICFILES_DIRS=[os.path.join(BASE_DIR,'health_check/static')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'home'
+
+LOGIN_URL = '/login/'
+
+AUTH_USER_MODEL = 'health_check.User'
+

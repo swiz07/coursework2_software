@@ -1,0 +1,13 @@
+.card-slide {
+    transition: transform 0.3s ease;
+}
+
+.history-scroll-container {
+    max-height: 300px; 
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px;
+    background-color: #fff;
+  }
+  

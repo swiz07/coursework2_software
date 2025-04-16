@@ -1,0 +1,38 @@
+{% extends 'DeptLeaderHomeMain.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">All History</h2>
+    
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Card</th>
+                <th>Your Vote</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vote in user_votes %}
+            <tr>
+                <td>{{ vote.card }}</td>
+                <td>
+                    {% if vote.vote == "green" %}
+                        <span class="badge bg-success">Green</span>
+                    {% elif vote.vote == "yellow" %}
+                        <span class="badge bg-warning text-dark">Yellow</span>
+                    {% else %}
+                        <span class="badge bg-danger">Red</span>
+                    {% endif %}
+                </td>
+                <td>{{ vote.date }}</td>
+                <td>{{ vote.time }}</td>
+                <td><button class="btn btn-outline-primary btn-sm">✎</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

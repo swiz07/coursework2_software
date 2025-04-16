@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Voting Page</title>
+  <!-- If you haven't already: -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  />
+  <link rel="stylesheet" href="{% static 'health_check/css/homestyle.css' %}" />
+  <link rel="stylesheet" href="{% static 'health_check/css/VotingStyle.css' %}" />
+</head>
+
+<script>
+    const cardData = {
+      {% for c in user_cards %}
+        "{{ c.id }}": {
+          red: {{ c.red_count }},
+          yellow: {{ c.yellow_count }},
+          green: {{ c.green_count }},
+          title: "{{ c.title|escapejs }}"
+        },
+      {% endfor %}
+    };
+</script>
+
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Left sidebar -->
+    <nav class="col-2 bg-dark text-white" style="min-height:100vh;">
+      {% include 'homenavbar.html' %}
+    </nav>
+
+    <!-- Main content area -->
+    <div class="col offset-2" style="min-height: 100vh; overflow-y: auto;">
+      <!-- Top bar for Session info + user top-right icon, if needed -->
+      <div class="row mt-3">
+        <div class="col d-flex align-items-center">
+          <button class="btn btn-outline-primary me-3">Choose session</button>
+          <h5 class="mb-0">Session Name: <span class="text-muted">[Placeholder]</span></h5>
+        </div>
+        <div class="col-auto">
+        </div>
+      </div>
+      <hr />
+
+      <!-- Next row: Cards on the left, details on the right -->
+      <div class="row">
+        <div class="col-md-8">
+          <!-- “Your Cards” heading -->
+          <h4 class="mt-2 mb-3">Your Cards</h4>
+
+          <!-- Card grid -->
+          <div class="row row-cols-2 row-cols-sm-3 row-cols-md-3 g-3">
+            <!-- Loop of cards -->
+            {% for c in user_cards %}
+              <div class="col">
+                <div class="card p-2 cardItem" 
+                     onclick="showCardDetail('{{ c.id }}')"
+                     style="cursor:pointer;">
+                  <h6 class="mb-1">{{ c.title }}</h6>
+                  <p class="text-muted small mb-2">
+                    {{ c.description|truncatewords:5 }}
+                  </p>
+                  <!-- Vote counts: Red/Yellow/Green -->
+                  <div class="d-flex gap-2">
+                    <span class="badge bg-danger">{{ c.red_count }}</span>
+                    <span class="badge bg-warning text-dark">{{ c.yellow_count }}</span>
+                    <span class="badge bg-success">{{ c.green_count }}</span>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <!-- History section (scrollable if large) -->
+          <h4 class="mt-4">HISTORY</h4>
+          <div style="max-height:350px; overflow-y:auto; border:1px solid #ccc; border-radius:5px; padding:10px;">
+            <table class="table table-bordered table-sm">
+              <thead class="table-light">
+                <tr>
+                  <th>Card</th>
+                  <th>Your Vote</th>
+                  <th>Reason</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if user_history|length == 0 %}
+                  <tr><td colspan="4" class="text-muted">No votes found.</td></tr>
+                {% else %}
+                  {% for v in user_history %}
+                    <tr>
+                      <td>{{ v.card.title }}</td>
+                      <td>
+                        {% if v.vote_choice == 'red' %}
+                          <span class="badge bg-danger">Red</span>
+                        {% elif v.vote_choice == 'yellow' %}
+                          <span class="badge bg-warning text-dark">Yellow</span>
+                        {% elif v.vote_choice == 'green' %}
+                          <span class="badge bg-success">Green</span>
+                        {% endif %}
+                      </td>
+                      <td>{{ v.reason }}</td>
+                      <td>{{ v.created_at|date:"Y-m-d H:i" }}</td>
+                    </tr>
+                  {% endfor %}
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+
+        </div> 
+
+        <!-- Right side details panel -->
+        <div class="col-md-4">
+          <div id="detailPanel" class="p-3" style="border:1px solid #ccc; border-radius:5px;">
+            <!-- Top summary row: red/yellow/green counts + big card title -->
+            <div class="d-flex justify-content-end gap-2 mb-2">
+              <span class="badge bg-danger" id="detailRedCount">0</span>
+              <span class="badge bg-warning text-dark" id="detailYellowCount">0</span>
+              <span class="badge bg-success" id="detailGreenCount">0</span>
+            </div>
+
+            <h5 id="detailCardTitle" class="mb-3 text-center text-secondary">
+              [Click a card to see detail]
+            </h5>
+
+            <!-- Pie chart -->
+            <div class="d-flex justify-content-center mb-3">
+                <canvas id="detailPieChart" width="150" height="150"></canvas>
+              </div>              
+            <div class="mb-2">
+              <strong>Red</strong> | 
+              <strong class="text-warning">Yellow</strong> | 
+              <strong class="text-success">Green</strong>
+            </div>
+
+            <!-- Voting form -->
+            <form method="POST" action="{% url 'voting_page' %}">
+              {% csrf_token %}
+              <input type="hidden" name="card_id" id="detailCardId" value="" />
+              <div class="mb-2">
+                <label class="form-label fw-bold">Your Vote:</label>
+                <div>
+                  <input type="radio" name="vote_choice" value="red" id="voteRed" /> 
+                    <label for="voteRed">Red</label> &nbsp;
+                  <input type="radio" name="vote_choice" value="yellow" id="voteYellow"/> 
+                    <label for="voteYellow">Yellow</label> &nbsp;
+                  <input type="radio" name="vote_choice" value="green" id="voteGreen"/> 
+                    <label for="voteGreen">Green</label>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="reasonInput" class="form-label fw-bold">Reason (optional):</label>
+                <textarea name="reason" id="reasonInput" rows="2" class="form-control"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100">
+                Save Vote
+              </button>
+            </form>
+
+            <hr class="my-3" />
+            <h6>Progress Note</h6>
+            <ul class="list-unstyled">
+              <li><span class="badge bg-danger">&nbsp;</span> Unsatisfied</li>
+              <li><span class="badge bg-warning text-dark">&nbsp;</span> Partially Satisfied</li>
+              <li><span class="badge bg-success">&nbsp;</span> Satisfied</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+ 
+  </div> 
+</div> 
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'health_check/js/votingScript.js' %}"></script>
+</body>
+</html>
