@@ -17,18 +17,14 @@ def register(request):
         role=Role.objects.get(name=role_name)
 
         # Create the user with the role
-        try :user = User.objects.create_user(
-            email=email,
+        user = User.objects.create_user(
+            email=email, 
             fullname=fullname,
             password=password,
             address=address,
             phone_number=phone_number,
             role=role,
         ) 
-        except IntegrityError:
-             messages.error(request, "This email is already registered.")
-             return redirect('register')
-        
         
         user.set_password(password)
         user.save()
@@ -51,10 +47,12 @@ def register(request):
 def login_user(request):
     print("LOGIN VIEW HIT")
     if (request.method == 'POST'):
-        email = request.POST.get('email') #Get email value from form
-        password = request.POST.get('password') #Get password value from form
+        email = request.POST.get('email')  # still "username"
+        password = request.POST['password']
+        print(f"Attempting to authenticate with email: {email} and password: {password}")
+
         
-        user = authenticate(request, username=email, password=password)
+        user = authenticate(request, email=email, password=password)
         
             
         
@@ -75,7 +73,8 @@ def login_user(request):
                 return redirect('enghome') 
         else:
              
-            return redirect('health_check/login.html')
+            return render(request, 'health_check/login.html' )
+
 
     return render(request, 'health_check/login.html')
 

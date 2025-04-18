@@ -82,12 +82,14 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'health_check.User'
+ 
 
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',  # Default backend
-]
+    'django.contrib.auth.backends.ModelBackend',
+    'health_check.backends.EmailBackend'
+    ]  
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
