@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout
 from django.contrib import messages
@@ -25,7 +26,7 @@ def register(request):
             phone_number=phone_number,
             role=role,
         ) 
-        
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
         user.set_password(password)
         user.save()
 
@@ -47,7 +48,7 @@ def register(request):
 def login_user(request):
     print("LOGIN VIEW HIT")
     if (request.method == 'POST'):
-        email = request.POST.get('email')  # still "username"
+        email = request.POST.get('email')   
         password = request.POST['password']
         print(f"Attempting to authenticate with email: {email} and password: {password}")
 
