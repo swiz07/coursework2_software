@@ -77,12 +77,12 @@ class Account(models.Model):
 class Card(models.Model):
     card_id=models.AutoField(primary_key=True)
     card_name=models.TextField()
-    card_green_vote=models.IntegerField() #number of green votes
-    card_red_vote=models.IntegerField()
-    card_yellow_vote=models.IntegerField()
+    card_green_vote=models.IntegerField(default=0, blank=True) #number of green votes
+    card_red_vote=models.IntegerField(default=0, blank=True)
+    card_yellow_vote=models.IntegerField(default=0, blank=True)
     card_descrip=models.TextField()
-    card_progress=models.TextField()
-    colour_code=models.TextField() #has values like red, green and yellow
+    card_progress=models.TextField(null=True, blank=True)
+    colour_code=models.TextField(null=True, blank=True) #has values like red, green and yellow
     session_id=models.ForeignKey('Session',on_delete=models.CASCADE)
     
     def __str__(self):
@@ -91,20 +91,32 @@ class Card(models.Model):
 class Session(models.Model):
     session_id=models.AutoField(primary_key=True)
     session_started=models.DateTimeField() #when it is created
-    session_deleted=models.DateTimeField() #when the session is deleted/ended
+    session_deleted=models.DateTimeField(blank=True) #when the session is deleted/ended
     session_status=models.TextField()
     team_id=models.ForeignKey('Team',on_delete=models.CASCADE)
     
+    def __str__(self):
+        return f"Session {self.session_id}"
+
 class Team(models.Model):
     team_id=models.AutoField(primary_key=True)
     team_name=models.TextField()
     created_at=models.DateTimeField() 
     department_id=models.ForeignKey('Department', on_delete=models.CASCADE) 
 
+
+    def __str__(self):
+        return self.team_name
+
+
 class Department(models.Model):
     department_id=models.AutoField(primary_key=True)
     department_name=models.TextField()
     created_date=models.DateField()
+
+    def __str__(self):
+        return self.department_name
+
     
 class Vote(models.Model):
     vote_id=models.AutoField(primary_key=True)
