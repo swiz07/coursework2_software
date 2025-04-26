@@ -132,3 +132,5 @@ STATICFILES_DIRS=[os.path.join(BASE_DIR,'health_check/static')]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'health_check.User'
+

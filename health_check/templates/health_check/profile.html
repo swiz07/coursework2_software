@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Profile</title>
+    <link rel="stylesheet" href="{% static 'health_check/css/profile.css'%}">
+    <link rel="stylesheet" href="{% static 'health_check/css/globals.css'%}">
+</head>
+<body>
+  <div class="box">
+    <div class="profile-page">
+      <div class="overlap">
+        <div class="profile-page-bg"></div>
+
+        <!-- Logout Button -->
+        <form method="POST" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{% url 'home' %}" />
+          <button class="logout-button">
+            <div class="overlap-group"><div class="text-wrapper">Logout</div></div> 
+          </button>
+        </form>
+
+        <div class="credential-info">
+          <div class="overlap-2">
+            <!-- Credentials Section -->
+            <div class="text-wrapper-5">E‑mail</div>
+            <div class="email-info">{{ email }}</div>
+
+            <div class="text-wrapper-3">Phone Number</div>
+            <div class="phone-number-info">{{ phone_number }}</div>
+
+            <div class="text-wrapper-4">Address</div>
+            <div class="address-info">{{ address }}</div>
+          </div>
+        </div>
+
+        <div class="user-info">
+          <div class="overlap-2">
+            <!-- User Info Section -->
+            <div class="text-wrapper-6">Role:</div>
+            <div class="role-info">{{ role_name }}</div>
+
+            <div class="text-wrapper-7">Team:</div>
+            <div class="team-info">{{ team_name }}</div>
+
+            <div class="text-wrapper-8">Full Name:</div>
+            <div class="full-name-info">{{ fullname }}</div>
+
+            <div class="text-wrapper-10">Account ID:</div>
+            <div class="account-info">{{ account_id }}</div>
+
+            <!-- Avatar -->
+            <div class="image-wrapper">
+              {% if avatar_url %}
+                <img class="image" src="{{ avatar_url }}" alt="Avatar" />
+              {% else %}
+                <img class="image" src="{% static 'health_check/images/default-avatar.png' %}" alt="Default Avatar" />
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar (unchanged) -->
+        <div class="sidebar">
+          <div class="overlap-3">
+            <div class="sidebar-box"></div>
+            <div class="logout-button-2">
+              <div class="text-wrapper-11">Log Out</div>
+              <img class="log-out" src="https://c.animaapp.com/m8ww1iierGKyA7/img/log-out.svg" />
+            </div>
+            <a class="profile-button" href="{% url 'profile' %}">
+              <p class="profile"><span class="span">Profile</span></p>
+              <img class="user" src="https://c.animaapp.com/m8ww1iierGKyA7/img/user.svg" />
+            </a>
+            <div class="statistic-button">
+              <div class="text-wrapper-13">Statistic</div>
+              <img class="img" src="https://c.animaapp.com/m8ww1iierGKyA7/img/wpf-statistics.svg" />
+            </div>
+            <div class="voting-button">
+              <div class="text-wrapper-14">Voting page</div>
+              <img class="img" src="https://c.animaapp.com/m8ww1iierGKyA7/img/fluent-vote-24-filled.svg" />
+            </div>
+            <a class="home-button" href="{% url 'home' %}">
+              <div class="text-wrapper-15">Home</div>
+              <img class="home" src="https://c.animaapp.com/m8ww1iierGKyA7/img/home.svg" />
+            </a>
+            <img class="logo" src="https://c.animaapp.com/m8ww1iierGKyA7/img/logo.png" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
