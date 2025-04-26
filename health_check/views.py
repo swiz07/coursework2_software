@@ -80,18 +80,35 @@ def login_user(request):
     return render(request, 'health_check/login.html')
 
 
+#Rest password page view
+def reset_password(request):
+    if (request.method == 'POST'):
+        new_password = request.POST.get('new_password')   
+        r_new_password = request.POST.get('r_new_password')
+
+        if new_password==r_new_password:
+            user=request.user 
+            user.set_password(new_password) #securely updates the password
+            user.save()
+            messages.success(request, "Password has been reset successfully")
+            return redirect('login') #redirects to login page
+        else:
+            messages.error(request, "Password do not match. Please try again")
+    return render(request, 'health_check/resetpassword.html' )
+    
+#Logout page view
 def logout_user(request):
     logout(request)
     return redirect('home')
 
-
 # Home page view
 def home(request):
     return render(request, 'home.html')
- 
+
+#Engineer page view
 def enghome(request):
     return render(request, 'enghome.html')
 
-
+#Department Leader page view
 def deptLeaderHome(request):
     return render(request, 'DeptLeaderHome.html') 

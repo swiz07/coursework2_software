@@ -9,4 +9,5 @@ urlpatterns = [
     path('deptLeader/', views.deptLeaderHome, name='deptLeaderHome'),  # Dept Leader page
     path('login/', views.login_user, name='login'), 
     path('logout/', views.logout_user, name='logout'),
+    path('reset_password/', views.reset_password, name='reset_password'),
 ]
