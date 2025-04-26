@@ -124,6 +124,8 @@ def profile(request):
         'role_name':    role_name,
         'team_name':    team_name,
         'account_id':   account_id,
+        'password_mask': '••••••••',
+
     }
 
     # 5) Render the profile template

@@ -2,98 +2,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Profile</title>
-    <link rel="stylesheet" href="{% static 'health_check/css/profile.css'%}">
-    <link rel="stylesheet" href="{% static 'health_check/css/globals.css'%}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Profile</title>
+
+  <!-- Bootstrap grid (only for the sidebar width helper) -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"/>
+
+  <!-- Your globals & Anima CSS -->
+  <link
+    rel="stylesheet"
+    href="{% static 'health_check/css/globals.css' %}"/>
+  <link
+    rel="stylesheet"
+    href="{% static 'health_check/css/profile.css' %}"/>
+
+  <style>
+    /* 1) Make sidebar + content siblings */
+    body, html { margin:0; height:100%; }
+    .layout { display: flex; height:100vh; overflow:hidden; }
+
+    /* 2) Sidebar is fixed width (match your .sidebar-box width) */
+    .layout nav { flex: 0 0 227px; overflow-y: auto; }
+
+    /* 3) Main content scrolls if needed */
+    .layout .content { flex:1; overflow-y:auto; }
+
+    /* 4) Slide your .box over so it sits beside the sidebar */
+    .box {
+      position: relative !important;
+      margin-left: -200px !important;
+      margin-top: -60px;
+    }
+
+    /* 5) Hide the Anima‐generated white background and old sidebar */
+    .box .profile-page-bg { display: none !important; }
+    .box .sidebar, .box .overlap-3 { display: none !important; }
+  </style>
 </head>
 <body>
-  <div class="box">
-    <div class="profile-page">
-      <div class="overlap">
-        <div class="profile-page-bg"></div>
 
-        <!-- Logout Button -->
-        <form method="POST" action="{% url 'logout' %}">
-          {% csrf_token %}
-          <input type="hidden" name="next" value="{% url 'home' %}" />
-          <button class="logout-button">
-            <div class="overlap-group"><div class="text-wrapper">Logout</div></div> 
-          </button>
-        </form>
+  <div class="layout">
 
-        <div class="credential-info">
-          <div class="overlap-2">
+    <!-- your existing homenavbar.html -->
+    <nav class="bg-dark text-white p-0">
+      {% include 'homenavbar.html' %}
+    </nav>
+
+    <!-- wrap your .box here -->
+    <div class="content">
+
+      <!-- === your original Anima HTML, untouched === -->
+      <div class="box">
+        <div class="profile-page">
+          <div class="overlap">
+            <div class="profile-page-bg"></div>
+
+            <!-- Logout Button -->
+            <form method="POST" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'home' %}">
+              <button class="logout-button">
+                <div class="overlap-group">
+                  <div class="text-wrapper">Logout</div>
+                </div>
+              </button>
+            </form>
+
             <!-- Credentials Section -->
-            <div class="text-wrapper-5">E‑mail</div>
-            <div class="email-info">{{ email }}</div>
+            <div class="credential-info">
+              <div class="overlap-2">
+                <div class="text-wrapper-5">E-mail</div>
+                <div class="email-info">{{ email }}</div>
 
-            <div class="text-wrapper-3">Phone Number</div>
-            <div class="phone-number-info">{{ phone_number }}</div>
+                <div class="text-wrapper-3">Phone Number</div>
+                <div class="phone-number-info">{{ phone_number }}</div>
 
-            <div class="text-wrapper-4">Address</div>
-            <div class="address-info">{{ address }}</div>
-          </div>
-        </div>
+                <div class="text-wrapper-4">Password</div>
+                <div class="password-info">{{ password_mask }}</div>
+            
+                <!-- Change password button -->
+                <a href="{% url 'password_change' %}" class="change-password">Change password </a>
 
-        <div class="user-info">
-          <div class="overlap-2">
+              </div>
+            </div>
+
             <!-- User Info Section -->
-            <div class="text-wrapper-6">Role:</div>
-            <div class="role-info">{{ role_name }}</div>
+            <div class="user-info">
+              <div class="overlap-2">
+                <div class="text-wrapper-6">Role:</div>
+                <div class="role-info">{{ role_name }}</div>
 
-            <div class="text-wrapper-7">Team:</div>
-            <div class="team-info">{{ team_name }}</div>
+                <div class="text-wrapper-7">Team:</div>
+                <div class="team-info">{{ team_name }}</div>
 
-            <div class="text-wrapper-8">Full Name:</div>
-            <div class="full-name-info">{{ fullname }}</div>
+                <div class="text-wrapper-8">Full Name:</div>
+                <div class="first-name-info">{{ fullname }}</div>
 
-            <div class="text-wrapper-10">Account ID:</div>
-            <div class="account-info">{{ account_id }}</div>
+                <div class="text-wrapper-10">Account ID:</div>
+                <div class="account-info">{{ account_id }}</div>
 
-            <!-- Avatar -->
-            <div class="image-wrapper">
-              {% if avatar_url %}
-                <img class="image" src="{{ avatar_url }}" alt="Avatar" />
-              {% else %}
-                <img class="image" src="{% static 'health_check/images/default-avatar.png' %}" alt="Default Avatar" />
-              {% endif %}
+                <!-- Avatar -->
+                <div class="image-wrapper">
+                  {% if avatar_url %}
+                    <img class="image" src="{{ avatar_url }}" alt="Avatar"/>
+                  {% else %}
+                    <img class="image"
+                         src="{% static 'health_check/images/default-avatar.png' %}"
+                         alt="Default Avatar"/>
+                  {% endif %}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Sidebar (unchanged) -->
-        <div class="sidebar">
-          <div class="overlap-3">
-            <div class="sidebar-box"></div>
-            <div class="logout-button-2">
-              <div class="text-wrapper-11">Log Out</div>
-              <img class="log-out" src="https://c.animaapp.com/m8ww1iierGKyA7/img/log-out.svg" />
-            </div>
-            <a class="profile-button" href="{% url 'profile' %}">
-              <p class="profile"><span class="span">Profile</span></p>
-              <img class="user" src="https://c.animaapp.com/m8ww1iierGKyA7/img/user.svg" />
-            </a>
-            <div class="statistic-button">
-              <div class="text-wrapper-13">Statistic</div>
-              <img class="img" src="https://c.animaapp.com/m8ww1iierGKyA7/img/wpf-statistics.svg" />
-            </div>
-            <div class="voting-button">
-              <div class="text-wrapper-14">Voting page</div>
-              <img class="img" src="https://c.animaapp.com/m8ww1iierGKyA7/img/fluent-vote-24-filled.svg" />
-            </div>
-            <a class="home-button" href="{% url 'home' %}">
-              <div class="text-wrapper-15">Home</div>
-              <img class="home" src="https://c.animaapp.com/m8ww1iierGKyA7/img/home.svg" />
-            </a>
-            <img class="logo" src="https://c.animaapp.com/m8ww1iierGKyA7/img/logo.png" />
-          </div>
-        </div>
+          </div><!-- /.overlap -->
+        </div><!-- /.profile-page -->
+      </div><!-- /.box -->
 
-      </div>
-    </div>
-  </div>
+    </div><!-- /.content -->
+
+  </div><!-- /.layout -->
+
 </body>
 </html>
-
