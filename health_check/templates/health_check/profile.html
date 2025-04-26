@@ -61,15 +61,19 @@
             <div class="profile-page-bg"></div>
 
             <!-- Logout Button -->
-            <form method="POST" action="{% url 'logout' %}">
-              {% csrf_token %}
               <input type="hidden" name="next" value="{% url 'home' %}">
               <button class="logout-button">
                 <div class="overlap-group">
-                  <div class="text-wrapper">Logout</div>
+                  <div class="text-wrapper">Save</div>
                 </div>
               </button>
             </form>
+
+            <button class="edit-button">
+              <div class="div-wrapper">
+                <div class="div">Edit</div>
+              </div>
+            </button>
 
             <!-- Credentials Section -->
             <div class="credential-info">
@@ -96,7 +100,7 @@
                 <div class="role-info">{{ role_name }}</div>
 
                 <div class="text-wrapper-7">Team:</div>
-                <div class="team-info">{{ team_name }}</div>
+                <div class="last-name-info">{{ team_name }}</div>
 
                 <div class="text-wrapper-8">Full Name:</div>
                 <div class="first-name-info">{{ fullname }}</div>
@@ -106,11 +110,26 @@
 
                 <!-- Avatar -->
                 <div class="image-wrapper">
-                  {% if avatar_url %}
-                    <img class="image" src="{{ avatar_url }}" alt="Avatar"/>
+                  {% load static %}
+                  {% if role_name == "Engineer" %}
+                    <img class="image"
+                         src="{% static 'health_check/images/engineer.png' %}"
+                         alt="Engineer Avatar"/>
+                  {% elif role_name == "Team Leader" %}
+                    <img class="image"
+                         src="{% static 'health_check/images/team_leader_icon.png' %}"
+                         alt="Team Leader Avatar"/>
+                  {% elif role_name == "Department Leader" %}
+                    <img class="image"
+                         src="{% static 'health_check/images/department-leader.png' %}"
+                         alt="Department Leader Avatar"/>
+                  {% elif role_name == "Senior Manager" %}
+                    <img class="image"
+                         src="{% static 'health_check/images/senior_manager_icon.png' %}"
+                         alt="Senior Manager Avatar"/>
                   {% else %}
                     <img class="image"
-                         src="{% static 'health_check/images/default-avatar.png' %}"
+                         src="{% static 'health_check/images/biguser.png' %}"
                          alt="Default Avatar"/>
                   {% endif %}
                 </div>

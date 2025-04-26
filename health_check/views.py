@@ -114,6 +114,7 @@ def profile(request):
     role_name  = user.role.role_name                        if user.role else ''
     team_name  = user.team.team_name                        if getattr(user, 'team', None) else ''
     account_id = user.Account_id.username                   if getattr(user, 'Account_id', None) else ''
+        
 
     # 4) Build your context dict
     context = {
