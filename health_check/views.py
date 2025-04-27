@@ -103,20 +103,16 @@ def deptLeaderHome(request):
 
 
 def profile(request):
-    # 1) Redirect any anonymous user to your login
     if not request.user.is_authenticated:
         return redirect('login')
 
-    # 2) Safe to grab `request.user` fields now
     user = request.user
 
-    # 3) Pull related names, guarding against None
     role_name  = user.role.role_name                        if user.role else ''
     team_name  = user.team.team_name                        if getattr(user, 'team', None) else ''
     account_id = user.Account_id.username                   if getattr(user, 'Account_id', None) else ''
         
 
-    # 4) Build your context dict
     context = {
         'fullname':     user.fullname,
         'email':        user.email,
@@ -129,5 +125,4 @@ def profile(request):
 
     }
 
-    # 5) Render the profile template
     return render(request, 'health_check/profile.html', context)

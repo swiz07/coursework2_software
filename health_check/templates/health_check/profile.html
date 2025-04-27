@@ -20,24 +20,19 @@
     href="{% static 'health_check/css/profile.css' %}"/>
 
   <style>
-    /* 1) Make sidebar + content siblings */
     body, html { margin:0; height:100%; }
     .layout { display: flex; height:100vh; overflow:hidden; }
 
-    /* 2) Sidebar is fixed width (match your .sidebar-box width) */
     .layout nav { flex: 0 0 227px; overflow-y: auto; }
 
-    /* 3) Main content scrolls if needed */
     .layout .content { flex:1; overflow-y:auto; }
 
-    /* 4) Slide your .box over so it sits beside the sidebar */
     .box {
       position: relative !important;
       margin-left: -200px !important;
       margin-top: -60px;
     }
 
-    /* 5) Hide the Anima‐generated white background and old sidebar */
     .box .profile-page-bg { display: none !important; }
     .box .sidebar, .box .overlap-3 { display: none !important; }
   </style>
@@ -46,21 +41,17 @@
 
   <div class="layout">
 
-    <!-- your existing homenavbar.html -->
     <nav class="bg-dark text-white p-0">
       {% include 'homenavbar.html' %}
     </nav>
 
-    <!-- wrap your .box here -->
     <div class="content">
 
-      <!-- === your original Anima HTML, untouched === -->
       <div class="box">
         <div class="profile-page">
           <div class="overlap">
             <div class="profile-page-bg"></div>
 
-            <!-- Logout Button -->
               <input type="hidden" name="next" value="{% url 'home' %}">
               <button class="logout-button">
                 <div class="overlap-group">
@@ -75,7 +66,6 @@
               </div>
             </button>
 
-            <!-- Credentials Section -->
             <div class="credential-info">
               <div class="overlap-2">
                 <div class="text-wrapper-5">E-mail</div>
@@ -87,13 +77,11 @@
                 <div class="text-wrapper-4">Password</div>
                 <div class="password-info">{{ password_mask }}</div>
             
-                <!-- Change password button -->
                 <a href="{% url 'password_change' %}" class="change-password">Change password </a>
 
               </div>
             </div>
 
-            <!-- User Info Section -->
             <div class="user-info">
               <div class="overlap-2">
                 <div class="text-wrapper-6">Role:</div>
@@ -108,7 +96,6 @@
                 <div class="text-wrapper-10">Account ID:</div>
                 <div class="account-info">{{ account_id }}</div>
 
-                <!-- Avatar -->
                 <div class="image-wrapper">
                   {% load static %}
                   {% if role_name == "Engineer" %}
@@ -136,13 +123,13 @@
               </div>
             </div>
 
-          </div><!-- /.overlap -->
-        </div><!-- /.profile-page -->
-      </div><!-- /.box -->
+          </div>
+        </div>
+      </div>
 
-    </div><!-- /.content -->
+    </div>
 
-  </div><!-- /.layout -->
+  </div>
 
 </body>
 </html>
