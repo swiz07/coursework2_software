@@ -40,11 +40,11 @@ def register(request):
         if role.is_engineer:
             return redirect('enghome')
         elif role.is_team_leader:
-            return redirect('enghome')
+            return redirect('teamLeaderHome')
         elif role.is_department_leader:
             return redirect('deptLeaderHome')
         elif role.is_senior_manager:
-            return redirect('deptLeaderHome')
+            return redirect('SenManagerHome')
 
     return render(request, 'health_check/register.html')
 
@@ -70,11 +70,11 @@ def login_user(request):
                 return redirect('enghome') #Go to engineer home
             elif user.is_authenticated and type_obj.is_team_leader:
                 print("Login successful")
-                return redirect('deptLeaderHome') 
+                return redirect('teamLeaderHome') 
             elif user.is_authenticated and type_obj.is_senior_manager:
-                return redirect('deptLeaderHome') 
+                return redirect('SenManagerHome') 
             elif user.is_authenticated and type_obj.is_department_leader:
-                return redirect('enghome') 
+                return redirect('deptLeaderHome') 
         else:
              
             return render(request, 'health_check/login.html' )
