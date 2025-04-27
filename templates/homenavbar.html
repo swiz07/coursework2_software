@@ -20,13 +20,28 @@
 
 
                     <!-- Home -->
-                    <li>
-                        <a href="#"   class="nav-link  px-0 py-2align-middle">
-                            <i class="fs-4 bi-table"></i> 
-                            <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
-                            <span  class="ms-1 d-none d-sm-inline">
-                                
-                                Home</span> </a>
+                    <li> 
+                        {% if is_engineer %}
+                            <a href="{% url 'enghome' %}" class="nav-link px-0 py-2 align-middle">
+                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                <span class="ms-1 d-none d-sm-inline">Home</span>
+                            </a>
+                        {% elif is_team_leader %}
+                            <a href="{% url 'teamLeaderHome' %}" class="nav-link px-0 py-2 align-middle">
+                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                <span class="ms-1 d-none d-sm-inline">Home</span>
+                            </a>
+                        {% elif is_dept_leader %}
+                            <a href="{% url 'deptLeaderHome' %}" class="nav-link px-0 py-2 align-middle">
+                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                <span class="ms-1 d-none d-sm-inline">Home</span>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'SenManagerHome' %}" class="nav-link px-0 py-2 align-middle">
+                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                <span class="ms-1 d-none d-sm-inline">Home</span>
+                            </a>
+                        {% endif %}
                     </li>
 
 
@@ -68,10 +83,10 @@
 
                 <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
 
-
+                
                     <!-- profile -->
                     <li>
-                        <a href="#" class="nav-link px-0 py-2 align-middle"  >
+                        <a href="{% url 'profile' %}" class="nav-link px-0 py-2 align-middle"  >
                             <i class="fs-4 bi-table"></i>
                             <img src="{% static 'health_check/images/white_user.png' %}" alt="" class="navicon ">
                              <span class="ms-1 d-none d-sm-inline">User</span>
@@ -81,7 +96,7 @@
 
                     <!-- Log out -->
                     <li>
-                        <a href="#" class="nav-link px-0 py-2 align-middle">
+                        <a href="{% url 'logout' %}" class="nav-link px-0 py-2 align-middle">
                             <i class="fs-4 bi-table"></i>
                             <img src="{% static 'health_check/images/white_out.png' %}" alt="" class="navicon">
                              <span class="ms-1 d-none d-sm-inline">Log out</span></a>
