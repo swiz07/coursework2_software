@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import login_required
 
 
 def register(request):
-
     if request.method == 'POST':
         email = request.POST['email']
         fullname = request.POST['name']
@@ -40,11 +39,11 @@ def register(request):
         if role.is_engineer:
             return redirect('enghome')
         elif role.is_team_leader:
-            return redirect('teamLeaderHome')
+            return redirect('enghome')
         elif role.is_department_leader:
             return redirect('deptLeaderHome')
         elif role.is_senior_manager:
-            return redirect('SenManagerHome')
+            return redirect('deptLeaderHome')
 
     return render(request, 'health_check/register.html')
 
@@ -70,11 +69,11 @@ def login_user(request):
                 return redirect('enghome') #Go to engineer home
             elif user.is_authenticated and type_obj.is_team_leader:
                 print("Login successful")
-                return redirect('teamLeaderHome') 
-            elif user.is_authenticated and type_obj.is_senior_manager:
-                return redirect('SenManagerHome') 
-            elif user.is_authenticated and type_obj.is_department_leader:
                 return redirect('deptLeaderHome') 
+            elif user.is_authenticated and type_obj.is_senior_manager:
+                return redirect('deptLeaderHome') 
+            elif user.is_authenticated and type_obj.is_department_leader:
+                return redirect('enghome') 
         else:
              
             return render(request, 'health_check/login.html' )
@@ -83,22 +82,11 @@ def login_user(request):
     return render(request, 'health_check/login.html')
 
 
-#Rest password page view
-def reset_password(request):
-    if (request.method == 'POST'):
-        new_password = request.POST.get('new_password')   
-        r_new_password = request.POST.get('r_new_password')
+def logout_user(request):
+    logout(request)
+    return redirect('home')
 
-        if new_password==r_new_password:
-            user=request.user 
-            user.set_password(new_password) #securely updates the password
-            user.save()
-            messages.success(request, "Password has been reset successfully")
-            return redirect('login') #redirects to login page
-        else:
-            messages.error(request, "Password do not match. Please try again")
-    return render(request, 'health_check/resetpassword.html' )
-    
+ 
 #Logout page view
 def logout_user(request):
     logout(request)
@@ -153,3 +141,20 @@ def profile(request):
 
     # 5) Render the profile template
     return render(request, 'health_check/profile.html', context)
+
+    
+#Rest password page view
+def reset_password(request):
+    if (request.method == 'POST'):
+        new_password = request.POST.get('new_password')   
+        r_new_password = request.POST.get('r_new_password')
+
+        if new_password==r_new_password:
+            user=request.user 
+            user.set_password(new_password) #securely updates the password
+            user.save()
+            messages.success(request, "Password has been reset successfully")
+            return redirect('login') #redirects to login page
+        else:
+            messages.error(request, "Password do not match. Please try again")
+    return render(request, 'health_check/resetpassword.html' )
