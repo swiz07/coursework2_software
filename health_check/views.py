@@ -39,11 +39,11 @@ def register(request):
         if role.is_engineer:
             return redirect('enghome')
         elif role.is_team_leader:
-            return redirect('enghome')
+            return redirect('teamLeaderHome')
         elif role.is_department_leader:
             return redirect('deptLeaderHome')
         elif role.is_senior_manager:
-            return redirect('deptLeaderHome')
+            return redirect('SenManagerHome')
 
     return render(request, 'health_check/register.html')
 
@@ -80,12 +80,7 @@ def login_user(request):
 
 
     return render(request, 'health_check/login.html')
-
-
-def logout_user(request):
-    logout(request)
-    return redirect('home')
-
+ 
  
 #Logout page view
 def logout_user(request):
