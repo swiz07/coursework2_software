@@ -82,13 +82,11 @@ DATABASES = {
     }
 }
 
- 
-
-
+AUTH_USER_MODEL = 'health_check.User'
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'health_check.backends.EmailBackend'
-    ]  
+    'health_check.backends.EmailBackend',   
+    'django.contrib.auth.backends.ModelBackend',  
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -107,6 +105,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
 
 
 # Internationalization
@@ -129,6 +129,5 @@ STATICFILES_DIRS=[os.path.join(BASE_DIR,'health_check/static')]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+LOGIN_URL = '/login/'
+LOGOUT_REDIRECT_URL = 'home'
