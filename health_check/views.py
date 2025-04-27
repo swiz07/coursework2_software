@@ -112,10 +112,15 @@ def home(request):
 def enghome(request):
     return render(request, 'enghome.html')
 
-#Department Leader page view
+def teamLeader(request):
+    return render(request, 'teamLeaderHome.html')
+
 def deptLeaderHome(request):
     return render(request, 'DeptLeaderHome.html') 
 
+
+def SenManagerHome(request):
+    return render(request, 'SenManagerHome.html')
 
 
 
