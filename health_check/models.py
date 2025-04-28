@@ -15,7 +15,8 @@ class UserManager(BaseUserManager):
             is_staff=is_staff,
             is_superuser=is_superuser,
             role=role,
-            team=team
+            team=team,
+            department=department
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -49,6 +50,7 @@ class User(AbstractBaseUser , PermissionsMixin):
     is_superuser = models.BooleanField(default=False)# for admin
     role = models.ForeignKey('Role', on_delete=models.CASCADE, null=True, blank=True)
     team=models.ForeignKey('Team', on_delete=models.CASCADE, null=True, blank=True)
+    department=models.ForeignKey('Department', on_delete=models.CASCADE, null=True, blank=True)
     Account_id=models.ForeignKey('Account', on_delete=models.SET_NULL, null=True)
 
     groups = models.ManyToManyField(Group, related_name='custom_user_groups')

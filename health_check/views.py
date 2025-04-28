@@ -18,7 +18,6 @@ def register(request):
             address = request.POST['address']
             phone_number = request.POST['phone']
             role_name = request.POST['role']
-        # username=request.POST['username']
             
             role=Role.objects.get(name=role_name)
 
