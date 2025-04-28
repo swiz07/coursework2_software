@@ -1,26 +1,33 @@
 let currentStep=1;
-function showStep(step){
-    document.querySelectorAll('.step')
-    .forEach((e)=>e.classList.remove('active'));
+function showStep(step) {
+  document.querySelectorAll('.step')
+  .forEach((e) => e.classList.remove('active'));
 
-    document.getElementById(`step${step}`)
-    .classList.add('active');
+  document.getElementById(`step${step}`)
+  .classList.add('active');
 
-    document.querySelectorAll('.step-indicator span')
-    .forEach((e, index)=>{
-        e.classList.toggle('active', index+1===step);
-    });
+  document.querySelectorAll('.step-indicator span')
+  .forEach((e, index) => {
+      e.classList.toggle('active', index + 1 === step);
+  });
 
-    document.getElementById('prev-btn').disabled=step===1;
-    document.getElementById('next-btn').innerHTML=step===3?
-    'Finish': 'Next';
-    if(step ===3){
-      document.getElementById('next-btn').type='submit';
-    }
-    else{
-      document.getElementById('next-btn').type='button';
-    }
+  document.getElementById('prev-btn').disabled = step === 1;
+
+  const nextBtn = document.getElementById('next-btn');
+
+  if (step === 4) {
+      nextBtn.innerHTML = 'Finish';
+      nextBtn.type = 'button'; // Still button! NOT submit yet!
+  } else if (step === 5) {
+      // Optional: if you had a confirmation step
+      nextBtn.innerHTML = 'Submit';
+      nextBtn.type = 'submit';
+  } else {
+      nextBtn.innerHTML = 'Next';
+      nextBtn.type = 'button';
+  }
 }
+
 
 
 function arePasswordsMatching(){
@@ -72,13 +79,21 @@ function nextStep(){
         return;
       }
     }
-    if(currentStep <3){
-        currentStep++;
-        showStep(currentStep);
-    }
-    else{
-        document.getElementById("result").innerHTML="Submitted successfully";
-    }
+    if(currentStep===4){
+      let department = document.getElementById("id_department").value;
+      let team = document.getElementById("id_team").value;
+
+      if(!department || !team){
+        document.getElementById("result").innerHTML="Please select department and team in step 4";
+        return;
+      } 
+      document.querySelector('form').submit();
+      return;
+    } 
+    currentStep++;
+    showStep(currentStep);
+    
+ 
 }
 
 function prevStep(){
@@ -145,3 +160,21 @@ passInput.onkeyup = function() {
     length.classList.add("invalid");
   }
 }
+
+
+// When department changes, load teams
+$(document).ready(function(){
+  $('#id_department').change(function(){
+    var url = $(this).data('url');
+    var departmentId = $(this).val();
+      $.ajax({
+          url: url,
+          data: {
+              'department_id': departmentId
+          },
+          success: function(data){
+              $("#id_team").html(data);
+          }
+      });
+  });
+});

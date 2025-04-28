@@ -7,8 +7,10 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.urls import reverse
-from django.contrib.auth import logout
-from django.shortcuts import redirect
+from django.contrib.auth import logout  
+from django.shortcuts import render
+from .models import Team
+from .models import Department 
 
 def register(request):
         if request.method == 'POST':
@@ -18,9 +20,17 @@ def register(request):
             address = request.POST['address']
             phone_number = request.POST['phone']
             role_name = request.POST['role']
+            department_id = request.POST.get('department')
+            team_id = request.POST.get('team')
             
             role=Role.objects.get(name=role_name)
-
+            department = None
+            if department_id:
+                department = Department.objects.get(department_id=department_id)
+        
+            team = None
+            if team_id:
+                team = Team.objects.get(team_id=team_id)
             # Create the user with the role
             user = User.objects.create_user(
                 username = email,
@@ -30,6 +40,8 @@ def register(request):
                 address=address,
                 phone_number=phone_number,
                 role=role,
+                department=department,
+                team=team,
             ) 
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             user.set_password(password)
@@ -48,7 +60,9 @@ def register(request):
             elif role.is_senior_manager:
                 return redirect('SenManagerHome')
 
-        return render(request, 'health_check/register.html')
+        departments = Department.objects.all()
+        teams = Team.objects.all()
+        return render(request, 'health_check/register.html', {'departments': departments, 'teams': teams})
 
 class CustomLoginView(LoginView):
 
@@ -213,3 +227,8 @@ def reset_password(request):
             else:
                 messages.error(request, "Password do not match. Please try again")
         return render(request, 'health_check/resetpassword.html' )
+
+def load_teams(request):
+    department_id = request.GET.get('department_id')
+    teams = Team.objects.filter(department_id=department_id).order_by('team_name')
+    return render(request, 'teams/team_dropdown_list_options.html', {'teams': teams})   

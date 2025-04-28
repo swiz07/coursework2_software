@@ -8,13 +8,13 @@ class RoleAdmin(admin.ModelAdmin):
     
 class UserAdmin(admin.ModelAdmin):
     list_display = ('email', 'fullname', 'is_staff', 'is_superuser', 'role', 'team', 'department')
-    list_filter = ('is_staff', 'is_superuser', 'role', 'team')
+    list_filter = ('is_staff', 'is_superuser', 'role', 'team', 'department')
     search_fields = ('email', 'fullname')
     ordering = ('email',)
     fieldsets = (
         (None, {
             'fields': ('email', 'fullname', 'address', 'phone_number', 'password', 'role', 'team','department')
-        }),
+        }), 
         ('Permissions', {
             'fields': ('is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),

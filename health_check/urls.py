@@ -10,6 +10,9 @@ urlpatterns = [
     path('', views.home, name='home'),  # Home page
     # Register URL
     path('register/', views.register, name='register'),  
+   path('ajax/load-teams/', views.load_teams, name='ajax_load_teams'),
+
+
 
     # Home pages
     path('engineer/', views.enghome, name='enghome'),  # Engineer page

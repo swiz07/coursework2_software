@@ -7,6 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     {% load static %}
     <link rel="stylesheet" href="{% static 'health_check/css/style.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <style>
     </style>
 </head>
@@ -28,6 +30,7 @@
                     <span class="active">1</span>
                     <span>2</span>
                     <span>3</span>
+                    <span>4</span>  
                 </div>
                 <div class="step active" id="step1">
                     <p class="mt-2">STEP 1</p>
@@ -96,6 +99,22 @@
                     <label for="address" class="required d-block">Address:</label>
                     <input type="text" name="address" required>
                 </div>
+                <div class="step" id="step4">
+                    <p>STEP 4</p>
+                    <label for="department" class="required d-block">Select Department:</label>
+                    <select name="department" id="id_department" class="form-select" required data-url="{% url 'ajax_load_teams' %}">
+                        <option value="">Select a department</option>
+                        {% for department in departments %}
+                        <option value="{{ department.department_id }}">{{ department.department_name }}</option>
+                        {% endfor %}
+                    </select>
+                
+                    <label for="team" class="required d-block mt-3">Select Team:</label>
+                    <select name="team" id="id_team" class="form-select" required>
+                        <option value="">Select a team</option>
+                        
+                    </select>
+                </div> 
                 <div class="buttons">
                     <button type="button" id="prev-btn" onclick="prevStep()" disabled>Previous</button>
                     <button type="button" id="next-btn" onclick="nextStep()">Next</button>
