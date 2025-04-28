@@ -33,7 +33,7 @@
                     <!-- Voting page -->
                     {%if role_name == "Engineer" or role_name == "Team Leader"%}
                     <li>
-                        <a href="#" class="nav-link px-0 py-2 align-middle">
+                        <a href="{% url 'voting_page' %}" class="nav-link px-0 py-2 align-middle">
                              
                             <img src="{% static 'health_check/images/white_vote.png' %}" alt=""   class="navicon">
                             <span class="ms-1 d-none d-sm-inline">Voting page</span></a>

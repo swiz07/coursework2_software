@@ -126,3 +126,9 @@ def profile(request):
     }
 
     return render(request, 'health_check/profile.html', context)
+
+def voting_page(request):
+    context = {
+        'page_title': 'Voting Page',    
+    }
+    return render(request, 'health_check/voting_page.html', context)
