@@ -31,9 +31,9 @@ def register(request):
                 phone_number=phone_number,
                 role=role,
             ) 
-        # user.backend = 'django.contrib.auth.backends.ModelBackend'
-        # user.set_password(password)
-        # user.save()
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            user.set_password(password)
+            user.save()
 
             # Log the user in after registration
             auth_login(request, user)
