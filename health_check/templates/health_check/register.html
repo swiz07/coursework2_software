@@ -60,28 +60,28 @@
                     <div class="role-buttons">
                         <!-- Engineer Option -->
                         <label class="role-option">
-                            <input type="radio" id="engineer" name="role" value="Engineer">
+                            <input type="radio" id="engineer" name="role" value="Engineer" onclick="noTeamView()">
                             <img src="{% static 'health_check/images/engineer.png' %}" alt="engineer Icon">
                             <span>Engineer</span>
                         </label>
 
                         <!-- Team Leader Option -->
                         <label class="role-option">
-                            <input type="radio" id="team-leader" name="role" value="Team Leader">
+                            <input type="radio" id="team-leader" name="role" value="Team Leader" onclick="noTeamView()">
                             <img src="{% static 'health_check/images/team_leader_icon.png' %}" alt="Team Leader Icon">
                             <span>Team Leader</span>
                         </label>
 
                          <!-- Department Leader Option -->
                          <label class="role-option">
-                            <input type="radio" id="department-leader" name="role" value="Department Leader">
+                            <input type="radio" id="department-leader" name="role" value="Department Leader" onclick="noTeamView()">
                              <img src="{% static 'health_check/images/department-leader.png' %}" alt="Department Leader Icon">
                              <span>Department Leader</span>
                          </label>
                         
                         <!-- Senior Manager Option -->
                         <label class="role-option">
-                            <input type="radio" id="senior-manager" name="role" value="Senior manager">
+                            <input type="radio" id="senior-manager" name="role" value="Senior Manager" onclick="noTeamView()">
                             <img src="{% static 'health_check/images/senior_manager_icon.png' %}" alt="Senior Manager Icon">
                             <span>Senior Manager</span>
                         </label>
@@ -108,12 +108,13 @@
                         <option value="{{ department.department_id }}">{{ department.department_name }}</option>
                         {% endfor %}
                     </select>
-                
-                    <label for="team" class="required d-block mt-3">Select Team:</label>
-                    <select name="team" id="id_team" class="form-select" required>
-                        <option value="">Select a team</option>
+                     <div id="teams">
+                        <label for="team" class="required d-block mt-3">Select Team:</label>
+                        <select name="team" id="id_team" class="form-select" required>
+                            <option value="">Select a team</option>
                         
-                    </select>
+                        </select>
+                    </div>
                 </div> 
                 <div class="buttons">
                     <button type="button" id="prev-btn" onclick="prevStep()" disabled>Previous</button>

@@ -17,12 +17,8 @@ function showStep(step) {
 
   if (step === 4) {
       nextBtn.innerHTML = 'Finish';
-      nextBtn.type = 'button'; // Still button! NOT submit yet!
-  } else if (step === 5) {
-      // Optional: if you had a confirmation step
-      nextBtn.innerHTML = 'Submit';
-      nextBtn.type = 'submit';
-  } else {
+      nextBtn.type = 'Submit';  
+  }  else {
       nextBtn.innerHTML = 'Next';
       nextBtn.type = 'button';
   }
@@ -78,10 +74,33 @@ function nextStep(){
         document.getElementById("result").innerHTML="Please fill in all the required fields in step 3";
         return;
       }
+
+      //checks if chosen role is senior manager or not
+      const chosenRole = document.querySelector('input[name="role"]:checked').value;
+
+      if (chosenRole === "Senior Manager") {
+        document.querySelector('form').submit();
+        return;
+    }
+
     }
     if(currentStep===4){
       let department = document.getElementById("id_department").value;
       let team = document.getElementById("id_team").value;
+
+      //check if chosen role is department leader
+
+      const chosenRole = document.querySelector('input[name="role"]:checked').value;
+
+      if(chosenRole === "Department Leader") { 
+
+        if(!department){
+          document.getElementById("result").innerHTML = "Please select a department in step 4";
+          return;
+        }
+        document.querySelector('form').submit();
+        return;
+    } else {
 
       if(!department || !team){
         document.getElementById("result").innerHTML="Please select department and team in step 4";
@@ -90,6 +109,7 @@ function nextStep(){
       document.querySelector('form').submit();
       return;
     } 
+  }
     currentStep++;
     showStep(currentStep);
     
@@ -178,3 +198,22 @@ $(document).ready(function(){
       });
   });
 });
+
+
+//to not show team dropdown for department leaders
+
+function noTeamView() {
+  const chosenRole = document.querySelector('input[name="role"]:checked');
+  const teamList = document.getElementById('teams'); 
+
+  if (!chosenRole) {
+    teamList.style.display = 'block';  
+      return;
+  }
+//check if chosen role is department
+  if (chosenRole.value === "Department Leader") {
+    teamList.style.display = 'none'; // hide team
+  } else {
+    teamList.style.display = 'block'; // show team
+  }
+}

@@ -3,32 +3,17 @@
  
 
   <div class="cardContainer d-flex flex-wrap gap-3">
+    {% for department in departments %}
     <div class="card" style="width: 10rem">
       <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+        <h5 class="card-title">{{ department.department_name }}</h5>
+        <a href="#" class="btn btn-primary">dept</a>
       </div>
     </div>
-
-    <div class="card" style="width: 10rem">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-    <div class="card" style="width: 10rem">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
-
-    <div class="card" style="width: 10rem">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
-    </div>
+    {% empty %}
+    <p>No departments available.</p>
+    {% endfor %}
+  </div>
   </div>
   <div class="flip_btn">
     <a href="#" class="button">

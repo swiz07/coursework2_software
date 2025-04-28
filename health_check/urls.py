@@ -16,9 +16,9 @@ urlpatterns = [
 
     # Home pages
     path('engineer/', views.enghome, name='enghome'),  # Engineer page
-    path('teamLeader/', views.teamLeader, name='teamLeaderHome'),  # Engineer page
-    path('deptLeader/', views.deptLeaderHome, name='deptLeaderHome'),  # Dept Leader page
-    path('SeniorManager/', views.SenManagerHome, name='SenManagerHome'), # Senior manager
+    path('teamLeaderHome/', views.teamLeader, name='teamLeaderHome'),  # Engineer page
+    path('deptLeaderHome/', views.deptLeaderHome, name='deptLeaderHome'),  # Dept Leader page
+    path('SenManagerHome/', views.SenManagerHome, name='SenManagerHome'), # Senior manager
 
     # Log in and log oout
     path('login/', CustomLoginView.as_view(), name='login'),

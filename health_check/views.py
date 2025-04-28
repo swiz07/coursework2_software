@@ -6,11 +6,7 @@ from django.contrib import messages
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.urls import reverse
-from django.contrib.auth import logout  
-from django.shortcuts import render
-from .models import Team
-from .models import Department 
+from django.urls import reverse    
 
 def register(request):
         if request.method == 'POST':
@@ -70,8 +66,10 @@ class CustomLoginView(LoginView):
 
     def get_success_url(self):
         user = self.request.user
-        role = user.role
-
+        print(f"User: {user.email}, Role: {user.role}")
+        role = getattr(user, 'role', None)
+        if role:
+             print(f"Role flags - Engineer: {role.is_engineer}, Team Leader: {role.is_team_leader}, Department Leader: {role.is_department_leader}, Senior Manager: {role.is_senior_manager}")  # Debug line
         if role.is_engineer:
             return reverse('enghome')
         elif role.is_team_leader:
@@ -101,18 +99,25 @@ def enghome(request):
     is_department_leader = False
     is_senior_manager = False
 
-    if request.user.is_authenticated and hasattr(request.user, 'role'):
+    #get their role
+    if request.user.is_authenticated  and hasattr(request.user, 'role'):
         role = request.user.role
         is_engineer = role.is_engineer
         is_team_leader = role.is_team_leader
         is_department_leader = role.is_department_leader
         is_senior_manager = role.is_senior_manager
 
+    #displays cardds
+    if request.user.is_authenticated and request.user.team:
+        cards = Card.objects.filter(session_id__team_id=request.user.team)
+    else:
+        cards = []  
     return render(request, 'enghome.html', {
         'is_engineer': is_engineer,
         'is_team_leader': is_team_leader,
         'is_department_leader': is_department_leader,
         'is_senior_manager': is_senior_manager,
+        'cards': cards
     })
 
 def teamLeader(request):
@@ -128,11 +133,17 @@ def teamLeader(request):
         is_department_leader = role.is_department_leader
         is_senior_manager = role.is_senior_manager
 
+    #displays cardds
+    if request.user.is_authenticated and request.user.team:
+        cards = Card.objects.filter(session_id__team_id=request.user.team)
+    else:
+        cards = []  
     return render(request, 'teamLeaderHome.html', {
         'is_engineer': is_engineer,
         'is_team_leader': is_team_leader,
         'is_department_leader': is_department_leader,
         'is_senior_manager': is_senior_manager,
+        'cards': cards
     }) 
 
 def deptLeaderHome(request):
@@ -148,11 +159,18 @@ def deptLeaderHome(request):
         is_department_leader = role.is_department_leader
         is_senior_manager = role.is_senior_manager
 
+        #displays teams
+    if request.user.department:
+        teams = Team.objects.filter(department_id=request.user.department)
+    else:
+        teams = [] 
+
     return render(request, 'DeptLeaderHome.html', {
         'is_engineer': is_engineer,
         'is_team_leader': is_team_leader,
         'is_department_leader': is_department_leader,
         'is_senior_manager': is_senior_manager,
+        'teams': teams
     })  
 
 
@@ -169,11 +187,18 @@ def SenManagerHome(request):
         is_department_leader = role.is_department_leader
         is_senior_manager = role.is_senior_manager
 
+#displays Departments
+    if request.user.is_authenticated:
+        departments = Department.objects.all()
+    else:
+        departments = [] 
+
     return render(request, 'SenManagerHome.html', {
         'is_engineer': is_engineer,
         'is_team_leader': is_team_leader,
         'is_department_leader': is_department_leader,
         'is_senior_manager': is_senior_manager,
+        'departments': departments 
     }) 
 
     
