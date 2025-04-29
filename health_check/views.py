@@ -238,6 +238,7 @@ def profile(request):
 
         
     #Rest password page view
+@login_required
 def reset_password(request):
         if (request.method == 'POST'):
             new_password = request.POST.get('new_password')   
@@ -247,10 +248,13 @@ def reset_password(request):
                 user=request.user 
                 user.set_password(new_password) #securely updates the password
                 user.save()
+                logout(request)
                 messages.success(request, "Password has been reset successfully")
                 return redirect('login') #redirects to login page
             else:
                 messages.error(request, "Password do not match. Please try again")
+        else:
+                messages.error(request, "Please fill in both password fields.")
         return render(request, 'health_check/resetpassword.html' )
 
 def load_teams(request):
