@@ -85,8 +85,10 @@
                 <div class="text-wrapper-6">Role:</div>
                 <div class="role-info">{{ role_name }}</div>
 
+                {% if role_name != "Senior Manager" and role_name != "Department Leader" %}
                 <div class="text-wrapper-7">Team:</div>
                 <div class="last-name-info">{{ request.user.team.team_name }}</div>
+                {%endif%}
 
                 <div class="text-wrapper-8">Full Name:</div>
                 <div class="first-name-info">{{ fullname }}</div>
