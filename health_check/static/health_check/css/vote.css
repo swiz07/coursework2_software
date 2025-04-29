@@ -58,6 +58,11 @@
     left: 1007px;
   }
   
+  .box .save-button:hover {
+    transform: scale(1.15);
+    cursor: pointer; 
+  }
+
   .box .save-wrapper {
     position: relative;
     width: 110px;
