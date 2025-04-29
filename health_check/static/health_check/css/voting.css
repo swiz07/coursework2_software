@@ -89,6 +89,7 @@
     transform: scale(1.05);
   }
   
+  .session-dropdown,
   .card .progress-dropdown,
   .card .opinion-dropdown {
     width: 130px;

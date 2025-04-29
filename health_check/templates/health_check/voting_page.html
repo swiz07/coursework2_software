@@ -51,16 +51,16 @@
 
               <select class="progress-dropdown" name="progress-{{ card.card_id }}">
                 <option value="" disabled selected>Select Progress</option>
-                <option value="not-started" {% if card.card_progress == 'not-started' %}selected{% endif %}>Not Started</option>
-                <option value="in-progress" {% if card.card_progress == 'in-progress' %}selected{% endif %}>In Progress</option>
-                <option value="completed" {% if card.card_progress == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="unsatisfied" {% if card.card_progress == 'unsatisfied' %}selected{% endif %}>Unsatisfied</option>
+                <option value="partially-satisfied" {% if card.card_progress == 'partially-satisfied' %}selected{% endif %}>Partially Satisfied</option>
+                <option value="satisfied" {% if card.card_progress == 'satisfied' %}selected{% endif %}>Satisfied</option>
               </select>
               
               <select class="opinion-dropdown" name="opinion-{{ card.card_id }}">
                 <option value="" disabled selected>Select Opinion</option>
-                <option value="positive">Positive</option>
-                <option value="neutral">Neutral</option>
-                <option value="negative">Negative</option>
+                <option value="green">Green</option>
+                <option value="amber">Amber</option>
+                <option value="red">Red</option>
               </select>
 
               <button class="save-button">
