@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Choose Session</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    rel="stylesheet">
+  <style>
+    body { margin:0; background:#c2deda; font-family:sans-serif; }
+    .topbar {
+      background:#e0f2f7;
+      padding:.5rem 1rem;
+      display:flex;
+      align-items:center;
+      position:sticky; top:0; z-index:10;
+    }
+    .topbar i.bi-arrow-left { font-size:1.5rem; cursor:pointer; }
+    .topbar .user-badge { margin-left:auto; font-size:1.2rem; }
+
+    .session-card {
+      max-width:800px;
+      margin:2rem auto;
+      background:#f7f7eb;
+      border-radius:.5rem;
+      padding:2rem;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    }
+    .session-table {
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      border:1px solid #333;
+      border-radius:.5rem;
+      overflow:hidden;
+      background:#fff;
+    }
+    .session-table thead { background:#d8d3af; }
+    .session-table th, .session-table td {
+      padding:.75rem 1rem;
+      text-align:center;
+      border-bottom:1px solid #333;
+    }
+    .session-table th { font-weight:600; }
+    .session-table th .bi-caret-up-fill,
+    .session-table th .bi-caret-down-fill {
+      font-size:.75rem;
+      vertical-align:text-top;
+      margin-left:.25rem;
+    }
+    .session-table tr.active-row { background:#a5c4c2; }
+    .session-table tr:hover { background:#e2e8e4; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <i class="bi bi-arrow-left"
+       onclick="location.href='{% url 'voting_page' %}'"></i>
+    <span class="user-badge">
+      <i class="bi bi-person-circle"></i>
+      {{ request.user.username }}
+    </span>
+  </div>
+
+  <div class="session-card">
+    <h4 class="mb-4">Choose Session</h4>
+    <table class="session-table">
+      <thead>
+        <tr>
+          <th>
+            Session ID
+            <i class="bi bi-caret-up-fill"></i>
+            <i class="bi bi-caret-down-fill"></i>
+          </th>
+          <th>Session Date &amp; Time</th>
+          <th>
+            Created On
+            <i class="bi bi-caret-up-fill"></i>
+            <i class="bi bi-caret-down-fill"></i>
+          </th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in sessions %}
+          <tr
+            class="{% if current_session and s.id == current_session.id %}active-row{% endif %}"
+            onclick="location.href='{% url 'set_session' s.id %}'"
+          >
+            <td>{{ s.id }}</td>
+            <td>{{ s.date|date:"d/m/Y g:i a" }}</td>
+            <td>{{ s.created_on|date:"d/m/Y" }}</td>
+            <td>{{ s.status|yesno:"Active,Inactive" }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="py-4 text-center text-muted">
+              No sessions found.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+  </script>
+</body>
+</html>

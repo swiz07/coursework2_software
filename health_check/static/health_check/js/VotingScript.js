@@ -1,48 +1,47 @@
 
+const cardData = {
+    {% for c in user_cards %}
+    "{{ c.id }}": {
+      red:    {{ c.red_count }},
+      yellow: {{ c.yellow_count }},
+      green:  {{ c.green_count }},
+      title:  "{{ c.title|escapejs }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  };
+  
+  let detailPie, detailRedBadge, detailYellowBadge, detailGreenBadge;
+  
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    detailRedBadge    = document.getElementById('detailRedCount');
+    detailYellowBadge = document.getElementById('detailYellowCount');
+    detailGreenBadge  = document.getElementById('detailGreenCount');
+  
+    const ctx = document.getElementById('detailPieChart').getContext('2d');
+    detailPie = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Red','Yellow','Green'],
+        datasets: [{
+          data: [0,0,0],
+          backgroundColor: ['#db4b4b','#f2c94c','#27ae60']
+        }]
+      },
+      options: { plugins: { legend: { position: 'bottom' } } }
+    });
+  });
+  
   function showCardDetail(cardId) {
-    const detailTitleEl = document.getElementById("detailCardTitle");
-    const detailCardIdEl = document.getElementById("detailCardId");
-    const redCountEl     = document.getElementById("detailRedCount");
-    const yellowCountEl  = document.getElementById("detailYellowCount");
-    const greenCountEl   = document.getElementById("detailGreenCount");
+    const d = cardData[cardId];
+    document.getElementById('detailCardId').value = cardId;
+    document.getElementById('detailCardTitle').textContent = d.title;
   
-
-    if (!cardData[cardId]) return;
+    detailRedBadge.textContent    = d.red;
+    detailYellowBadge.textContent = d.yellow;
+    detailGreenBadge.textContent  = d.green;
   
-    // Fill in
-    detailTitleEl.textContent = cardData[cardId].title;
-    detailCardIdEl.value = cardId;
-    redCountEl.textContent    = cardData[cardId].red;
-    yellowCountEl.textContent = cardData[cardId].yellow;
-    greenCountEl.textContent  = cardData[cardId].green;
-  
-    // Update chart
-    updatePieChart(
-      cardData[cardId].red,
-      cardData[cardId].yellow,
-      cardData[cardId].green
-    );
-  }
-  
-  // Uses Chart.js 
-  let pieChartRef = null;
-  function updatePieChart(redVal, yelVal, grnVal) {
-    if (!pieChartRef) {
-      const ctx = document.getElementById("detailPieChart");
-      pieChartRef = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: ['Red','Yellow','Green'],
-          datasets: [{
-            data: [redVal, yelVal, grnVal],
-            backgroundColor: ['#dc3545','#ffc107','#28a745']
-          }]
-        },
-        options: {responsive:false}
-      });
-    } else {
-      pieChartRef.data.datasets[0].data = [redVal, yelVal, grnVal];
-      pieChartRef.update();
-    }
+    detailPie.data.datasets[0].data = [d.red, d.yellow, d.green];
+    detailPie.update();
   }
   

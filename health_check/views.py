@@ -1,10 +1,24 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Card, Vote
-from django.shortcuts import get_object_or_404
-from django.db.models import Max, Subquery, OuterRef
+from django.db.models import Max, Subquery, OuterRef, Q, Count
+from django.http import HttpResponse, HttpResponseForbidden
+from health_check.models import Department, Team, User, Vote, Card, Session 
+import json
+from django.utils.safestring import mark_safe
+from django.utils import timezone
+from django.contrib.auth import get_user_model
+
+def current_session(request):
+    sess_id = request.session.get("current_session_id")
+    if sess_id:
+        return Session.objects.filter(id=sess_id).first()
+    return Session.objects.filter(status="active").order_by("-date").first()
+
+SORT_OPTS = [("time", "Time"),
+             ("card", "Card"),
+             ("vote", "Vote")]
 
 # Register view
 # views.py
@@ -37,79 +51,189 @@ def deptLeaderHome(request):
  #   return render(request, 'SenManagerHome.html')
 
 
-def engineer_statistics(request):
-    return render(request, 'EngineerStatistics.html')
+User = get_user_model()
 
-def engineer_statistics_viewall(request):
-    
-    cards = [
-        {"id": 1, "title": "System Stability", "red": 25, "yellow": 15, "green": 10},
-        {"id": 2, "title": "Delivery Speed", "red": 12, "yellow": 20, "green": 30},
-        # ...
-    ]
-    return render(request, 'EngineerStatisticsViewAll.html', {"cards": cards})
+@login_required
+def statistics(request):
+    # which dept to show?
+    selected_department = request.GET.get("department", "all")
 
-def engineer_statistics_card_detail(request, card_id):
-    
-    card = {
-        "id": card_id,
-        "title": "System Stability",
-        "red": 25,
-        "yellow": 15,
-        "green": 10,
-        "description": "Detailed breakdown for card ID " + str(card_id),
-    }
-    return render(request, 'EngineerStatisticsCardDetail.html', {"card": card})
+    # every dept name (for the dropdown)
+    departments = (
+        Department.objects
+        .order_by("name")
+        .values_list("name", flat=True)
+    )
 
+    # teams for that dept (or all)
+    if selected_department == "all":
+        teams_qs = Team.objects.select_related("department").order_by("name")
+    else:
+        teams_qs = Team.objects.filter(
+            department__name=selected_department
+        ).select_related("department").order_by("name")
+
+    # sidebar list  [(team.id, team.name), …]
+    team_list = [(t.id, t.name) for t in teams_qs]
+
+    # ── build vote aggregates (latest vote per user) ─────────────────────────
+    session_obj = current_session(request)
+
+    team_data = {}
+    for team in teams_qs:
+        # latest vote *per user* for this team in the current session
+        latest_per_user = (
+            Vote.objects.filter(user__team=team, session=session_obj)
+                        .values("user")           # group by user
+                        .annotate(pk=Max("pk"))   # latest id
+                        .values_list("pk", flat=True)
+        )
+        qs = Vote.objects.filter(pk__in=latest_per_user)
+        team_data[team.id] = {
+            "name":  team.name,
+            "red":   qs.filter(vote_choice="red").count(),
+            "amber": qs.filter(vote_choice="yellow").count(),
+            "green": qs.filter(vote_choice="green").count(),
+        }
+
+    # ── manager flag (disable dropdown if not) ───────────────────────────────
+    is_manager = request.user.role in {"dept_leader", "senior_manager"}
+
+    return render(
+        request,
+        "health_check/statistics.html",
+        {
+            "departments":          departments,
+            "selected_department":  selected_department,
+            "team_list":            team_list,
+            "team_data_json":       json.dumps(team_data),
+            "is_manager":           is_manager,
+            "colors":               ["red", "amber", "green"],
+        },
+    )
 
 
 @login_required
 def voting_page(request):
-    user = request.user
-    user_cards = Card.objects.all()  
+    # 1) enforce session
+    sess_id = request.session.get('current_session_id')
+    if not sess_id:
+        return redirect('choose_session')
+    session = get_object_or_404(Session, id=sess_id)
 
-    # Compute vote counts per card
+    # 2) load cards and compute counts *for this session only*
+    user_cards = Card.objects.all()
     for c in user_cards:
-        latest_votes = Vote.objects.filter(card=c).values('user').annotate(latest_id=Max('id'))
-        vote_ids = [entry['latest_id'] for entry in latest_votes]
-        latest_votes_qs = Vote.objects.filter(id__in=vote_ids)
-
-        c.red_count = latest_votes_qs.filter(card=c, vote_choice='red').count()
-        c.yellow_count = latest_votes_qs.filter(card=c, vote_choice='yellow').count()
-        c.green_count = latest_votes_qs.filter(card=c, vote_choice='green').count()
-
-
-    user_history = Vote.objects.filter(user=user).order_by('-created_at')
-
-    if request.method == 'POST':
-        card_id = request.POST.get('card_id')
-        vote_choice = request.POST.get('vote_choice')
-        reason = request.POST.get('reason', '')
-
-        card = get_object_or_404(Card, id=card_id)
-
-        # Save as new vote history entry
-        Vote.objects.create(
-            user=user,
-            card=card,
-            vote_choice=vote_choice,
-            reason=reason
+        # get latest vote ID per user/card in this session
+        latest_per_user = (
+            Vote.objects.filter(card=c, session=session)
+                        .values('user')
+                        .annotate(latest_id=Max('id'))
+                        .values_list('latest_id', flat=True)
         )
+        qs = Vote.objects.filter(id__in=latest_per_user)
+        c.red_count    = qs.filter(vote_choice='red').count()
+        c.yellow_count = qs.filter(vote_choice='yellow').count()
+        c.green_count  = qs.filter(vote_choice='green').count()
 
+    # 3) user’s own history for this session (latest per card)
+    latest_user_ids = (
+        Vote.objects.filter(user=request.user, session=session)
+            .values('card')
+            .annotate(latest_id=Max('id'))
+            .values_list('latest_id', flat=True)
+    )
+    user_history = Vote.objects.filter(id__in=latest_user_ids).order_by('-created_at')
+
+    # 4) handle new vote submission
+    if request.method == 'POST':
+        card_id     = request.POST['card_id']
+        vote_choice = request.POST['vote_choice']
+        reason      = request.POST.get('reason', '')
+        card = get_object_or_404(Card, id=card_id)
+        # create with session
+        Vote.objects.create(
+            session     = session,
+            user        = request.user,
+            card        = card,
+            vote_choice = vote_choice,
+            reason      = reason
+        )
+        # redirect GET to avoid double-post
         return redirect('voting_page')
 
-    return render(request, 'VotingPage.html', {
-        'user_cards': user_cards,
+    return render(request, 'health_check/VotingPage.html', {
+        'user_cards':   user_cards,
         'user_history': user_history,
+        'session':      session,
     })
-
 
 
 @login_required
-def voting_history(request):
+def all_history(request):
+    """
+    Show every vote the current user has cast in the current session,
+    with sorting & filtering.
+    """
+    # 1) enforce session
+    sess_id = request.session.get('current_session_id')
+    if not sess_id:
+        # when you click Change Session from all_history, it passes next=all_history
+        return redirect(f"{reverse('choose_session')}?next=all_history")
 
-    """ Displays the user's own voting history """
-    user_votes = Vote.objects.filter(user=request.user).select_related('card').order_by('-created_at')
-    return render(request, 'VotingHistoryPage.html', {
-        'user_votes': user_votes
+    current_session = get_object_or_404(Session, id=sess_id)
+
+    # 2) get sort & filter params
+    sort_key = request.GET.get("sort", "time")
+    query    = request.GET.get("q", "")
+
+    # 3) map frontend keys → model fields
+    valid_sort_fields = {
+        "time": "created_at",
+        "card": "card__title",
+        "vote": "vote_choice",
+    }
+    sort_field = valid_sort_fields.get(sort_key, "created_at")
+
+    # 4) base queryset _for this session_
+    qs = Vote.objects.filter(user=request.user, session=current_session)
+
+    # 5) optional search filter
+    if query:
+        qs = qs.filter(
+            Q(card__title__icontains=query) |
+            Q(reason__icontains=query)
+        )
+
+    # 6) annotate & order
+    user_votes = (
+        qs
+        .select_related("card")
+        .order_by(f"-{sort_field}")
+    )
+
+    context = {
+        "user_votes":     user_votes,
+        "current_sort":   sort_key,
+        "query":          query,
+        "sort_options":   SORT_OPTS,
+        "current_session": current_session,
+    }
+    return render(request, "health_check/all_history.html", context)
+
+
+def choose_session(request):
+    # Order by the actual 'date' field:
+    sessions = Session.objects.order_by('-date')
+    current_id = request.session.get('current_session_id')
+    current_session = None
+    if current_id:
+        current_session = get_object_or_404(Session, id=current_id)
+    return render(request, 'health_check/choose_session.html', {
+        'sessions': sessions,
+        'current_session': current_session,
     })
+
+def set_session(request, session_id):
+    request.session['current_session_id'] = session_id
+    return redirect('voting_page')

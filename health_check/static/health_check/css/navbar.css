@@ -1,0 +1,79 @@
+
+   .navbar-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    background-color: #286f8f;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+  }
+  
+  .navbar-left .logo {
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+  }
+  
+  .navbar-left .nav-link {
+    color: white;
+    margin-bottom: .75rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-left .nav-link.active,
+  .navbar-left .nav-link:hover {
+    background: #1eaedb;
+    border-radius: 4px;
+  }
+  
+  .navbar-left .nav-link i {
+    font-size: 1.2rem;
+    margin-right: .75rem;
+  }
+  
+  .navbar-left hr {
+    border-color: rgba(255,255,255,0.3);
+    margin: 1rem 0;
+  }
+  
+  .navbar-left .mt-auto .nav-link {
+    margin-bottom: .5rem;
+  }
+  
+
+  .main-content {
+    margin-left: 250px;       
+    padding: 2rem;
+    min-height: 100vh;
+    background: #e0f2f7;
+  }
+  
+ 
+  @media (max-width: 768px) {
+    .navbar-left {
+      width: 80px;
+    }
+    .main-content {
+      margin-left: 80px;
+    }
+  }
+  
+  #detailPanel .chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0;
+  }
+  
+  #detailPanel .chart-container canvas {
+    margin: 0 auto;
+    display: block;
+  }
