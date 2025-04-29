@@ -51,7 +51,7 @@
 
 
                     <!-- Voting page -->
-                    {%if role_name == "Engineer" or role_name == "Team Leader"%}
+                    {%if is_engineer or is_team_leader%}
                     <li>
                         <a href="{% url 'voting_page' %}" class="nav-link px-0 py-2 align-middle">
                              

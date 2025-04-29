@@ -6,7 +6,9 @@ from django.contrib import messages
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.urls import reverse    
+from django.urls import reverse     
+from .models import Vote, Card, Session, User 
+from django.utils import timezone
 
 def register(request):
         if request.method == 'POST':
@@ -236,12 +238,29 @@ def profile(request):
         # 5) Render the profile template
         return render(request, 'health_check/profile.html', context)
 
+@login_required
 def voting_page(request):
+    is_engineer = False
+    is_team_leader = False
+    is_department_leader = False
+    is_senior_manager = False
+
+    if request.user.is_authenticated and hasattr(request.user, 'role'):
+        role = request.user.role
+        is_engineer = role.is_engineer
+        is_team_leader = role.is_team_leader
+        is_department_leader = role.is_department_leader
+        is_senior_manager = role.is_senior_manager
+
     if request.user.is_authenticated and request.user.team:
         cards = Card.objects.filter(session_id__team_id=request.user.team)
     else:
         cards = Card.objects.none()
     return render(request, 'health_check/voting_page.html', {
+        'is_engineer': is_engineer,
+        'is_team_leader': is_team_leader,
+        'is_department_leader': is_department_leader,
+        'is_senior_manager': is_senior_manager,
         'page_title': 'Voting Page',
         'cards': cards,
     })
@@ -268,3 +287,56 @@ def load_teams(request):
     department_id = request.GET.get('department_id')
     teams = Team.objects.filter(department_id=department_id).order_by('team_name')
     return render(request, 'teams/team_dropdown_list_options.html', {'teams': teams})   
+
+#submits the votes
+@login_required
+def submit_votes(request):
+    if request.method == 'POST':
+        user = request.user
+        card_id = request.POST.get('card_id')
+        session_id = request.POST.get('session_id')
+
+        opinion = request.POST.get(f'opinion-{card_id}')
+        progress = request.POST.get(f'progress-{card_id}')
+
+        if not opinion or not progress:
+            messages.error(request, "Both opinion and progress must be selected.")
+            return redirect('voting_page')
+
+        card = Card.objects.get(pk=card_id)
+        session = Session.objects.get(pk=session_id)
+
+        Vote.objects.update_or_create(
+            user_id=user,
+            card_id=card,
+            session_id=session,
+            defaults={
+                'vote_value': opinion,
+                'vote_opinion': progress,
+            }
+        )
+
+        #  Update card colour 
+        update_card_colour(card.card_id)
+        messages.success(request, f"Vote for '{card.card_name}' saved successfully.")
+        return redirect('voting_page')  
+
+#to get card color
+def update_card_colour(card_id):
+    votes = Vote.objects.filter(card_id=card_id)
+    vote_counts = {"red": 0, "yellow": 0, "green": 0}
+
+    for vote in votes:
+        if vote.vote_value == 'negative':
+            vote_counts["red"] += 1
+        elif vote.vote_value == 'neutral':
+            vote_counts["yellow"] += 1
+        elif vote.vote_value == 'positive':
+            vote_counts["green"] += 1
+
+    # Determine max
+    max_vote = max(vote_counts, key=vote_counts.get)
+    
+    card = Card.objects.get(pk=card_id)
+    card.colour_code = max_vote
+    card.save()

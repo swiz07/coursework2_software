@@ -4,12 +4,13 @@
 
   <div class="cardContainer d-flex flex-wrap gap-3">
     {% for department in departments %}
+     <!-- <a href="{% url 'statistic page' %}" style="text-decoration: none; color: inherit;">-->
     <div class="card" style="width: 10rem">
       <div class="card-body">
-        <h5 class="card-title">{{ department.department_name }}</h5>
-        <a href="#" class="btn btn-primary">dept</a>
+        <h5 class="card-title">{{ department.department_name }}</h5> 
       </div>
     </div>
+  <!-- </a>-->
     {% empty %}
     <p>No departments available.</p>
     {% endfor %}
@@ -22,14 +23,8 @@
          <div class="back">Current session Health</div>
       </div>
    </a>
-  </div>
-
-  <!-- 
-    -->
-
-  <!-- 
+  </div> 
       
-      -->
   <div id="charts">
     <div id="container"></div>
 

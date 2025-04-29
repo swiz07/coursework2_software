@@ -1,133 +1,153 @@
 .box .text-wrapper-6 {
 
-    position: static;
-    margin: 0;
-    font-family: "Averia Serif Libre", Helvetica;
-    font-weight: 400;
-    color: #15818F;      
-    font-size: 3rem;   
-    white-space: nowrap;
-  }
-  
-  .choose-session {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 3rem 0;      
-  }
-  
-  .choose-session .session-dropdown {
-    flex: 0 0 auto;
-  }
-  
-  .your-cards {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 0.75rem;
-  }
+  position: static;
+  margin: 0;
+  font-family: "Averia Serif Libre", Helvetica;
+  font-weight: 400;
+  color: #15818F;      
+  font-size: 3rem;   
+  white-space: nowrap;
+}
+
+.choose-session {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 3rem 0;      
+}
+
+.choose-session .session-dropdown {
+  flex: 0 0 auto;
+}
+
+.your-cards {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+}
 
 .cards-title-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    font-weight: 600;
-  }
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
 
 .card .overlap-group {
-    display: grid;
-    grid-template-columns: 0.7fr 1fr 1.1fr auto;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1rem; 
-    height: 100%;
-  }
+  display: grid;
+  grid-template-columns: 0.7fr 1fr 1.1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1rem; 
+  height: 100%;
+}
 
 
 .card {
-    position: relative;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 100%;        
-    min-height: 80px;   
-    margin-bottom: 0.5rem;
-    padding: 0;         
-    overflow: hidden;
-  }
-  
-  .card .save-button {
-    grid-column: 4;
-    justify-self: end; 
-    justify-self: end; 
-    all: unset;
-    box-sizing: border-box;
-    display: inline-block;
-    cursor: pointer;
-  }
-  
-  .card .save-button .save-wrapper {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 112px;
-    height: 36px;
-    background-color: #3a7d9a;
-    border: 2px solid #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 4px 4px rgba(0,0,0,0.25);
-  }
-  
-  .card .save-button .save {
-    font-family: "Inter", Helvetica, sans-serif;
-    font-weight: 500;
-    color: #ffffff;
-  }
-  
-  .card .save-button:hover .save-wrapper {
-    transform: scale(1.05);
-  }
-  
-  .card .progress-dropdown,
-  .card .opinion-dropdown {
-    width: 130px;
-    height: 28px;
-    font-family: "Inter", Helvetica, sans-serif;
-    font-size: 14px;
-    line-height: 1;
-    color: #000000;
-    background-color: #dbdccf;
-    border: none;
-    border-radius: 4px;
-    padding: 2px 8px;
-    appearance: none;
-    background-image: url('https://c.animaapp.com/ma15pa9yNwEmGa/img/progress-dropdown-.svg');
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    background-size: 16px 11px;
-    cursor: pointer;
-  }
-  
-  .card .opinion-dropdown {
-    grid-column: 3;
-    justify-self: center;
-    margin-bottom: 0.5rem;
-  }
-  
-  .card .progress-dropdown {
-    grid-column: 2;
-    justify-self: center;
-    margin-bottom: 0.5rem;
-  }
-  
-  .card .card-name {
-    grid-column: 1;
-    text-align: center;
-    justify-self: start;
-    font-family: "Averia Serif Libre", Helvetica, sans-serif;
-    font-weight: 400;
-    font-size: 1.5rem;
-    color: #000000;
-  }
-  
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  width: 100%;        
+  min-height: 80px;   
+  margin-bottom: 0.5rem;
+  padding: 0;         
+  overflow: hidden;
+}
+
+.card .save-button {
+  grid-column: 4;
+  justify-self: end; 
+  justify-self: end; 
+  all: unset;
+  box-sizing: border-box;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.card .save-button .save-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 112px;
+  height: 36px;
+  background-color: #3a7d9a;
+  border: 2px solid #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+}
+
+.card .save-button .save {
+  font-family: "Inter", Helvetica, sans-serif;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.card .save-button:hover .save-wrapper {
+  transform: scale(1.05);
+}
+
+.session-dropdown,
+.card .progress-dropdown,
+.card .opinion-dropdown {
+  width: 130px;
+  height: 28px;
+  font-family: "Inter", Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1;
+  color: #000000;
+  background-color: #dbdccf;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  appearance: none;
+  background-image: url('https://c.animaapp.com/ma15pa9yNwEmGa/img/progress-dropdown-.svg');
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px 11px;
+  cursor: pointer;
+}
+
+.card .opinion-dropdown {
+  grid-column: 3;
+  justify-self: center;
+  margin-bottom: 0.5rem;
+}
+
+.card .progress-dropdown {
+  grid-column: 2;
+  justify-self: center;
+  margin-bottom: 0.5rem;
+}
+
+.card .card-name {
+  grid-column: 1;
+  text-align: center;
+  justify-self: start;
+  font-family: "Averia Serif Libre", Helvetica, sans-serif;
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: #000000;
+}
+#popup-message-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.popup-message {
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.popup-message.error {
+  background-color: #f44336;
+}

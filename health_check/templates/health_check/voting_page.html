@@ -3,19 +3,17 @@
 {% load static %}
 
 {% block content %}
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Voting</title>
 
 
-  <link
-    rel="stylesheet"
-    href="{% static 'health_check/css/voting.css' %}"/>
+  <link rel="stylesheet" href="{% static 'health_check/css/voting.css' %}" />
 
-    <link
-    rel="stylesheet"
-    href="{% static 'health_check/css/globals.css' %}"/>
+  <link rel="stylesheet" href="{% static 'health_check/css/globals.css' %}" />
+
 </head>
 
 <div class="box">
@@ -26,7 +24,7 @@
       <select class="session-dropdown">
         <option value="" disabled selected>Session name</option>
         {% for session in user.team.session_set.all %}
-          <option value="{{ session.session_id }}">{{ session.session_name }}</option>
+        <option value="{{ session.session_id }}">{{ session.session_name }}</option>
         {% endfor %}
       </select>
     </div>
@@ -43,41 +41,75 @@
   <div class="voting-page">
     <div class="overlap">
       <div class="cards-section">
-        {% for card in cards %}
-          <div class="card">
-            <div class="overlap-group">
-
-              <div class="card-name">{{ card.card_name }}</div>
-
-              <select class="progress-dropdown" name="progress-{{ card.card_id }}">
-                <option value="" disabled selected>Select Progress</option>
-                <option value="not-started" {% if card.card_progress == 'not-started' %}selected{% endif %}>Not Started</option>
-                <option value="in-progress" {% if card.card_progress == 'in-progress' %}selected{% endif %}>In Progress</option>
-                <option value="completed" {% if card.card_progress == 'completed' %}selected{% endif %}>Completed</option>
-              </select>
-              
-              <select class="opinion-dropdown" name="opinion-{{ card.card_id }}">
-                <option value="" disabled selected>Select Opinion</option>
-                <option value="positive">Positive</option>
-                <option value="neutral">Neutral</option>
-                <option value="negative">Negative</option>
-              </select>
-
-              <button class="save-button">
-                <div class="save-wrapper">
-                  <div class="save">Save</div>
-                </div>
-              </button>
-
+        {% if messages %}
+        <div id="popup-message-container">
+          {% for message in messages %}
+            <div class="popup-message {{ message.tags }}">
+              {{ message }}
             </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+        {% for card in cards %}
+        <form method="post" action="{% url 'submit_votes' %}"> 
+        {% csrf_token %}
+        <input type="hidden" name="card_id" value="{{ card.card_id }}">
+        <input type="hidden" name="session_id" value="{{ card.session_id.session_id }}">
+
+        <div class="card">
+          <div class="overlap-group">
+
+            <div class="card-name">{{ card.card_name }}</div>
+
+            <select class="progress-dropdown" name="progress-{{ card.card_id }}">
+              <option value="" disabled selected>Select Progress</option>
+              <option value="unsatisfied" {% if card.card_progress == "unsatisfied" %}selected{% endif %}>Unsatisfied 
+              </option>
+              <option value="partially-satisfied" {% if card.card_progress == "partially-satisfied" %}selected{% endif %}>
+                Partially Satisfied</option>
+              <option value="satisfied" {% if card.card_progress == "satisfied" %}selected{% endif %}>Satisfied</option>
+            </select>
+
+            <select class="opinion-dropdown" name="opinion-{{ card.card_id }}">
+              <option value="" disabled selected>Select Opinion</option>
+              <option value="green">Green</option>
+              <option value="amber">Amber</option>
+              <option value="red">Red</option>
+            </select>
+
+            <button type="submit" class="save-button">
+              <div class="save-wrapper">
+                <div class="save">Save</div>
+              </div>
+            </button>
+
           </div>
+        </div>
+        </form>
         {% empty %}
-          <p>You haven’t got any cards in this session yet.</p>
+        <p>You haven’t got any cards in this session yet.</p>
         {% endfor %}
+
+
       </div>
 
     </div>
   </div>
 </div>
 
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('popup-message-container');
+    if (container) {
+      setTimeout(() => {
+        container.style.opacity = '0';
+        container.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+          container.remove();
+        }, 500); // give transition time before removing
+      }, 4000); // Wait 4 seconds before starting fade
+    }
+  });
+</script>
 {% endblock %}

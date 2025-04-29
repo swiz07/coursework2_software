@@ -4,14 +4,14 @@
     <h3>Welcome to the Dept Home Page</h3>
 
     
-    <div class="cardContainer d-flex flex-wrap gap-3"> 
-      {% for team in teams %}
+    <div class="cardContainer d-flex flex-wrap gap-3  scroll-row"> 
+      {% for team in teams %} 
         <div class="card" style="width: 10rem;">
             <div class="card-body">
-              <h5 class="card-title">{{ team.team_name }}</h5>
-              <a href="#" class="btn btn-primary">go</a>
+              <h5 class="card-title">{{ team.team_name }}</h5> 
             </div>
         </div>
+      
         {% empty %}
         <p>No teams found in your department.</p>
         {% endfor %}

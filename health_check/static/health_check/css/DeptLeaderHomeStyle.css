@@ -19,6 +19,25 @@
   border-radius:10px;
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
   height: auto;
+  display: flex;
+  flex-wrap: nowrap; 
+  overflow-x: auto;  
+  overflow-y: hidden; 
+  gap: 1rem;          
+  scroll-behavior: smooth;
+}
+.scroll-row {
+  display: flex;
+  flex-wrap: nowrap; 
+  overflow-x: auto; 
+  overflow-y: hidden;
+  gap: 1rem;
+  padding-bottom: 1rem; 
+  scroll-behavior: smooth;
+}
+
+.scroll-row .card {
+  flex-shrink: 0;
 }
 .card{
   background-color: #DCCFDC;
