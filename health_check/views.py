@@ -236,12 +236,15 @@ def profile(request):
         # 5) Render the profile template
         return render(request, 'health_check/profile.html', context)
 
-
 def voting_page(request):
-    context = {
-        'page_title': 'Voting Page',    
-    }
-    return render(request, 'health_check/voting_page.html', context)
+    if request.user.is_authenticated and request.user.team:
+        cards = Card.objects.filter(session_id__team_id=request.user.team)
+    else:
+        cards = Card.objects.none()
+    return render(request, 'health_check/voting_page.html', {
+        'page_title': 'Voting Page',
+        'cards': cards,
+    })
 
 
         

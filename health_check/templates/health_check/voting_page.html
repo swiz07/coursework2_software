@@ -1,180 +1,83 @@
+{# health_check/voting_page.html #}
+{% extends 'enghomemain.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="{% static 'health_check/css/vote.css' %}" />
-    <link rel="stylesheet" href="{% static 'health_check/css/globals.css' %}" />
-  </head>
-  <body>
+{% block content %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Voting</title>
 
-    <nav class="bg-dark text-white p-0">
-      {% include 'enghomemain.html' %}
-    </nav>
 
-    <div class="box">
-      <div class="voting-page">
-        <div class="overlap">
-          <div class="cards-section">
-            <div class="card">
-              <div class="overlap-group">
-                <button class="save-button">
-                  <div class="save-wrapper"><div class="save">Save</div></div>
-                </button>
-                <select class="progress-dropdown">
-                  <option value="" disabled selected>Select Progress</option>
-                  <option value="not-started">Not Started</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
-                <select class="opinion-dropdown">
-                  <option value="" disabled selected>Select Opinion</option>
-                  <option value="positive">Positive</option>
-                  <option value="neutral">Neutral</option>
-                  <option value="negative">Negative</option>
-                </select>
-                <div class="card-name">Bug Fixing Process</div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="overlap-group">
-                <button class="save-button">
-                  <div class="save-wrapper"><div class="save">Save</div></div>
-                </button>
-                <select class="progress-dropdown">
-                  <option value="" disabled selected>Select Progress</option>
-                  <option value="not-started">Not Started</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
-                <select class="opinion-dropdown">
-                  <option value="" disabled selected>Select Opinion</option>
-                  <option value="positive">Positive</option>
-                  <option value="neutral">Neutral</option>
-                  <option value="negative">Negative</option>
-                </select>
-                <div class="card-name">Code Efficiency</div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="overlap-group">
-                <button class="save-button">
-                  <div class="save-wrapper"><div class="save">Save</div></div>
-                </button>
-                <select class="progress-dropdown">
-                  <option value="" disabled selected>Select Progress</option>
-                  <option value="not-started">Not Started</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
-                <select class="opinion-dropdown">
-                  <option value="" disabled selected>Select Opinion</option>
-                  <option value="positive">Positive</option>
-                  <option value="neutral">Neutral</option>
-                  <option value="negative">Negative</option>
-                </select>
-                <div class="card-name">User Experience</div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="overlap-group">
-                <button class="save-button">
-                  <div class="save-wrapper"><div class="save">Save</div></div>
-                </button>
-                <select class="progress-dropdown">
-                  <option value="" disabled selected>Select Progress</option>
-                  <option value="not-started">Not Started</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
-                <select class="opinion-dropdown">
-                  <option value="" disabled selected>Select Opinion</option>
-                  <option value="positive">Positive</option>
-                  <option value="neutral">Neutral</option>
-                  <option value="negative">Negative</option>
-                </select>
-                <div class="card-name">Bug Fixing Process</div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="overlap-group">
-                <button class="save-button">
-                  <div class="save-wrapper"><div class="save">Save</div></div>
-                </button>
-                <select class="progress-dropdown">
-                  <option value="" disabled selected>Select Progress</option>
-                  <option value="not-started">Not Started</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
-                <select class="opinion-dropdown">
-                  <option value="" disabled selected>Select Opinion</option>
-                  <option value="positive">Positive</option>
-                  <option value="neutral">Neutral</option>
-                  <option value="negative">Negative</option>
-                </select>
-                <div class="card-name">Code Efficiency</div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="overlap-group">
-                <button class="save-button">
-                  <div class="save-wrapper"><div class="save">Save</div></div>
-                </button>
-                <select class="progress-dropdown">
-                  <option value="" disabled selected>Select Progress</option>
-                  <option value="not-started">Not Started</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
-                <select class="opinion-dropdown">
-                  <option value="" disabled selected>Select Opinion</option>
-                  <option value="positive">Positive</option>
-                  <option value="neutral">Neutral</option>
-                  <option value="negative">Negative</option>
-                </select>
-                <div class="card-name">User Experience</div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="overlap-group">
-                <button class="save-button">
-                  <div class="save-wrapper"><div class="save">Save</div></div>
-                </button>
-                <select class="progress-dropdown">
-                  <option value="" disabled selected>Select Progress</option>
-                  <option value="not-started">Not Started</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
-                <select class="opinion-dropdown">
-                  <option value="" disabled selected>Select Opinion</option>
-                  <option value="positive">Positive</option>
-                  <option value="neutral">Neutral</option>
-                  <option value="negative">Negative</option>
-                </select>
-                <div class="card-name">Bug Fixing Process</div>
-              </div>
-            </div>
-            <div class="text-wrapper-2">Progress</div>
-            <div class="text-wrapper-3">Opinion</div>
-            <div class="text-wrapper-4">Card</div>
-            <div class="your-cards">Your Cards</div>
-          </div>
-          <div class="choose-session">
-          <div class="overlap-2">
-            <select class="session-dropdown">
-              <option value="" disabled selected>Session name</option>
-              <option value="session1">Session 1</option>
-              <option value="session2">Session 2</option>
-              <option value="session3">Session 3</option>
-            </select>
-            <div class="text-wrapper-6">Choose session:</div>
-          </div>
-          </div>
-        </div>
-      </div>
+  <link
+    rel="stylesheet"
+    href="{% static 'health_check/css/voting.css' %}"/>
+
+    <link
+    rel="stylesheet"
+    href="{% static 'health_check/css/globals.css' %}"/>
+</head>
+
+<div class="box">
+
+  <div class="choose-session">
+    <div class="text-wrapper-6">Choose session:</div>
+    <div class="overlap-2">
+      <select class="session-dropdown">
+        <option value="" disabled selected>Session name</option>
+        {% for session in user.team.session_set.all %}
+          <option value="{{ session.session_id }}">{{ session.session_name }}</option>
+        {% endfor %}
+      </select>
     </div>
-  </body>
-</html>
+  </div>
+  <div class="your-cards">Your Cards</div>
+
+  <div class="cards-title-row">
+    <div class="text-wrapper-4">Card</div>
+    <div class="text-wrapper-3">Opinion</div>
+    <div class="text-wrapper-2">Progress</div>
+  </div>
+
+
+  <div class="voting-page">
+    <div class="overlap">
+      <div class="cards-section">
+        {% for card in cards %}
+          <div class="card">
+            <div class="overlap-group">
+
+              <div class="card-name">{{ card.card_name }}</div>
+
+              <select class="progress-dropdown" name="progress-{{ card.card_id }}">
+                <option value="" disabled selected>Select Progress</option>
+                <option value="not-started" {% if card.card_progress == 'not-started' %}selected{% endif %}>Not Started</option>
+                <option value="in-progress" {% if card.card_progress == 'in-progress' %}selected{% endif %}>In Progress</option>
+                <option value="completed" {% if card.card_progress == 'completed' %}selected{% endif %}>Completed</option>
+              </select>
+              
+              <select class="opinion-dropdown" name="opinion-{{ card.card_id }}">
+                <option value="" disabled selected>Select Opinion</option>
+                <option value="positive">Positive</option>
+                <option value="neutral">Neutral</option>
+                <option value="negative">Negative</option>
+              </select>
+
+              <button class="save-button">
+                <div class="save-wrapper">
+                  <div class="save">Save</div>
+                </div>
+              </button>
+
+            </div>
+          </div>
+        {% empty %}
+          <p>You haven’t got any cards in this session yet.</p>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
