@@ -6,86 +6,81 @@
   <title>Department Statistics</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <!-- bootstrap & icons -->
-  <link  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Bootstrap & Icons -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    rel="stylesheet">
 
-  <!---- styles need to be moved to respective files. –-->
-  <style>
-    body{margin:0;background:#e0f2f7;font-family:sans-serif}
-    .sidebar{position:fixed;top:0;left:0;bottom:0;width:250px;background:#286f8f;color:#fff;padding:1rem}
-    .sidebar img.logo{max-width:100%;margin-bottom:1.5rem}
-    .sidebar .nav-link{color:#fff;margin-bottom:.75rem;display:flex;align-items:center}
-    .sidebar .nav-link i{font-size:1.2rem;margin-right:.75rem}
-    .sidebar .nav-link.active{background:#1eaedb;border-radius:4px}
-    .sidebar hr{border-color:rgba(255,255,255,.3);margin:1rem 0}
-    .main-content{margin-left:250px;padding:2rem}
-    .dept-select{margin-bottom:1.5rem}
-    .team-list .list-group-item{cursor:pointer}
-    .team-list .active{background:#17c0eb;color:#fff}
-    .card-panel{background:#fff;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1);padding:1rem;margin-bottom:1.5rem}
-    #ring-container{display:flex;justify-content:space-around}
-    .ring{width:80px;height:80px;position:relative}
-    .ring canvas{position:absolute;top:0;left:0}
-    .ring-label{position:absolute;width:100%;text-align:center;top:50%;transform:translateY(-50%);font-weight:bold}
-    #barChart{width:100%!important;height:350px!important}
-  </style>
+  <!-- Shared Navbar CSS -->
+  <link rel="stylesheet" href="{% static 'health_check/css/navbar.css' %}">
+  <!-- Statistics Page CSS -->
+  <link rel="stylesheet" href="{% static 'health_check/css/statistics.css' %}">
 </head>
 <body>
+  {% include "health_check/homenavbar.html" %}
 
-  <!-- sidebar needs to be replaced by homenavbar.html -->
-  <div class="sidebar">
-    <img src="{% static 'health_check/images/logo.png' %}" alt="Sky Logo" class="logo">
-
-    <nav class="nav flex-column">
-      <a href="{% url 'home' %}"            class="nav-link{% if request.resolver_match.url_name == 'home' %} active{% endif %}"><i class="bi bi-house-door"></i> Home</a>
-      <a href="{% url 'voting_page' %}"     class="nav-link{% if request.resolver_match.url_name == 'voting_page' %} active{% endif %}"><i class="bi bi-check-square"></i> Vote</a>
-      <a href="{% url 'statistics' %}"      class="nav-link{% if request.resolver_match.url_name == 'statistics' %} active{% endif %}"><i class="bi bi-bar-chart-line"></i> Statistic</a>
-      <a href="{% url 'all_history' %}"     class="nav-link{% if request.resolver_match.url_name == 'all_history' %} active{% endif %}"><i class="bi bi-clock-history"></i> History</a>
-    </nav>
-
-    <hr>
-    <nav class="nav flex-column mt-auto">
-      <span class="nav-link"><i class="bi bi-person-circle"></i> {{ request.user.username }}</span>
-      <a href="{% url 'logout' %}" class="nav-link"><i class="bi bi-box-arrow-right"></i> Log out</a>
-    </nav>
-  </div>
-
-  <!---- main area –-->
   <div class="main-content">
     <h4>Department Statistics</h4>
 
-    <div class="dept-select">
-      <label class="form-label me-2">Select Department:</label>
-      <select id="deptSelect" class="form-select w-auto d-inline-block"
-              {% if not is_manager %}disabled{% endif %}>
-        {% if is_manager %}
-          <option value="all" {% if selected_department == 'all' %}selected{% endif %}>Overall</option>
-        {% endif %}
-        {% for d in departments %}
-           <option value="{{ d }}" {% if d == selected_department %}selected{% endif %}>{{ d }}</option>
+    <!-- Session Picker -->
+    <div class="mb-3">
+      <label class="form-label me-2">Select Session:</label>
+      <select class="form-select w-auto d-inline-block"
+              onchange="location='?session='+this.value+'&department={{ selected_department }}&team={{ selected_team }}'">
+        {% for sess in sessions %}
+          <option value="{{ sess.id }}"
+                  {% if sess.id == current_session.id %}selected{% endif %}>
+            Session {{ forloop.counter }}{% if sess.status == "active" %} (Active){% endif %}
+          </option>
         {% endfor %}
       </select>
     </div>
 
-    <div class="row">
+    <!-- Department Picker -->
+    <div class="mb-4">
+      <label class="form-label me-2">Select Department:</label>
+      <select class="form-select w-auto d-inline-block"
+              {% if not is_manager %}disabled{% endif %}
+              onchange="location='?session={{ current_session.id }}&department='+encodeURIComponent(this.value)+'&team={{ selected_team }}'">
+        {% if is_manager %}
+          <option value="all" {% if selected_department == "all" %}selected{% endif %}>
+            Overall
+          </option>
+        {% endif %}
+        {% for d in departments %}
+          <option value="{{ d }}" {% if d == selected_department %}selected{% endif %}>
+            {{ d }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="row gx-4 gy-4">
+      <!-- Teams Sidebar -->
       <div class="col-md-3">
         <div class="list-group team-list">
-          {% for key,name in team_list %}
-            <a class="list-group-item list-group-item-action" data-team="{{ key }}">{{ name }}</a>
+          {% for id, name in team_list %}
+            <a href="?session={{ current_session.id }}&department={{ selected_department }}&team={{ id }}"
+               class="list-group-item list-group-item-action{% if id|stringformat:'s' == selected_team %} active{% endif %}"
+               data-team="{{ id }}">
+              {{ name }}
+            </a>
           {% endfor %}
         </div>
       </div>
 
+      <!-- Charts Area -->
       <div class="col-md-9">
         <div class="row gx-3">
-
+          <!-- Ring Gauges -->
           <div class="col-lg-4">
             <div class="card-panel text-center">
               <h5 id="ring-title">—</h5>
               <div id="ring-container">
-                {% for clr in ring_colors %}
+                {% for clr in colors %}
                   <div class="ring" data-color="{{ clr }}">
                     <canvas width="80" height="80"></canvas>
                     <div class="ring-label">0</div>
@@ -95,95 +90,45 @@
             </div>
           </div>
 
+          <!-- Pie Chart -->
           <div class="col-lg-4">
-            <div class="card-panel"><canvas id="pieChart"></canvas></div>
+            <div class="card-panel">
+              <canvas id="pieChart"></canvas>
+            </div>
           </div>
 
+          <!-- Progress KPI -->
           <div class="col-lg-4">
             <div class="card-panel text-center">
               <h6>Progress Over Time</h6>
               <div id="progressKPI" class="display-5 text-success">0%</div>
             </div>
           </div>
-
         </div>
 
-        <div class="card-panel mt-4"><canvas id="barChart"></canvas></div>
+        <!-- Bar Chart -->
+        <div class="card-panel mt-4">
+          <canvas id="barChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
 
-  <!---- JS code needs to be moved –-->
+  <!-- Bootstrap and Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Inline data injection -->
   <script>
-    const TEAM_DATA = JSON.parse('{{ team_data_json|escapejs }}');
-    const COLORS = {red:'#db4b4b',amber:'#f2c94c',green:'#27ae60'};
-    const deptSelect=document.getElementById('deptSelect');
-    const listGroup=document.querySelector('.team-list');
-    const pieCtx=document.getElementById('pieChart').getContext('2d');
-    const barCtx=document.getElementById('barChart').getContext('2d');
-    const ringEls=document.querySelectorAll('#ring-container .ring');
-    const ringLabels=document.querySelectorAll('.ring-label');
-    const ringTitle=document.getElementById('ring-title');
-    const progressKPI=document.getElementById('progressKPI');
-    let pieChart,barChart,ringCharts={},currentId;
-
-    if(deptSelect){
-      deptSelect.onchange=e=>{
-        const d=encodeURIComponent(e.target.value);
-        window.location="{% url 'statistics' %}?department="+d;
-      };
-    }
-
-    listGroup.querySelectorAll('a').forEach((a,idx)=>{
-      if(idx===0){a.classList.add('active');currentId=a.dataset.team;}
-    });
-
-    function initCharts(){
-      pieChart=new Chart(pieCtx,{type:'pie',
-        data:{labels:['Red','Amber','Green'],
-              datasets:[{data:[0,0,0],backgroundColor:[COLORS.red,COLORS.amber,COLORS.green]}]},
-        options:{plugins:{legend:{position:'bottom'}}}});
-      barChart=new Chart(barCtx,{type:'bar',
-        data:{labels:['Red','Amber','Green'],
-              datasets:[{label:'Votes',data:[0,0,0],
-                         backgroundColor:[COLORS.red,COLORS.amber,COLORS.green]}]},
-        options:{plugins:{legend:{display:false}}}});
-      ringEls.forEach(el=>{
-        const clr=el.dataset.color;
-        const ctx=el.querySelector('canvas').getContext('2d');
-        ringCharts[clr]=new Chart(ctx,{type:'doughnut',
-          data:{datasets:[{data:[1,1],backgroundColor:[COLORS[clr],'transparent'],cutout:'75%'}]},
-          options:{plugins:{legend:{display:false},tooltip:{enabled:false}},animation:false}});
-      });
-    }
-
-    function render(id){
-      const d=TEAM_DATA[id]; if(!d) return;
-      ringTitle.textContent=d.name;
-      ['red','amber','green'].forEach((c,i)=>{
-        const cnt=d[c]; const total=d.red+d.amber+d.green||1;
-        ringLabels[i].textContent=cnt;
-        ringCharts[c].data.datasets[0].data=[cnt,total-cnt];
-        ringCharts[c].update();
-      });
-      pieChart.data.datasets[0].data=[d.red,d.amber,d.green];
-      barChart.data.datasets[0].data=[d.red,d.amber,d.green];
-      pieChart.update();barChart.update();
-      const pct=Math.round((d.green-d.red)/(d.red+d.amber+d.green||1)*100);
-      progressKPI.textContent=pct+'%';
-      progressKPI.classList.toggle('text-success',pct>=0);
-      progressKPI.classList.toggle('text-danger',pct<0);
-    }
-
-    listGroup.addEventListener('click',e=>{
-      if(!e.target.dataset.team)return;
-      listGroup.querySelector('.active').classList.remove('active');
-      e.target.classList.add('active');
-      currentId=e.target.dataset.team;
-      render(currentId);
-    });
-
-    initCharts(); render(currentId);
+    window.TEAM_DATA    = {{ team_data_json|safe }};
+    window.DEFAULT_TEAM = "{{ selected_team }}";
+    window.COLORS       = {
+      red:   '#db4b4b',
+      amber: '#f2c94c',
+      green: '#27ae60'
+    };
   </script>
+  <!-- External chart logic -->
+  <script src="{% static 'health_check/js/statistics-charts.js' %}"></script>
 </body>
 </html>

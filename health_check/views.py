@@ -10,10 +10,21 @@ from django.utils.safestring import mark_safe
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 
+User = get_user_model()
+
 def current_session(request):
-    sess_id = request.session.get("current_session_id")
-    if sess_id:
-        return Session.objects.filter(id=sess_id).first()
+    # 1) override via GET
+    sid = request.GET.get("session")
+    if sid:
+        request.session["current_session_id"] = sid
+        return get_object_or_404(Session, id=sid)
+    # 2) falling back to stored
+    stored = request.session.get("current_session_id")
+    if stored:
+        s = Session.objects.filter(id=stored).first()
+        if s:
+            return s
+    # 3) last active
     return Session.objects.filter(status="active").order_by("-date").first()
 
 SORT_OPTS = [("time", "Time"),
@@ -51,66 +62,75 @@ def deptLeaderHome(request):
  #   return render(request, 'SenManagerHome.html')
 
 
-User = get_user_model()
 
 @login_required
 def statistics(request):
-    # which dept to show?
-    selected_department = request.GET.get("department", "all")
-
-    # every dept name (for the dropdown)
-    departments = (
-        Department.objects
-        .order_by("name")
-        .values_list("name", flat=True)
-    )
-
-    # teams for that dept (or all)
-    if selected_department == "all":
-        teams_qs = Team.objects.select_related("department").order_by("name")
-    else:
-        teams_qs = Team.objects.filter(
-            department__name=selected_department
-        ).select_related("department").order_by("name")
-
-    # sidebar list  [(team.id, team.name), …]
-    team_list = [(t.id, t.name) for t in teams_qs]
-
-    # ── build vote aggregates (latest vote per user) ─────────────────────────
+    # ──────────────────────── session ────────────────────────────────────────
     session_obj = current_session(request)
 
+    # ───────────────────── role + scope ─────────────────────────────────────
+    role = request.user.role
+    if role == "team_leader" and request.user.team:
+        departments = [request.user.team.department.name]
+        teams_qs    = Team.objects.filter(id=request.user.team.id)
+    elif role == "dept_leader" and request.user.team:
+        dept = request.user.team.department
+        departments = [dept.name]
+        teams_qs    = Team.objects.filter(department=dept)
+    else:
+        # senior_manager, staff, superuser
+        departments = list(Department.objects.order_by("name")
+                                              .values_list("name", flat=True))
+        teams_qs    = Team.objects.select_related("department") \
+                                  .order_by("department__name", "name")
+
+    # ────────────────── filter by department GET ─────────────────────────────
+    selected_department = request.GET.get("department", "all")
+    if selected_department != "all" and len(departments) > 1:
+        teams_qs = teams_qs.filter(department__name=selected_department)
+
+    # ──────────────── build sidebar list & default team ───────────────────────
+    team_list = [(t.id, t.name) for t in teams_qs]
+    selected_team = request.GET.get("team")
+    if not selected_team and team_list:
+        selected_team = str(team_list[0][0])
+
+    # ─────────────────── aggregate latest vote per user ───────────────────────
     team_data = {}
-    for team in teams_qs:
-        # latest vote *per user* for this team in the current session
-        latest_per_user = (
-            Vote.objects.filter(user__team=team, session=session_obj)
-                        .values("user")           # group by user
-                        .annotate(pk=Max("pk"))   # latest id
-                        .values_list("pk", flat=True)
+    for t in teams_qs:
+        latest_ids = (
+            Vote.objects
+                .filter(user__team=t, session=session_obj)
+                .values("user")
+                .annotate(pk=Max("pk"))
+                .values_list("pk", flat=True)
         )
-        qs = Vote.objects.filter(pk__in=latest_per_user)
-        team_data[team.id] = {
-            "name":  team.name,
+        qs = Vote.objects.filter(pk__in=latest_ids)
+        team_data[t.id] = {
+            "name":  t.name,
             "red":   qs.filter(vote_choice="red").count(),
             "amber": qs.filter(vote_choice="yellow").count(),
             "green": qs.filter(vote_choice="green").count(),
         }
 
-    # ── manager flag (disable dropdown if not) ───────────────────────────────
-    is_manager = request.user.role in {"dept_leader", "senior_manager"}
-
-    return render(
-        request,
-        "health_check/statistics.html",
-        {
-            "departments":          departments,
-            "selected_department":  selected_department,
-            "team_list":            team_list,
-            "team_data_json":       json.dumps(team_data),
-            "is_manager":           is_manager,
-            "colors":               ["red", "amber", "green"],
-        },
+    # ────────────────────── manager flag ─────────────────────────────────────
+    is_manager = (
+        role in {"dept_leader", "senior_manager"}
+        or request.user.is_staff
+        or request.user.is_superuser
     )
+
+    return render(request, "health_check/statistics.html", {
+        "sessions":            list(Session.objects.order_by("-date")),
+        "current_session":     session_obj,
+        "departments":         departments,
+        "selected_department": selected_department,
+        "team_list":           team_list,
+        "selected_team":       selected_team,
+        "team_data_json":      json.dumps(team_data),
+        "is_manager":          is_manager,
+        "colors":              ["red", "amber", "green"],
+    })
 
 
 @login_required

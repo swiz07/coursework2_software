@@ -1,0 +1,58 @@
+/* overall page layout */
+body {
+    margin: 0;
+    background: #e0f2f7;
+    font-family: sans-serif;
+  }
+  .main-content {
+    margin-left: 250px;
+    padding: 2rem;
+  }
+  
+  /* team list */
+  .team-list .list-group-item {
+    cursor: pointer;
+  }
+  .team-list .active {
+    background: #17c0eb;
+    color: #fff;
+  }
+  
+  /* card panels */
+  .card-panel {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.1);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* ring chart container */
+  #ring-container {
+    display: flex;
+    justify-content: space-around;
+  }
+  .ring {
+    width: 80px;
+    height: 80px;
+    position: relative;
+  }
+  .ring canvas {
+    position: absolute;
+    top: 0; left: 0;
+  }
+  .ring-label {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+  }
+  
+  /* bar chart sizing */
+  #barChart {
+    width: 100% !important;
+    height: 350px !important;
+  }
+  
