@@ -1,0 +1,49 @@
+{%extends 'teamLeaderHomeMain.html'%} {%block content%}
+<div class="container">
+  <h3>Welcome to the Home Page</h3>
+  <div class="cardContainer d-flex flex-wrap gap-3">
+    {% for card in cards %}
+    <div class="card" style="width: 10rem">
+      <div class="card-body">
+        <h5 class="card-title">{{ card.card_name }}</h5>
+        <p class="card-text">{{ card.card_descrip|truncatewords:10 }}</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+      </div>
+    </div>
+    {% empty %}
+    <p>No cards available for your team.</p>
+    {% endfor %}
+     
+  </div>
+
+  <div class="d-flex flex-wrap gap-5">
+    <div class="calendar_container">
+      <div class="calendar">
+        <div class="calendar-header">
+          <button id="prev-month">‹</button>
+          <div id="month-year"></div>
+          <button id="next-month">›</button>
+        </div>
+        <div class="calendar-body">
+          <div class="calendar-weekdays">
+            <div>S</div>
+            <div>M</div>
+            <div>T</div>
+            <div>W</div>
+            <div>T</div>
+            <div>F</div>
+            <div>S</div>
+          </div>
+          <div class="calendar-dates">
+            <!-- Dates  -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pieChart_container"></div>
+  </div>
+
+  <div class="LinearChart_Container"></div>
+</div>
+
+{%endblock content%}

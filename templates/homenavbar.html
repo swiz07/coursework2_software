@@ -20,6 +20,7 @@
 
 
                     <!-- Home -->
+<<<<<<< HEAD
                     <li>
                         <a href="{% url 'home' %}"   class="nav-link  px-0 py-2align-middle">
                             <i class="fs-4 bi-table"></i> 
@@ -27,6 +28,35 @@
                             <span  class="ms-1 d-none d-sm-inline">
                                 
                                 Home</span> </a>
+=======
+                    <li> 
+                        {% if is_engineer %}
+                            <a href="{% url 'enghome' %}" class="nav-link px-0 py-2 align-middle">
+                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                <span class="ms-1 d-none d-sm-inline">Home</span>
+                            </a>
+                        {% elif is_team_leader %}
+                            <a href="{% url 'teamLeaderHome' %}" class="nav-link px-0 py-2 align-middle">
+                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                <span class="ms-1 d-none d-sm-inline">Home</span>
+                            </a>
+                        {% elif is_department_leader %}
+                            <a href="{% url 'deptLeaderHome' %}" class="nav-link px-0 py-2 align-middle">
+                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                <span class="ms-1 d-none d-sm-inline">Home</span>
+                            </a>
+                        {% elif is_senior_manager %}
+                            <a href="{% url 'SenManagerHome' %}" class="nav-link px-0 py-2 align-middle">
+                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                <span class="ms-1 d-none d-sm-inline">Home</span>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'home' %}" class="nav-link px-0 py-2 align-middle">
+                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                <span class="ms-1 d-none d-sm-inline">Home</span>
+                            </a>
+                        {% endif %}
+>>>>>>> origin/test-branch
                     </li>
 
 
@@ -52,7 +82,7 @@
 
 
                     <!-- Manage Cards page -->
-                    {%if is_team_leader or is_dept_leader%}
+                    {%if is_team_leader or is_department_leader%}
                     <li>
                         <a href="#" class="nav-link px-0 py-2 align-middle">
                             <i class="fs-4 bi-table"></i> 
@@ -81,7 +111,7 @@
 
                     <!-- Log out -->
                     <li>
-                        <a href="#" class="nav-link px-0 py-2 align-middle">
+                        <a href="{% url 'logout' %}" class="nav-link px-0 py-2 align-middle">
                             <i class="fs-4 bi-table"></i>
                             <img src="{% static 'health_check/images/white_out.png' %}" alt="" class="navicon">
                              <span class="ms-1 d-none d-sm-inline">Log out</span></a>

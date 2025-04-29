@@ -84,17 +84,18 @@
           <h3>Contact us:</h3>
           <div class="form-group">
               <label for="fullname">Full name:</label>
-              <input type="text" class="form-control" id="fullname" placeholder="Full name*">
+              <input type="text" class="form-control" id="fullname" placeholder="Full name*" required>
             </div>
           <div class="form-group">
             <label for="email">Email address:</label>
-            <input type="email" class="form-control" id="email" placeholder="Email Address *">
+            <input type="email" class="form-control" id="email" placeholder="Email Address *" required>
           </div>
           <div class="form-group">
               <label for="exampleFormControlTextarea1">Message:</label>
-              <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Message"></textarea>
+              <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Message *" required></textarea>
+              <p id="contact_message"></p>
             </div>
-          <button type="submit" class="btn btn-primary">Contact us</button>
+          <button type="submit" class="btn btn-primary contact-btn" onclick="contact_error()">Contact us</button>
         </form>
     </div>
   </div>
@@ -124,5 +125,23 @@
     });
   });
   
+  function contact_error(event) {
+    event.preventDefault();  // Prevent form from submitting
+
+    const error_message = document.getElementById("contact_message");
+    const fullname = document.getElementById("fullname");
+    const email = document.getElementById("email");
+    const message = document.getElementById("exampleFormControlTextarea1");
+
+    if (fullname.value === "" || email.value === "" || message.value === "") {
+      error_message.innerHTML = "Please fill all the fields";
+      error_message.style.color = "red";
+    } else {
+      error_message.innerHTML = "Thanks for your message. We will get back to you soon.";
+      error_message.style.color = "green";
+    }
+  }
+  
+
    </script>
   {%endblock content%}

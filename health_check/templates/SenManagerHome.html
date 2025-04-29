@@ -1,0 +1,44 @@
+{%extends 'senManagerHomeMain.html'%} {%block content%}
+<div class="maincontainer">
+ 
+
+  <div class="cardContainer d-flex flex-wrap gap-3">
+    {% for department in departments %}
+    <div class="card" style="width: 10rem">
+      <div class="card-body">
+        <h5 class="card-title">{{ department.department_name }}</h5>
+        <a href="#" class="btn btn-primary">dept</a>
+      </div>
+    </div>
+    {% empty %}
+    <p>No departments available.</p>
+    {% endfor %}
+  </div>
+  </div>
+  <div class="flip_btn">
+    <a href="#" class="button">
+      <div class="qube">
+         <div class="front">Progress over time</div>
+         <div class="back">Current session Health</div>
+      </div>
+   </a>
+  </div>
+
+  <!-- 
+    -->
+
+  <!-- 
+      
+      -->
+  <div id="charts">
+    <div id="container"></div>
+
+    <div id="new-chart" class="d-flex flex-wrap gap-5" style="display: none">
+       
+        <div id="LinearChart_Container"> 
+      </div>
+    </div>
+  </div>
+</div>
+
+{%endblock content%}

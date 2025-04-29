@@ -1,26 +1,29 @@
 let currentStep=1;
-function showStep(step){
-    document.querySelectorAll('.step')
-    .forEach((e)=>e.classList.remove('active'));
+function showStep(step) {
+  document.querySelectorAll('.step')
+  .forEach((e) => e.classList.remove('active'));
 
-    document.getElementById(`step${step}`)
-    .classList.add('active');
+  document.getElementById(`step${step}`)
+  .classList.add('active');
 
-    document.querySelectorAll('.step-indicator span')
-    .forEach((e, index)=>{
-        e.classList.toggle('active', index+1===step);
-    });
+  document.querySelectorAll('.step-indicator span')
+  .forEach((e, index) => {
+      e.classList.toggle('active', index + 1 === step);
+  });
 
-    document.getElementById('prev-btn').disabled=step===1;
-    document.getElementById('next-btn').innerHTML=step===3?
-    'Finish': 'Next';
-    if(step ===3){
-      document.getElementById('next-btn').type='submit';
-    }
-    else{
-      document.getElementById('next-btn').type='button';
-    }
+  document.getElementById('prev-btn').disabled = step === 1;
+
+  const nextBtn = document.getElementById('next-btn');
+
+  if (step === 4) {
+      nextBtn.innerHTML = 'Finish';
+      nextBtn.type = 'Submit';  
+  }  else {
+      nextBtn.innerHTML = 'Next';
+      nextBtn.type = 'button';
+  }
 }
+
 
 
 function arePasswordsMatching(){
@@ -71,14 +74,46 @@ function nextStep(){
         document.getElementById("result").innerHTML="Please fill in all the required fields in step 3";
         return;
       }
+
+      //checks if chosen role is senior manager or not
+      const chosenRole = document.querySelector('input[name="role"]:checked').value;
+
+      if (chosenRole === "Senior Manager") {
+        document.querySelector('form').submit();
+        return;
     }
-    if(currentStep <3){
-        currentStep++;
-        showStep(currentStep);
+
     }
-    else{
-        document.getElementById("result").innerHTML="Submitted successfully";
-    }
+    if(currentStep===4){
+      let department = document.getElementById("id_department").value;
+      let team = document.getElementById("id_team").value;
+
+      //check if chosen role is department leader
+
+      const chosenRole = document.querySelector('input[name="role"]:checked').value;
+
+      if(chosenRole === "Department Leader") { 
+
+        if(!department){
+          document.getElementById("result").innerHTML = "Please select a department in step 4";
+          return;
+        }
+        document.querySelector('form').submit();
+        return;
+    } else {
+
+      if(!department || !team){
+        document.getElementById("result").innerHTML="Please select department and team in step 4";
+        return;
+      } 
+      document.querySelector('form').submit();
+      return;
+    } 
+  }
+    currentStep++;
+    showStep(currentStep);
+    
+ 
 }
 
 function prevStep(){
@@ -143,5 +178,42 @@ passInput.onkeyup = function() {
   } else {
     length.classList.remove("valid");
     length.classList.add("invalid");
+  }
+}
+
+
+// When department changes, load teams
+$(document).ready(function(){
+  $('#id_department').change(function(){
+    var url = $(this).data('url');
+    var departmentId = $(this).val();
+      $.ajax({
+          url: url,
+          data: {
+              'department_id': departmentId
+          },
+          success: function(data){
+              $("#id_team").html(data);
+          }
+      });
+  });
+});
+
+
+//to not show team dropdown for department leaders
+
+function noTeamView() {
+  const chosenRole = document.querySelector('input[name="role"]:checked');
+  const teamList = document.getElementById('teams'); 
+
+  if (!chosenRole) {
+    teamList.style.display = 'block';  
+      return;
+  }
+//check if chosen role is department
+  if (chosenRole.value === "Department Leader") {
+    teamList.style.display = 'none'; // hide team
+  } else {
+    teamList.style.display = 'block'; // show team
   }
 }
