@@ -236,6 +236,14 @@ def profile(request):
         # 5) Render the profile template
         return render(request, 'health_check/profile.html', context)
 
+
+def voting_page(request):
+    context = {
+        'page_title': 'Voting Page',    
+    }
+    return render(request, 'health_check/voting_page.html', context)
+
+
         
     #Rest password page view
 def reset_password(request):
