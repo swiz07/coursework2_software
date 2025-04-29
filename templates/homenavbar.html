@@ -20,15 +20,6 @@
 
 
                     <!-- Home -->
-<<<<<<< HEAD
-                    <li>
-                        <a href="{% url 'home' %}"   class="nav-link  px-0 py-2align-middle">
-                            <i class="fs-4 bi-table"></i> 
-                            <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
-                            <span  class="ms-1 d-none d-sm-inline">
-                                
-                                Home</span> </a>
-=======
                     <li> 
                         {% if is_engineer %}
                             <a href="{% url 'enghome' %}" class="nav-link px-0 py-2 align-middle">
@@ -56,7 +47,6 @@
                                 <span class="ms-1 d-none d-sm-inline">Home</span>
                             </a>
                         {% endif %}
->>>>>>> origin/test-branch
                     </li>
 
 
