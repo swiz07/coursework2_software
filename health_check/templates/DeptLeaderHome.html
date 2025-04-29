@@ -1,10 +1,8 @@
 {%extends 'DeptLeaderHomeMain.html'%}
 {%block content%}
-<div class="  container ">
-    <h3>Welcome to the Dept Home Page</h3>
-
-    
-    <div class="cardContainer d-flex flex-wrap gap-3  scroll-row"> 
+<div class="  container "> 
+    <div class=" d-flex flex-wrap gap-3  ">  
+      <div class="cardContainer" id="scrollContainer">
       {% for team in teams %} 
         <div class="card" style="width: 10rem;">
             <div class="card-body">
@@ -15,19 +13,22 @@
         {% empty %}
         <p>No teams found in your department.</p>
         {% endfor %}
+
+        <button onclick="scrollRight()" class="scroll-btn right">&rarr;</button>
+      </div>
     </div>
   
 
     <div class="d-flex flex-wrap gap-5">
          
-        <div class="pieChart_container">
+        <div id="pieChart_container">
         </div>
-        <div class="LinearChart_Container">
+        <div id="lContainer">
         </div>
     </div>
 
     
-    <div class="barChart_Container">
+    <div id="barChart_Container">
     </div>
     
     

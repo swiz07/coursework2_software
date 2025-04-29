@@ -2,12 +2,44 @@
 <div class="container">
   <h3>Welcome to the Home Page</h3>
   <div class="cardContainer d-flex flex-wrap gap-3">
-    {% for card in cards %}
+    {% for card in cards %} 
     <a href="{% url 'voting_page' %}" style="text-decoration: none; color: inherit;"> 
     <div class="card" style="width: 10rem">
       <div class="card-body">
         <h5 class="card-title">{{ card.card_name }}</h5>
-        <p class="card-text">{{ card.card_descrip|truncatewords:10 }}</p>
+
+        <div class="progressContainer d-flex gap-3">
+          <div class="vote-item mx-auto animated" data-skill="HTML" data-percent="90">
+            <svg class="vote-red" width="30" height="30">
+                <circle class="bg" cx="15" cy="15" r="10"></circle>
+                <circle class="progress" cx="15" cy="15" r="10"></circle>
+            </svg>
+            <div class="vote-text">
+                <div class="vote-percent">{{ vote_percentages.red }}</div> 
+            </div>
+        </div>
+
+          <div class="vote-item mx-auto animated" data-skill="HTML" data-percent="90">
+            <svg class="vote-green" width="45" height="40">
+                <circle class="bg" cx="15" cy="15" r="10"></circle>
+                <circle class="progress" cx="15" cy="15" r="10"></circle>
+            </svg>
+            <div class="vote-text">
+                <div class="vote-percent"> {{ vote_percentages.green }} </div> 
+            </div>
+        </div>
+
+        <div class="vote-item mx-auto animated" data-skill="HTML" data-percent="90">
+          <svg class="vote-yellow" width="30" height="30">
+              <circle class="bg" cx="15" cy="15" r="10"></circle>
+              <circle class="progress" cx="15" cy="15" r="10"></circle>
+          </svg>
+          <div class="vote-text">
+              <div class="vote-percent">{{ vote_percentages.yellow }} </div> 
+          </div>
+      </div>
+      </div> 
+      
         
       </div>
     </div>
@@ -42,10 +74,15 @@
         </div>
       </div>
     </div>
-    <div class="pieChart_container"></div>
+    <div id="pieChart_container">
+
+
+    </div>
   </div>
 
-  <div class="LinearChart_Container"></div>
+  <div id="lContainer">
+    
+  </div>
 </div>
 
 {%endblock content%}
