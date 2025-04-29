@@ -61,6 +61,15 @@ nextMonth.addEventListener('click', () => {
 
 });
 
+
+  /*
+    * Title: Animated Skills Progress Chart
+      * Author: Reza Farhadi
+      * Date: October 2024
+      * Code version: v5.3
+      * Availability:https://bootstrapexamples.com/@reza-f/animated-skills-progress-chart
+*/
+
 document.addEventListener('DOMContentLoaded', () => {
     const voteItems = document.querySelectorAll('.vote-item');
 

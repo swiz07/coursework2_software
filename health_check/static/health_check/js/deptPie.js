@@ -1,9 +1,9 @@
   /*
-    * Title: Spline Area Chart
+    * Title: Doughnut Chart
       * Author: AnyChart.com
       * Date: <date>
       * Code version: version v8 
-      * Availability:https://docs.anychart.com/Basic_Charts/Spline_Area_Chart
+      * Availability:https://docs.anychart.com/Basic_Charts/Doughnut_Chart
 */
 
 // create data
@@ -73,7 +73,7 @@ var linerdata = [
   
 
   /*
-    * Title: Spline Area Chart
+    * Title: Bar Chart
       * Author: AnyChart.com
       * Date: <date>
       * Code version: version v8 
