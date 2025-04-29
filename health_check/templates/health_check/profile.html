@@ -118,8 +118,9 @@
                 {% else %}
                   <div class="first-name-info">{{ fullname }}</div>
                 {% endif %}
-
-                <div class="text-wrapper-10">{{ department_id }}</div>
+                
+                <div class="text-wrapper-10"> {{ request.user.department.department_name }} Department</div>
+                <div class="account-info"></div>
 
                 <div class="image-wrapper">
                   {% if role_name == "Engineer" %}
