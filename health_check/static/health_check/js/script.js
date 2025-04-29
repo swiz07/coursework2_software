@@ -182,6 +182,15 @@ passInput.onkeyup = function() {
 }
 
 
+/*
+    * Title:How to do a multiple dependent dropdown Django form
+      * Author: Andre Perez
+      * Date: 9 sep 2021
+      * Code version: --  
+      * Availability:https://medium.aptechnology.dev/how-to-do-a-multiple-dependent-dropdown-django-form-10754cc5becc
+*/
+
+
 // When department changes, load teams
 $(document).ready(function(){
   $('#id_department').change(function(){

@@ -310,6 +310,13 @@ def reset_password(request):
                 messages.error(request, "Password do not match. Please try again")
         return render(request, 'health_check/resetpassword.html' )
 
+#
+    # * Title:How to do a multiple dependent dropdown Django form
+    #   * Author: Andre Perez
+    #  * Date: 9 sep 2021
+    #  * Code version: --  
+    #  * Availability:https://medium.aptechnology.dev/how-to-do-a-multiple-dependent-dropdown-django-form-10754cc5becc
+#
 def load_teams(request):
     department_id = request.GET.get('department_id')
     teams = Team.objects.filter(department_id=department_id).order_by('team_name')
