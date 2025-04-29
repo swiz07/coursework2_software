@@ -4,6 +4,8 @@ from django.contrib.auth import views as log_views
 from .views import CustomLoginView
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LogoutView
+from .views import profile
+
 
 
 urlpatterns = [

@@ -10,27 +10,19 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet"/>
 
-  <link
-    rel="stylesheet"
-    href="{% static 'health_check/css/globals.css' %}"/>
-  <link
-    rel="stylesheet"
-    href="{% static 'health_check/css/profile.css' %}"/>
+  <link rel="stylesheet" href="{% static 'health_check/css/globals.css' %}"/>
+  <link rel="stylesheet" href="{% static 'health_check/css/profile.css' %}"/>
 
   <style>
     body, html { margin:0; height:100%; }
     .layout { display: flex; height:100vh; overflow:hidden; }
-
     .layout nav { flex: 0 0 227px; overflow-y: auto; }
-
     .layout .content { flex:1; overflow-y:auto; }
-
     .box {
       position: relative !important;
       margin-left: -200px !important;
       margin-top: -60px;
     }
-
     .box .profile-page-bg { display: none !important; }
     .box .sidebar, .box .overlap-3 { display: none !important; }
   </style>
@@ -38,47 +30,74 @@
 <body>
 
   <div class="layout">
-
     <nav class="bg-dark text-white p-0">
       {% include 'homenavbar.html' %}
     </nav>
-
     <div class="content">
-
       <div class="box">
         <div class="profile-page">
           <div class="overlap">
             <div class="profile-page-bg"></div>
 
-              <input type="hidden" name="next" value="{% url 'home' %}">
-              <button class="logout-button">
+
+
+            {% if request.GET.edit %}
+              <form method="post" action="{% url 'profile' %}">
+                {% csrf_token %}
+            {% endif %}
+
+
+
+            {% if request.GET.edit %}
+              <button type="submit" class="logout-button">
                 <div class="overlap-group">
                   <div class="text-wrapper">Save</div>
                 </div>
               </button>
-            </form>
+              <a href="{% url 'profile' %}" class="btn btn-secondary ms-2">Cancel</a>
+            {% else %}
+              <a href="{% url 'profile' %}?edit=1" class="edit-button">
+                <div class="div-wrapper">
+                  <div class="div">Edit</div>
+                </div>
+              </a>
+            {% endif %}
 
-            <button class="edit-button">
-              <div class="div-wrapper">
-                <div class="div">Edit</div>
-              </div>
-            </button>
 
             <div class="credential-info">
               <div class="overlap-2">
                 <div class="text-wrapper-5">E-mail</div>
-                <div class="email-info">{{ email }}</div>
+                {% if request.GET.edit %}
+                  <input
+                    type="email"
+                    name="email"
+                    class="email-info form-control"
+                    value="{{ email }}"
+                  />
+                {% else %}
+                  <div class="email-info">{{ email }}</div>
+                {% endif %}
 
                 <div class="text-wrapper-3">Phone Number</div>
-                <div class="phone-number-info">{{ phone_number }}</div>
+                {% if request.GET.edit %}
+                  <input
+                    type="text"
+                    name="phone_number"
+                    class="phone-number-info form-control"
+                    value="{{ phone_number }}"
+                  />
+                {% else %}
+                  <div class="phone-number-info">{{ phone_number }}</div>
+                {% endif %}
 
                 <div class="text-wrapper-4">Password</div>
                 <div class="password-info">{{ password_mask }}</div>
-            
-                <a href="{% url 'password_change' %}" class="change-password">Change password </a>
-
+                <a href="{% url 'password_change' %}" class="change-password">
+                  Change password
+                </a>
               </div>
             </div>
+
 
             <div class="user-info">
               <div class="overlap-2">
@@ -89,13 +108,20 @@
                 <div class="last-name-info">{{ request.user.team.team_name }}</div>
 
                 <div class="text-wrapper-8">Full Name:</div>
-                <div class="first-name-info">{{ fullname }}</div>
+                {% if request.GET.edit %}
+                  <input
+                    type="text"
+                    name="fullname"
+                    class="first-name-info form-control"
+                    value="{{ fullname }}"
+                  />
+                {% else %}
+                  <div class="first-name-info">{{ fullname }}</div>
+                {% endif %}
 
-                <div class="text-wrapper-10">Account ID:</div>
-                <div class="account-info">{{ account_id }}</div>
+                <div class="text-wrapper-10">{{ department_id }}</div>
 
                 <div class="image-wrapper">
-                  {% load static %}
                   {% if role_name == "Engineer" %}
                     <img class="image"
                          src="{% static 'health_check/images/engineer.png' %}"
@@ -121,12 +147,15 @@
               </div>
             </div>
 
+
+            {% if request.GET.edit %}
+              </form>
+            {% endif %}
+
           </div>
         </div>
       </div>
-
     </div>
-
   </div>
 
 </body>

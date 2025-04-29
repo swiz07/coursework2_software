@@ -552,3 +552,12 @@
   left: 26px;
   object-fit: cover;
 }
+
+.box .account-info {
+  position: static !important;
+  width: 314px;
+  height: 51px;
+  top: 156px;    
+  left: 78px;   
+  background-color: #f5f5f5;
+}
