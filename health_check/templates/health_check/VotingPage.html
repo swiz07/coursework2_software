@@ -20,19 +20,19 @@
   <style>
     .content-grid { display: flex; gap: 2rem; }
     .left-col { flex: 2; }
-    .right-col { flex: 1; position: sticky; top: 2rem; height: calc(100vh - 4rem); }
+    .right-col {
+      flex: 1; position: sticky; top: 2rem;
+      height: calc(100vh - 4rem);
+    }
     .history-box { max-height:350px; overflow-y:auto; background:white; }
     .cardItem { cursor: pointer; }
   </style>
 </head>
 <body>
 
-  {# sidebar include #}
-  {% include "health_check/homenavbar.html" %}
+  {% include "homenavbar.html" %}
 
-  {# main content #}
   <div class="main-content">
-    <!-- Header -->
     <div class="d-flex align-items-center mb-3">
       <button onclick="location.href='{% url 'choose_session' %}'"
               class="btn btn-outline-primary me-3">
@@ -40,25 +40,33 @@
       </button>
       <h5 class="mb-0">
         Session:
-        <span class="text-dark">
-          {{ request.session.current_session_id }} –
-          {{ request.session.current_session_display }}
-        </span>
+        {% if request.session.current_session_id %}
+          <span class="text-dark">
+            {{ request.session.current_session_id }}
+            – {{ request.session.current_session_display }}
+          </span>
+        {% else %}
+          <span class="text-muted">none selected</span>
+        {% endif %}
       </h5>
-      <span class="badge bg-secondary ms-auto">{{ request.user.get_full_name }}</span>
+      <span class="badge bg-secondary ms-auto">
+        {{ request.user.get_full_name }}
+      </span>
     </div>
     <hr>
 
     <div class="content-grid">
-      <!-- cards + history -->
+      <!-- left: cards + history -->
       <div class="left-col">
         <h4 class="mb-3">Your Cards</h4>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mb-4">
           {% for c in user_cards %}
             <div class="col">
-              <div class="card p-3 cardItem" onclick="showCardDetail('{{ c.id }}')">
+              <div class="card p-3 cardItem" data-card-id="{{ c.id }}">
                 <h6 class="mb-1">{{ c.title }}</h6>
-                <p class="text-muted small mb-2">{{ c.description|truncatewords:5 }}</p>
+                <p class="text-muted small mb-2">
+                  {{ c.description|truncatewords:5 }}
+                </p>
                 <div class="d-flex gap-2">
                   <span class="badge bg-danger">{{ c.red_count }}</span>
                   <span class="badge bg-warning text-dark">{{ c.yellow_count }}</span>
@@ -71,8 +79,7 @@
 
         <div class="d-flex align-items-center mb-2">
           <h4 class="mb-0">History (This Session)</h4>
-          <a href="{% url 'all_history' %}"
-             class="btn btn-outline-secondary btn-sm ms-auto">
+          <a href="{% url 'all_history' %}" class="btn btn-outline-secondary btn-sm ms-auto">
             View All History
           </a>
         </div>
@@ -92,9 +99,9 @@
                   <tr>
                     <td>{{ v.card.title }}</td>
                     <td>
-                      {% if v.vote_choice == "red" %}
+                      {% if v.vote_choice == 'red' %}
                         <span class="badge bg-danger">Red</span>
-                      {% elif v.vote_choice == "yellow" %}
+                      {% elif v.vote_choice == 'yellow' %}
                         <span class="badge bg-warning text-dark">Yellow</span>
                       {% else %}
                         <span class="badge bg-success">Green</span>
@@ -116,7 +123,7 @@
         </div>
       </div>
 
-      <!-- Detail Panel -->
+      <!-- right: detail pane + form -->
       <div class="right-col">
         <div id="detailPanel" class="p-3 bg-white rounded shadow-sm">
           <div class="d-flex justify-content-end gap-2 mb-2">
@@ -136,9 +143,9 @@
             </div>
           </div>
 
-          <form method="POST" action="{% url 'voting_page' %}">
+          <form method="POST">
             {% csrf_token %}
-            <input type="hidden" name="card_id" id="detailCardId" value="" />
+            <input type="hidden" name="card_id" id="detailCardId" />
 
             <div class="mb-2">
               <label class="form-label fw-bold">Your Vote:</label>
@@ -158,9 +165,13 @@
               <label for="reasonInput" class="form-label fw-bold">
                 Reason (optional):
               </label>
-              <textarea name="reason" id="reasonInput" rows="2" class="form-control"></textarea>
+              <textarea name="reason" id="reasonInput"
+                        rows="2" class="form-control"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Save Vote</button>
+            <button type="submit"
+                    class="btn btn-primary w-100">
+              Save Vote
+            </button>
           </form>
         </div>
       </div>
@@ -173,7 +184,7 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  {# --- Restore cardData map for votingScript.js --- #}
+  <!-- cardData map for votingScript -->
   <script>
     const cardData = {
       {% for c in user_cards %}

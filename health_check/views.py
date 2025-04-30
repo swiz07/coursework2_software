@@ -78,13 +78,12 @@ def statistics(request):
         departments = [dept.name]
         teams_qs    = Team.objects.filter(department=dept)
     else:
-        # senior_manager, staff, superuser
         departments = list(Department.objects.order_by("name")
                                               .values_list("name", flat=True))
         teams_qs    = Team.objects.select_related("department") \
                                   .order_by("department__name", "name")
 
-    # ────────────────── filter by department GET ─────────────────────────────
+    # ─────────────── filter by department GET ────────────────────────────────
     selected_department = request.GET.get("department", "all")
     if selected_department != "all" and len(departments) > 1:
         teams_qs = teams_qs.filter(department__name=selected_department)
@@ -95,22 +94,15 @@ def statistics(request):
     if not selected_team and team_list:
         selected_team = str(team_list[0][0])
 
-    # ─────────────────── aggregate latest vote per user ───────────────────────
+    # ─────────────────── aggregate ALL votes in this session ─────────────────
     team_data = {}
     for t in teams_qs:
-        latest_ids = (
-            Vote.objects
-                .filter(user__team=t, session=session_obj)
-                .values("user")
-                .annotate(pk=Max("pk"))
-                .values_list("pk", flat=True)
-        )
-        qs = Vote.objects.filter(pk__in=latest_ids)
+        votes = Vote.objects.filter(user__team=t, session=session_obj)
         team_data[t.id] = {
             "name":  t.name,
-            "red":   qs.filter(vote_choice="red").count(),
-            "amber": qs.filter(vote_choice="yellow").count(),
-            "green": qs.filter(vote_choice="green").count(),
+            "red":   votes.filter(vote_choice="red").count(),
+            "amber": votes.filter(vote_choice="yellow").count(),
+            "green": votes.filter(vote_choice="green").count(),
         }
 
     # ────────────────────── manager flag ─────────────────────────────────────
@@ -135,70 +127,65 @@ def statistics(request):
 
 @login_required
 def voting_page(request):
-    # 1) enforce session
-    sess_id = request.session.get('current_session_id')
-    if not sess_id:
+   
+    # 1) Determine current session
+    session_id = (request.GET.get('session')
+                  or request.session.get('current_session_id'))
+    if not session_id:
         return redirect('choose_session')
-    session = get_object_or_404(Session, id=sess_id)
 
-    # 2) load cards and compute counts *for this session only*
-    user_cards = Card.objects.all()
-    for c in user_cards:
-        # get latest vote ID per user/card in this session
-        latest_per_user = (
-            Vote.objects.filter(card=c, session=session)
-                        .values('user')
-                        .annotate(latest_id=Max('id'))
-                        .values_list('latest_id', flat=True)
-        )
-        qs = Vote.objects.filter(id__in=latest_per_user)
-        c.red_count    = qs.filter(vote_choice='red').count()
-        c.yellow_count = qs.filter(vote_choice='yellow').count()
-        c.green_count  = qs.filter(vote_choice='green').count()
+    session = get_object_or_404(Session, id=session_id)
+    request.session['current_session_id']      = session.id
+    request.session['current_session_display'] = session.date.strftime("%-d %b %Y %H:%M")
 
-    # 3) user’s own history for this session (latest per card)
-    latest_user_ids = (
-        Vote.objects.filter(user=request.user, session=session)
-            .values('card')
-            .annotate(latest_id=Max('id'))
-            .values_list('latest_id', flat=True)
-    )
-    user_history = Vote.objects.filter(id__in=latest_user_ids).order_by('-created_at')
-
-    # 4) handle new vote submission
+    # 2) Handle new vote submission
     if request.method == 'POST':
-        card_id     = request.POST['card_id']
-        vote_choice = request.POST['vote_choice']
+        card_id     = request.POST.get('card_id')
+        vote_choice = request.POST.get('vote_choice')
         reason      = request.POST.get('reason', '')
-        card = get_object_or_404(Card, id=card_id)
-        # create with session
-        Vote.objects.create(
-            session     = session,
-            user        = request.user,
-            card        = card,
-            vote_choice = vote_choice,
-            reason      = reason
-        )
-        # redirect GET to avoid double-post
+        if card_id and vote_choice:
+            card = get_object_or_404(Card, id=card_id)
+            Vote.objects.create(
+                session     = session,
+                user        = request.user,
+                card        = card,
+                vote_choice = vote_choice,
+                reason      = reason
+            )
         return redirect('voting_page')
+
+    # 3) Build aggregated counts for each card
+    user_cards = []
+    for c in Card.objects.all():
+        latest_ids = (
+            Vote.objects
+                .filter(card=c, session=session)
+                .values('user')
+                .annotate(latest=Max('id'))
+                .values_list('latest', flat=True)
+        )
+        vs = Vote.objects.filter(id__in=latest_ids)
+        c.red_count    = vs.filter(vote_choice='red').count()
+        c.yellow_count = vs.filter(vote_choice='yellow').count()
+        c.green_count  = vs.filter(vote_choice='green').count()
+        user_cards.append(c)
+
+    # 4) Build vote history
+
+    user_history = Vote.objects.filter(session=session) \
+                           .select_related('card','user') \
+                           .order_by('-created_at')
 
     return render(request, 'health_check/VotingPage.html', {
         'user_cards':   user_cards,
         'user_history': user_history,
-        'session':      session,
     })
-
 
 @login_required
 def all_history(request):
-    """
-    Show every vote the current user has cast in the current session,
-    with sorting & filtering.
-    """
     # 1) enforce session
     sess_id = request.session.get('current_session_id')
     if not sess_id:
-        # when you click Change Session from all_history, it passes next=all_history
         return redirect(f"{reverse('choose_session')}?next=all_history")
 
     current_session = get_object_or_404(Session, id=sess_id)
@@ -216,9 +203,9 @@ def all_history(request):
     sort_field = valid_sort_fields.get(sort_key, "created_at")
 
     # 4) base queryset _for this session_
-    qs = Vote.objects.filter(user=request.user, session=current_session)
+    qs = Vote.objects.filter(session=current_session)
 
-    # 5) optional search filter
+    # 5) search filter
     if query:
         qs = qs.filter(
             Q(card__title__icontains=query) |
@@ -243,7 +230,6 @@ def all_history(request):
 
 
 def choose_session(request):
-    # Order by the actual 'date' field:
     sessions = Session.objects.order_by('-date')
     current_id = request.session.get('current_session_id')
     current_session = None
