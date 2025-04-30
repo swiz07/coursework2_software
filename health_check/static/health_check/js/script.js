@@ -1,3 +1,10 @@
+ /*--#
+File Name: script.js
+Author: Swizel De Melo
+Co-Authors: Umayma Jabbar (W19694885) 
+*/
+
+
 let currentStep=1;
 function showStep(step) {
   document.querySelectorAll('.step')
