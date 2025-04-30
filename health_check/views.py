@@ -190,7 +190,7 @@ def SenManagerHome(request):
         is_department_leader = role.is_department_leader
         is_senior_manager = role.is_senior_manager
 
-#displays Departments
+    #displays Departments
     if request.user.is_authenticated:
         departments = Department.objects.all()
     else:
@@ -256,48 +256,23 @@ def voting_page(request):
         is_team_leader = role.is_team_leader
         is_department_leader = role.is_department_leader
         is_senior_manager = role.is_senior_manager
+ 
 
     if request.user.is_authenticated and request.user.team:
         cards = Card.objects.filter(session_id__team_id=request.user.team)
+  
+ 
 
-        #get the total number of cards
-        total_cards = cards.count()
-
-
-#to get how many cards they have voted
-        voted_card_ids = Vote.objects.filter(user_id=request.user, card_id__in=cards).values_list('card_id', flat=True)
-        voted_cards = cards.filter(card_id__in=voted_card_ids)
-        not_voted_cards = cards.exclude(card_id__in=voted_card_ids)
-
-        
-
-        voted_count = voted_cards.count()
-        not_voted_count = not_voted_cards.count()
-
-        percentage_voted = round((voted_count / total_cards) * 100) if total_cards > 0 else 0
-    else:
-        cards = Card.objects.none()
-        voted_cards = not_voted_cards = []
-        voted_count = not_voted_count = percentage_voted = 0
-        total_cards = 0
-
-    return render(request, 'health_check/voting_page.html', {
+    context = {
         'is_engineer': is_engineer,
         'is_team_leader': is_team_leader,
         'is_department_leader': is_department_leader,
         'is_senior_manager': is_senior_manager,
         'page_title': 'Voting Page',
-        'cards': cards,
-        'voted_count': voted_count,
-        'not_voted_count': not_voted_count,
-        'voted_cards': voted_cards,
-        'not_voted_cards': not_voted_cards,
-        'percentage_voted': percentage_voted,
-        'total_cards': total_cards,
-    })
-
-
-        
+        'cards': cards, 
+        }
+    return render(request, 'health_check/voting_page.html', context)
+   
     #Rest password page view
 def reset_password(request):
         if (request.method == 'POST'):
