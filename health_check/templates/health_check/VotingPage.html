@@ -16,23 +16,44 @@
 
   <!-- sidebar & layout -->
   <link rel="stylesheet" href="{% static 'health_check/css/navbar.css' %}">
-  <!-- vote page specific overrides -->
   <style>
     .content-grid { display: flex; gap: 2rem; }
     .left-col { flex: 2; }
     .right-col {
-      flex: 1; position: sticky; top: 2rem;
+      flex: 1;
+      position: sticky;
+      top: 2rem;
       height: calc(100vh - 4rem);
     }
     .history-box { max-height:350px; overflow-y:auto; background:white; }
     .cardItem { cursor: pointer; }
+
+    .chart-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .chart-container canvas {
+      max-width: 150px;
+      max-height: 150px;
+    }
   </style>
 </head>
 <body>
 
   {% include "homenavbar.html" %}
 
-  <div class="main-content">
+  <div class="main-content container py-3">
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="alert alert-{{ msg.tags }} alert-dismissible fade show">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
     <div class="d-flex align-items-center mb-3">
       <button onclick="location.href='{% url 'choose_session' %}'"
               class="btn btn-outline-primary me-3">
@@ -58,19 +79,17 @@
     <div class="content-grid">
       <!-- left: cards + history -->
       <div class="left-col">
-        <h4 class="mb-3">Your Cards</h4>
+        <h4>Your Cards</h4>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mb-4">
           {% for c in user_cards %}
             <div class="col">
-              <div class="card p-3 cardItem" data-card-id="{{ c.id }}">
-                <h6 class="mb-1">{{ c.title }}</h6>
-                <p class="text-muted small mb-2">
-                  {{ c.description|truncatewords:5 }}
-                </p>
+              <div class="card p-3 cardItem" data-card-id="{{ c.card_id }}">
+                <h6>{{ c.card_name }}</h6>
+                <p class="text-muted small">{{ c.card_descrip|truncatewords:5 }}</p>
                 <div class="d-flex gap-2">
-                  <span class="badge bg-danger">{{ c.red_count }}</span>
-                  <span class="badge bg-warning text-dark">{{ c.yellow_count }}</span>
-                  <span class="badge bg-success">{{ c.green_count }}</span>
+                  <span class="badge bg-danger">{{ c.card_red_vote }}</span>
+                  <span class="badge bg-warning text-dark">{{ c.card_yellow_vote }}</span>
+                  <span class="badge bg-success">{{ c.card_green_vote }}</span>
                 </div>
               </div>
             </div>
@@ -79,7 +98,8 @@
 
         <div class="d-flex align-items-center mb-2">
           <h4 class="mb-0">History (This Session)</h4>
-          <a href="{% url 'all_history' %}" class="btn btn-outline-secondary btn-sm ms-auto">
+          <a href="{% url 'all_history' %}"
+             class="btn btn-outline-secondary btn-sm ms-auto">
             View All History
           </a>
         </div>
@@ -88,8 +108,8 @@
             <thead class="table-light">
               <tr>
                 <th>Card</th>
-                <th>Your Vote</th>
-                <th>Reason</th>
+                <th>Opinion</th>
+                <th>Progress</th>
                 <th>Time</th>
               </tr>
             </thead>
@@ -97,17 +117,17 @@
               {% if user_history %}
                 {% for v in user_history %}
                   <tr>
-                    <td>{{ v.card.title }}</td>
+                    <td>{{ v.card_id.card_name }}</td>
                     <td>
-                      {% if v.vote_choice == 'red' %}
-                        <span class="badge bg-danger">Red</span>
-                      {% elif v.vote_choice == 'yellow' %}
-                        <span class="badge bg-warning text-dark">Yellow</span>
+                      {% if v.vote_value == 'red' %}
+                        <span class="badge bg-danger">Unsatisfied</span>
+                      {% elif v.vote_value == 'yellow' %}
+                        <span class="badge bg-warning text-dark">Partially Satisfied</span>
                       {% else %}
-                        <span class="badge bg-success">Green</span>
+                        <span class="badge bg-success">Satisfied</span>
                       {% endif %}
                     </td>
-                    <td>{{ v.reason }}</td>
+                    <td>{{ v.vote_opinion }}</td>
                     <td>{{ v.created_at|date:"Y-m-d H:i" }}</td>
                   </tr>
                 {% endfor %}
@@ -125,51 +145,42 @@
 
       <!-- right: detail pane + form -->
       <div class="right-col">
-        <div id="detailPanel" class="p-3 bg-white rounded shadow-sm">
+        <div class="p-3 bg-white rounded shadow-sm">
           <div class="d-flex justify-content-end gap-2 mb-2">
-            <span class="badge bg-danger" id="detailRedCount">0</span>
+            <span class="badge bg-danger"   id="detailRedCount">0</span>
             <span class="badge bg-warning text-dark" id="detailYellowCount">0</span>
-            <span class="badge bg-success" id="detailGreenCount">0</span>
+            <span class="badge bg-success"   id="detailGreenCount">0</span>
           </div>
           <h5 id="detailCardTitle" class="text-center text-secondary mb-3">
             [Click a card to see details]
           </h5>
-          <div class="chart-container mb-3 text-center">
-            <canvas id="detailPieChart" width="150" height="150"></canvas>
-            <div class="mt-2">
-              <strong class="text-danger">Red</strong> |
-              <strong class="text-warning">Yellow</strong> |
-              <strong class="text-success">Green</strong>
-            </div>
+
+          <div class="chart-container">
+            <canvas id="detailPieChart"></canvas>
+          </div>
+          <div class="mt-2 text-center">
+            <strong class="text-danger">Unsatisfied</strong> |
+            <strong class="text-warning">Partially Satisfied</strong> |
+            <strong class="text-success">Satisfied</strong>
           </div>
 
-          <form method="POST">
+          <form method="POST" class="mt-3">
             {% csrf_token %}
             <input type="hidden" name="card_id" id="detailCardId" />
-
-            <div class="mb-2">
-              <label class="form-label fw-bold">Your Vote:</label>
-              <div>
-                <label class="me-2">
-                  <input type="radio" name="vote_choice" value="red" /> Red
-                </label>
-                <label class="me-2">
-                  <input type="radio" name="vote_choice" value="yellow" /> Yellow
-                </label>
-                <label>
-                  <input type="radio" name="vote_choice" value="green" /> Green
-                </label>
-              </div>
-            </div>
+          
             <div class="mb-3">
-              <label for="reasonInput" class="form-label fw-bold">
-                Reason (optional):
+              <label for="voteOpinionSelect" class="form-label fw-bold">
+                Progress:
               </label>
-              <textarea name="reason" id="reasonInput"
-                        rows="2" class="form-control"></textarea>
+              <select name="vote_opinion" id="voteOpinionSelect" class="form-select">
+                <option value="" disabled selected>Select Progress</option>
+                <option value="Unsatisfied">Unsatisfied</option>
+                <option value="Partially Satisfied">Partially Satisfied</option>
+                <option value="Satisfied">Satisfied</option>
+              </select>
             </div>
-            <button type="submit"
-                    class="btn btn-primary w-100">
+          
+            <button type="submit" class="btn btn-primary w-100">
               Save Vote
             </button>
           </form>
@@ -184,15 +195,15 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- cardData map for votingScript -->
+  <!-- cardData map & your votingScript.js -->
   <script>
     const cardData = {
       {% for c in user_cards %}
-        "{{ c.id }}": {
-          red:    {{ c.red_count }},
-          yellow: {{ c.yellow_count }},
-          green:  {{ c.green_count }},
-          title:  "{{ c.title|escapejs }}"
+        "{{ c.card_id }}": {
+          red:    {{ c.card_red_vote }},
+          yellow: {{ c.card_yellow_vote }},
+          green:  {{ c.card_green_vote }},
+          title:  "{{ c.card_name|escapejs }}"
         }{% if not forloop.last %},{% endif %}
       {% endfor %}
     };

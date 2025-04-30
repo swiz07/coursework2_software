@@ -22,7 +22,7 @@
 <body>
   {% include "homenavbar.html" %}
 
-  <div class="main-content">
+  <div class="main-content container py-4">
     <h4>Department Statistics</h4>
 
     <!-- Session Picker -->
@@ -31,9 +31,10 @@
       <select class="form-select w-auto d-inline-block"
               onchange="location='?session='+this.value+'&department={{ selected_department }}&team={{ selected_team }}'">
         {% for sess in sessions %}
-          <option value="{{ sess.id }}"
-                  {% if sess.id == current_session.id %}selected{% endif %}>
-            Session {{ forloop.counter }}{% if sess.status == "active" %} (Active){% endif %}
+          <option
+            value="{{ sess.session_id }}"
+            {% if current_session and sess.session_id == current_session.session_id %}selected{% endif %}>
+            Session {{ forloop.counter }}{% if sess.session_status == "active" %} (Active){% endif %}
           </option>
         {% endfor %}
       </select>
@@ -44,7 +45,7 @@
       <label class="form-label me-2">Select Department:</label>
       <select class="form-select w-auto d-inline-block"
               {% if not is_manager %}disabled{% endif %}
-              onchange="location='?session={{ current_session.id }}&department='+encodeURIComponent(this.value)+'&team={{ selected_team }}'">
+              onchange="location='?session={{ current_session.session_id }}&department='+encodeURIComponent(this.value)+'&team={{ selected_team }}'">
         {% if is_manager %}
           <option value="all" {% if selected_department == "all" %}selected{% endif %}>
             Overall
@@ -62,8 +63,8 @@
       <!-- Teams Sidebar -->
       <div class="col-md-3">
         <div class="list-group team-list">
-          {% for id, name in team_list %}
-            <a href="?session={{ current_session.id }}&department={{ selected_department }}&team={{ id }}"
+          {% for id,name in team_list %}
+            <a href="?session={{ current_session.session_id }}&department={{ selected_department }}&team={{ id }}"
                class="list-group-item list-group-item-action{% if id|stringformat:'s' == selected_team %} active{% endif %}"
                data-team="{{ id }}">
               {{ name }}
@@ -77,11 +78,11 @@
         <div class="row gx-3">
           <!-- Ring Gauges -->
           <div class="col-lg-4">
-            <div class="card-panel text-center">
+            <div class="card-panel text-center p-3">
               <h5 id="ring-title">—</h5>
-              <div id="ring-container">
+              <div id="ring-container" class="d-flex justify-content-around">
                 {% for clr in colors %}
-                  <div class="ring" data-color="{{ clr }}">
+                  <div class="ring text-center" data-color="{{ clr }}">
                     <canvas width="80" height="80"></canvas>
                     <div class="ring-label">0</div>
                   </div>
@@ -92,14 +93,14 @@
 
           <!-- Pie Chart -->
           <div class="col-lg-4">
-            <div class="card-panel">
+            <div class="card-panel p-3">
               <canvas id="pieChart"></canvas>
             </div>
           </div>
 
           <!-- Progress KPI -->
           <div class="col-lg-4">
-            <div class="card-panel text-center">
+            <div class="card-panel text-center p-3">
               <h6>Progress Over Time</h6>
               <div id="progressKPI" class="display-5 text-success">0%</div>
             </div>
@@ -107,7 +108,7 @@
         </div>
 
         <!-- Bar Chart -->
-        <div class="card-panel mt-4">
+        <div class="card-panel mt-4 p-3">
           <canvas id="barChart"></canvas>
         </div>
       </div>

@@ -14,26 +14,19 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
     rel="stylesheet">
 
-  <!-- navbar styles -->
+  <!-- sidebar styles -->
   <link rel="stylesheet" href="{% static 'health_check/css/navbar.css' %}">
 
   <style>
     body { margin:0; background:#e0f2f7; font-family:sans-serif; }
-    .main-content {
-      margin-left:250px; 
-      padding:2rem;
-      min-height:100vh;
-    }
+    .main-content { margin-left:250px; padding:2rem; min-height:100vh; }
     .full-history-table { min-width:800px; }
     td .badge { font-size:.9rem; }
   </style>
 </head>
 <body>
-
-  <!-- sidebar -->
   {% include "homenavbar.html" %}
 
-  <!-- main content -->
   <div class="main-content">
     <!-- Header -->
     <div class="d-flex align-items-center mb-3">
@@ -45,10 +38,12 @@
 
       <h2 class="mb-0">All History</h2>
       <span class="ms-2 text-dark">
-        {{ current_session.id }} –
-        {{ current_session.date|date:"d/m/Y h:i A" }}
+        {{ current_session.session_id }} –
+        {{ current_session.session_name }}
       </span>
-      <span class="badge bg-secondary ms-auto">{{ request.user.get_full_name }}</span>
+      <span class="badge bg-secondary ms-auto">
+        {{ request.user.get_full_name }}
+      </span>
     </div>
     <hr>
 
@@ -56,7 +51,7 @@
     <div class="d-flex justify-content-end align-items-center mb-3">
       <span class="me-2 fw-semibold">Sort By:</span>
       {% for key,label in sort_options %}
-        <a href="?sort={{ key }}"
+        <a href="?sort={{ key }}{% if query %}&q={{ query|urlencode }}{% endif %}"
            class="btn btn-sm ms-1 {% if current_sort == key %}btn-primary{% else %}btn-outline-primary{% endif %}">
           {{ label }}
         </a>
@@ -70,7 +65,7 @@
       {% endif %}
       <span class="input-group-text"><i class="bi bi-search"></i></span>
       <input type="text" name="q" value="{{ query }}"
-             class="form-control" placeholder="search card or reason…">
+             class="form-control" placeholder="Search card or reason…">
       <button class="btn btn-outline-secondary">Filter</button>
     </form>
 
@@ -81,24 +76,31 @@
           <tr>
             <th>Card</th>
             <th>Your Vote</th>
-            <th style="width:45%">Reason</th>
+            <th>Reason</th>
             <th>Time</th>
           </tr>
         </thead>
         <tbody>
           {% for v in user_votes %}
             <tr>
-              <td>{{ v.card.title }}</td>
+              <!-- pull card name from FK -->
+              <td>{{ v.card_id.card_name }}</td>
+
+              <!-- real vote_value field -->
               <td>
-                {% if v.vote_choice == 'red' %}
-                  <span class="badge bg-danger">Red</span>
-                {% elif v.vote_choice == 'yellow' %}
-                  <span class="badge bg-warning text-dark">Yellow</span>
+                {% if v.vote_value == 'red' %}
+                  <span class="badge bg-danger">Unsatisfied</span>
+                {% elif v.vote_value == 'yellow' %}
+                  <span class="badge bg-warning text-dark">Partially Satisfied</span>
                 {% else %}
-                  <span class="badge bg-success">Green</span>
+                  <span class="badge bg-success">Satisfied</span>
                 {% endif %}
               </td>
-              <td class="text-wrap">{{ v.reason }}</td>
+
+             
+              <td class="text-wrap">{{ v.vote_opinion }}</td>
+
+             
               <td>{{ v.created_at|date:"Y-m-d H:i" }}</td>
             </tr>
           {% empty %}

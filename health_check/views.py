@@ -13,19 +13,19 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 def current_session(request):
-    # 1) override via GET
+    
     sid = request.GET.get("session")
     if sid:
         request.session["current_session_id"] = sid
-        return get_object_or_404(Session, id=sid)
-    # 2) falling back to stored
+        return get_object_or_404(Session, session_id=sid)
     stored = request.session.get("current_session_id")
     if stored:
-        s = Session.objects.filter(id=stored).first()
+        s = Session.objects.filter(session_id=stored).first()
         if s:
             return s
-    # 3) last active
-    return Session.objects.filter(status="active").order_by("-date").first()
+    return Session.objects.filter(session_status="active")\
+                          .order_by("-session_started")\
+                          .first()
 
 SORT_OPTS = [("time", "Time"),
              ("card", "Card"),
@@ -65,55 +65,75 @@ def deptLeaderHome(request):
 
 @login_required
 def statistics(request):
-    # ──────────────────────── session ────────────────────────────────────────
+    # ─────── Determine current session ───────
     session_obj = current_session(request)
+    if not session_obj:
+        return redirect('choose_session')
 
-    # ───────────────────── role + scope ─────────────────────────────────────
+    # ─────── Build department ───────
     role = request.user.role
     if role == "team_leader" and request.user.team:
-        departments = [request.user.team.department.name]
-        teams_qs    = Team.objects.filter(id=request.user.team.id)
+        departments = [request.user.team.department.department_name]
+        teams_qs    = Team.objects.filter(team_id=request.user.team.team_id)
     elif role == "dept_leader" and request.user.team:
-        dept = request.user.team.department
-        departments = [dept.name]
-        teams_qs    = Team.objects.filter(department=dept)
+        dept        = request.user.team.department
+        departments = [dept.department_name]
+        teams_qs    = Team.objects.filter(department_id=dept)
     else:
-        departments = list(Department.objects.order_by("name")
-                                              .values_list("name", flat=True))
-        teams_qs    = Team.objects.select_related("department") \
-                                  .order_by("department__name", "name")
+        departments = list(
+            Department.objects
+                      .order_by("department_name")
+                      .values_list("department_name", flat=True)
+        )
+        teams_qs = Team.objects.select_related("department_id") \
+                               .order_by("department_id__department_name", "team_name")
 
-    # ─────────────── filter by department GET ────────────────────────────────
+    # ─────── Filter by chosen department ───────
     selected_department = request.GET.get("department", "all")
     if selected_department != "all" and len(departments) > 1:
-        teams_qs = teams_qs.filter(department__name=selected_department)
+        teams_qs = teams_qs.filter(department_id__department_name=selected_department)
 
-    # ──────────────── build sidebar list & default team ───────────────────────
-    team_list = [(t.id, t.name) for t in teams_qs]
+    # ─────── Sidebar team list + default selection ───────
+    team_list = [(t.team_id, t.team_name) for t in teams_qs]
     selected_team = request.GET.get("team")
     if not selected_team and team_list:
         selected_team = str(team_list[0][0])
 
-    # ─────────────────── aggregate ALL votes in this session ─────────────────
+    # ─────── Aggregate votes per team in this session ───────
+    # pre-filter to just this session
+    base_qs = Vote.objects.filter(session_id=session_obj)
     team_data = {}
-    for t in teams_qs:
-        votes = Vote.objects.filter(user__team=t, session=session_obj)
-        team_data[t.id] = {
-            "name":  t.name,
-            "red":   votes.filter(vote_choice="red").count(),
-            "amber": votes.filter(vote_choice="yellow").count(),
-            "green": votes.filter(vote_choice="green").count(),
-        }
 
-    # ────────────────────── manager flag ─────────────────────────────────────
+    for t in teams_qs:
+        red = amber = green = 0
+        for row in base_qs.filter(user_id__team=t) \
+                  .values("vote_value") \
+                  .annotate(ct=Count("vote_value")):
+            v, ct = str(row["vote_value"]), row["ct"]
+
+            if v in {"1", "red"}:
+                red   += ct                #  ← ADD instead of =
+            elif v in {"2", "amber", "yellow"}:
+                amber += ct
+            elif v in {"3", "green"}:
+                green += ct
+
+        team_data[t.team_id] = {
+            "name":  t.team_name,
+            "red":   red,
+            "amber": amber,
+            "green": green,
+}
+
+    # ─────── Manager flag ───────
     is_manager = (
-        role in {"dept_leader", "senior_manager"}
-        or request.user.is_staff
-        or request.user.is_superuser
+        role in {"dept_leader", "senior_manager"} or
+        request.user.is_staff or
+        request.user.is_superuser
     )
 
     return render(request, "health_check/statistics.html", {
-        "sessions":            list(Session.objects.order_by("-date")),
+        "sessions":            Session.objects.order_by("-session_started"),
         "current_session":     session_obj,
         "departments":         departments,
         "selected_department": selected_department,
@@ -124,120 +144,175 @@ def statistics(request):
         "colors":              ["red", "amber", "green"],
     })
 
+    
+
+def recalc_card_aggregates(card):
+   
+    qs = Vote.objects.filter(card_id=card, session_id=card.session_id)
+    counts = qs.values("vote_value")\
+               .annotate(ct=Count("vote_value"))\
+               .values_list("vote_value", "ct")
+    
+    card.card_red_vote    = 0
+    card.card_yellow_vote = 0
+    card.card_green_vote  = 0
+
+    for value, ct in counts:
+        if value == "red":
+            card.card_red_vote = ct
+        elif value == "amber":
+            card.card_yellow_vote = ct
+        elif value == "green":
+            card.card_green_vote = ct
+
+    
+    if card.card_green_vote >= card.card_yellow_vote \
+       and card.card_green_vote >= card.card_red_vote:
+        card.colour_code = "green"
+    elif card.card_yellow_vote >= card.card_red_vote:
+        card.colour_code = "amber"
+    else:
+        card.colour_code = "red"
+
+    card.save()
 
 @login_required
 def voting_page(request):
-   
-    # 1) Determine current session
-    session_id = (request.GET.get('session')
-                  or request.session.get('current_session_id'))
-    if not session_id:
-        return redirect('choose_session')
+    session = current_session(request)
+    if not session:
+        return redirect("choose_session")
 
-    session = get_object_or_404(Session, id=session_id)
-    request.session['current_session_id']      = session.id
-    request.session['current_session_display'] = session.date.strftime("%-d %b %Y %H:%M")
+    request.session["current_session_id"]      = session.session_id
+    request.session["current_session_display"] = session.session_name
 
-    # 2) Handle new vote submission
-    if request.method == 'POST':
-        card_id     = request.POST.get('card_id')
-        vote_choice = request.POST.get('vote_choice')
-        reason      = request.POST.get('reason', '')
-        if card_id and vote_choice:
-            card = get_object_or_404(Card, id=card_id)
-            Vote.objects.create(
-                session     = session,
-                user        = request.user,
-                card        = card,
-                vote_choice = vote_choice,
-                reason      = reason
-            )
-        return redirect('voting_page')
+    if request.method == "POST":
+        card_id  = request.POST.get("card_id")
+        progress = request.POST.get("vote_opinion")  
+        if not (card_id and progress):
+            messages.error(request, "Please select a Progress value.")
+            return redirect("voting_page")
 
-    # 3) Build aggregated counts for each card
-    user_cards = []
-    for c in Card.objects.all():
-        latest_ids = (
-            Vote.objects
-                .filter(card=c, session=session)
-                .values('user')
-                .annotate(latest=Max('id'))
-                .values_list('latest', flat=True)
+        card = get_object_or_404(Card, card_id=card_id, session_id=session)
+
+        
+        colour_map = {
+            "Unsatisfied":          "red",
+            "Partially Satisfied": "yellow",
+            "Satisfied":            "green",
+        }
+        vote_value = colour_map[progress]
+
+        Vote.objects.update_or_create(
+            user_id    = request.user,
+            card_id    = card,
+            session_id = session,
+            defaults   = {
+                "vote_value":   vote_value,
+                "vote_opinion": progress
+            }
         )
-        vs = Vote.objects.filter(id__in=latest_ids)
-        c.red_count    = vs.filter(vote_choice='red').count()
-        c.yellow_count = vs.filter(vote_choice='yellow').count()
-        c.green_count  = vs.filter(vote_choice='green').count()
-        user_cards.append(c)
 
-    # 4) Build vote history
+       
+        recalc_card_aggregates(card)
 
-    user_history = Vote.objects.filter(session=session) \
-                           .select_related('card','user') \
-                           .order_by('-created_at')
+        messages.success(request, f"Your vote for “{card.card_name}” has been saved.")
+        return redirect("voting_page")
 
-    return render(request, 'health_check/VotingPage.html', {
-        'user_cards':   user_cards,
-        'user_history': user_history,
+    # GET
+    user_cards   = Card.objects.filter(session_id=session)
+    user_history = (
+        Vote.objects
+            .filter(session_id=session)
+            .select_related("card_id", "user_id")
+            .order_by("-created_at")
+    )
+
+    return render(request, "health_check/VotingPage.html", {
+        "user_cards":   user_cards,
+        "user_history": user_history,
     })
+
+
+def recalc_card_aggregates(card):
+   
+    qs = Vote.objects.filter(card_id=card, session_id=card.session_id)
+    counts = qs.values("vote_value") \
+               .annotate(ct=Count("vote_value"))
+
+    card.card_red_vote    = 0
+    card.card_yellow_vote = 0
+    card.card_green_vote  = 0
+
+    for entry in counts:
+        val, ct = entry["vote_value"], entry["ct"]
+        if val == "red":
+            card.card_red_vote = ct
+        
+        elif val in ("yellow", "amber"):
+            card.card_yellow_vote = ct
+        elif val == "green":
+            card.card_green_vote = ct
+
+   
+    if card.card_green_vote >= card.card_yellow_vote \
+       and card.card_green_vote >= card.card_red_vote:
+        card.colour_code = "green"
+    elif card.card_yellow_vote >= card.card_red_vote:
+        card.colour_code = "amber"
+    else:
+        card.colour_code = "red"
+
+    card.save()
 
 @login_required
 def all_history(request):
-    # 1) enforce session
-    sess_id = request.session.get('current_session_id')
+    sess_id = request.session.get("current_session_id")
     if not sess_id:
-        return redirect(f"{reverse('choose_session')}?next=all_history")
+        return redirect("choose_session")
 
-    current_session = get_object_or_404(Session, id=sess_id)
+    current_session = get_object_or_404(Session, session_id=sess_id)
 
-    # 2) get sort & filter params
+    # allow sorting & filtering 
     sort_key = request.GET.get("sort", "time")
     query    = request.GET.get("q", "")
 
-    # 3) map frontend keys → model fields
-    valid_sort_fields = {
+    # map sort keys → model fields
+    FIELD_MAP = {
         "time": "created_at",
-        "card": "card__title",
-        "vote": "vote_choice",
+        "card": "card_id__card_name",
+        "vote": "vote_value",
     }
-    sort_field = valid_sort_fields.get(sort_key, "created_at")
+    sort_field = FIELD_MAP.get(sort_key, "created_at")
 
-    # 4) base queryset _for this session_
-    qs = Vote.objects.filter(session=current_session)
-
-    # 5) search filter
+    qs = Vote.objects.filter(session_id=current_session)
     if query:
         qs = qs.filter(
-            Q(card__title__icontains=query) |
-            Q(reason__icontains=query)
+            Q(card_id__card_name__icontains=query) |
+            Q(vote_opinion__icontains=query)
         )
 
-    # 6) annotate & order
-    user_votes = (
-        qs
-        .select_related("card")
-        .order_by(f"-{sort_field}")
-    )
+    user_votes = qs.select_related("card_id")\
+                   .order_by(f"-{sort_field}")
 
-    context = {
+    return render(request, "health_check/all_history.html", {
         "user_votes":     user_votes,
         "current_sort":   sort_key,
         "query":          query,
         "sort_options":   SORT_OPTS,
         "current_session": current_session,
-    }
-    return render(request, "health_check/all_history.html", context)
+    })
 
 
+@login_required
 def choose_session(request):
-    sessions = Session.objects.order_by('-date')
-    current_id = request.session.get('current_session_id')
-    current_session = None
+    sessions       = Session.objects.order_by("-session_started")
+    current_id     = request.session.get("current_session_id")
+    current_sess   = None
     if current_id:
-        current_session = get_object_or_404(Session, id=current_id)
-    return render(request, 'health_check/choose_session.html', {
-        'sessions': sessions,
-        'current_session': current_session,
+        current_sess = get_object_or_404(Session, session_id=current_id)
+    return render(request, "health_check/choose_session.html", {
+        "sessions":        sessions,
+        "current_session": current_sess,
     })
 
 def set_session(request, session_id):

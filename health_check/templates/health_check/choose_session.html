@@ -64,7 +64,7 @@
        onclick="location.href='{% url 'voting_page' %}'"></i>
     <span class="user-badge">
       <i class="bi bi-person-circle"></i>
-      {{ request.user.username }}
+      {{ request.user.get_full_name }}
     </span>
   </div>
 
@@ -78,29 +78,36 @@
             <i class="bi bi-caret-up-fill"></i>
             <i class="bi bi-caret-down-fill"></i>
           </th>
-          <th>Session Date &amp; Time</th>
-          <th>
-            Created On
-            <i class="bi bi-caret-up-fill"></i>
-            <i class="bi bi-caret-down-fill"></i>
-          </th>
+          <th>Session Name</th>
+          <th>Session Start</th>
+          <th>Created On</th>
           <th>Status</th>
         </tr>
       </thead>
       <tbody>
         {% for s in sessions %}
           <tr
-            class="{% if current_session and s.id == current_session.id %}active-row{% endif %}"
-            onclick="location.href='{% url 'set_session' s.id %}'"
+            class="{% if current_session and s.session_id == current_session.session_id %}active-row{% endif %}"
+            onclick="location.href='{% url 'set_session' s.session_id %}'"
           >
-            <td>{{ s.id }}</td>
-            <td>{{ s.date|date:"d/m/Y g:i a" }}</td>
-            <td>{{ s.created_on|date:"d/m/Y" }}</td>
-            <td>{{ s.status|yesno:"Active,Inactive" }}</td>
+     
+            <td>{{ s.session_id }}</td>
+
+
+            <td>{{ s.session_name }}</td>
+
+         
+            <td>{{ s.session_started|date:"d/m/Y g:i a" }}</td>
+
+        
+            <td>{{ s.created_at|date:"d/m/Y" }}</td>
+
+   
+            <td>{{ s.session_status|capfirst }}</td>
           </tr>
         {% empty %}
           <tr>
-            <td colspan="4" class="py-4 text-center text-muted">
+            <td colspan="5" class="py-4 text-center text-muted">
               No sessions found.
             </td>
           </tr>

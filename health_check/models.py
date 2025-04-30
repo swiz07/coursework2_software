@@ -1,101 +1,81 @@
-# Create your models here.
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin,BaseUserManager,Group,Permission
+from django.contrib.auth.models import (
+    AbstractBaseUser, PermissionsMixin, BaseUserManager, Group, Permission
+)
+
+
+class Role(models.Model):
+    name                  = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    is_engineer           = models.BooleanField(default=False)
+    is_team_leader        = models.BooleanField(default=False)
+    is_department_leader  = models.BooleanField(default=False)
+    is_senior_manager     = models.BooleanField(default=False)
+    role_name             = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.role_name
+
+
+class Account(models.Model):
+    account_id      = models.AutoField(primary_key=True)
+    username        = models.CharField(max_length=20, unique=True)
+    password        = models.CharField(max_length=128)  
+    account_update  = models.DateField(auto_now=True)
+    account_status  = models.BooleanField(default=True)
+    account_type    = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.username
+
+
 
 class UserManager(BaseUserManager):
-
-    def _create_user(self, email, password, is_staff, is_superuser, username,fullname,address,phone_number):
+    def _create_user(self, email, fullname, address, phone_number, password=None, is_staff=False, is_superuser=False, role=None, username=None, department=None, team=None):
         if not email:
             raise ValueError('Users must have an email address')
         email = self.normalize_email(email)
         user = self.model(
-            username=username,
             email=email,
             fullname=fullname,
             address=address,
             phone_number=phone_number,
             is_staff=is_staff,
-            is_active=True,
             is_superuser=is_superuser,
+            role=role,
+            team=team,
+            department=department
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, email=None, password=None, **extra_fields):
-        return self._create_user(email, password, False, False, **extra_fields)
+    def create_user(self, email, fullname, address, phone_number, password=None, role=None, **extra_fields):
+        return self._create_user(email, fullname, address, phone_number, password, False, False, role, **extra_fields)
 
-    def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault('username', 'admin')
-        extra_fields.setdefault('fullname', 'Admin User')
-        extra_fields.setdefault('address', 'Admin Address')
-        extra_fields.setdefault('phone_number', '0000000000')
-
-        user = self._create_user(email, password, True, True, **extra_fields)
-        user.save(using=self._db)
-        return user
+    def create_superuser(self, email, fullname, address, phone_number, password=None, role=None, **extra_fields):
+        return self._create_user(email, fullname, address, phone_number, password, True, True, role, **extra_fields)
+    
 
 
-ROLE_CHOICES = [
-    ('engineer', 'Engineer'),
-    ('team_leader', 'Team Leader'),
-    ('dept_leader', 'Department Leader'),
-    ('senior_manager', 'Senior Manager'),
-]
-
-
-class Department(models.Model):
-    """
-    A real table instead of the plain CharField we were storing on Team.
-    """
-    name = models.CharField(max_length=100, unique=True)
-
-    class Meta:
-        ordering = ["name"]
-
-    def __str__(self):
-        return self.name
-
-
-class Team(models.Model):
-    name       = models.CharField(max_length=100)
-    department = models.ForeignKey(
-        Department,
-        on_delete=models.CASCADE,
-        related_name="teams",
-    )
-
-    class Meta:
-        unique_together = ("name", "department")
-        ordering        = ["department__name", "name"]
-
-    def __str__(self):
-        return f"{self.department.name} – {self.name}"
-
-
-#Create your models here.
 class User(AbstractBaseUser, PermissionsMixin):
+    user_id      = models.AutoField(primary_key=True)
     username = models.CharField(max_length=25, unique=True)
-    email=models.EmailField(max_length=254, unique=True)
-    fullname=models.CharField(max_length=254, null=True, blank=True)
-    address=models.TextField()
-    phone_number=models.CharField(max_length=15)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    
-    
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='engineer')
-    team = models.ForeignKey('Team', on_delete=models.SET_NULL, null=True, blank=True)
+    email        = models.EmailField(max_length=254, unique=True)
+    fullname     = models.CharField(max_length=254, blank=True)
+    address      = models.TextField(blank=True)
+    phone_number = models.CharField(max_length=20, blank=True)
 
-    groups = models.ManyToManyField(
-        Group,
-        related_name='custom_user_groups', 
-    )
-    user_permissions = models.ManyToManyField(
-        Permission,
-        related_name='custom_user_permissions',  
-    )
+    role         = models.ForeignKey(Role,         on_delete=models.CASCADE, null=True, blank=True)
+    department   = models.ForeignKey('Department', on_delete=models.CASCADE, null=True, blank=True)
+    team         = models.ForeignKey('Team',       on_delete=models.CASCADE, null=True, blank=True)
+    Account_id   = models.ForeignKey(Account,      on_delete=models.SET_NULL, null=True, blank=True)
+
+    is_active    = models.BooleanField(default=True)
+    is_staff     = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+
+    groups           = models.ManyToManyField(Group,      related_name='custom_user_groups',      blank=True)
+    user_permissions = models.ManyToManyField(Permission, related_name='custom_user_permissions', blank=True)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
@@ -103,72 +83,109 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    def get_absolute_url(self):
-        return "/users/%i/" % (self.pk)
-    def get_email(self):
-        return self.email
-    
     def __str__(self):
-        if self.team:
-            return f"{self.team.department.name} – {self.team.name} ({self.username})"
-        return f"{self.username} (No Team Assigned)"
-    
-# class user_type(models.Model):
-#     is_engineer = models.BooleanField(default=False)
-#     is_senior_manager = models.BooleanField(default=False)
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-#     def __str__(self):
-#         if self.is_engineer == True:
-#             return User.get_email(self.user) + " - is_student"   
-#         else:
-#             return User.get_email(self.user) + " - is_senior_manager"
+        team_part = self.team.team_name if self.team else "No Team"
+        return f"{self.email} ({team_part})"
 
 
 
+#Departments & Teams
+
+class Department(models.Model):
+    department_id   = models.AutoField(primary_key=True)
+    department_name = models.TextField()
+    created_date    = models.DateField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['department_name']
+
+    def __str__(self):
+        return self.department_name
+
+
+class Team(models.Model):
+    team_id       = models.AutoField(primary_key=True)
+    team_name     = models.TextField()
+    created_at    = models.DateTimeField(auto_now_add=True)
+    department_id = models.ForeignKey(Department, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['team_name']
+
+    def __str__(self):
+        return f"{self.team_name} – {self.department_id.department_name}"
+
+
+
+#Sessions (cards belong to a session)
 
 class Session(models.Model):
-    date       = models.DateTimeField(help_text="When the session happens")
-    created_on = models.DateField(auto_now_add=True)
-    STATUS_CHOICES = [
-        ('active', 'Active'),
-        ('inactive', 'Inactive'),
-    ]
-    status     = models.CharField(max_length=8, choices=STATUS_CHOICES, default='active')
+    session_id      = models.AutoField(primary_key=True)
+    session_name    = models.TextField()
+    session_started = models.DateTimeField()
+    session_deleted = models.DateTimeField(null=True, blank=True)
+    session_status  = models.TextField()
+    team_id         = models.ForeignKey(Team, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['-session_started']
 
     def __str__(self):
-        return f"{self.pk} – {self.date.strftime('%d/%m/%Y %I:%M %p')} ({self.get_status_display()})"
-    
+        return f"{self.team_id.team_name} – {self.session_name}"
+
+
+
+# Cards with aggregators + description + progress
 
 class Card(models.Model):
-    """
-    Represents a 'health check' card that users can vote on.
-    """
-    title = models.CharField(max_length=100)
-    description = models.TextField()
-    # aggregator fields
-    red_votes = models.PositiveIntegerField(default=0)
-    yellow_votes = models.PositiveIntegerField(default=0)
-    green_votes = models.PositiveIntegerField(default=0)
+    card_id          = models.AutoField(primary_key=True)
+    card_name        = models.TextField()
+    card_descrip     = models.TextField(blank=True)
+    card_progress    = models.TextField(blank=True)
+    colour_code      = models.TextField(blank=True)
+
+    session_id       = models.ForeignKey(Session, on_delete=models.CASCADE, null=True, blank=True)
+    card_red_vote    = models.IntegerField(default=0, blank=True)
+    card_yellow_vote = models.IntegerField(default=0, blank=True)
+    card_green_vote  = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
-        return self.title
+        return self.card_name
+
+
+
+#Votes 
 
 class Vote(models.Model):
-    VOTE_CHOICES = [
-        ('red',    'Unsatisfied'),
-        ('yellow', 'Partially Satisfied'),
-        ('green',  'Satisfied'),
-    ]
+    vote_id      = models.AutoField(primary_key=True)
+    vote_value   = models.CharField(max_length=20)  # green/amber/red
+    vote_opinion = models.TextField()               # progress note
 
-    session = models.ForeignKey(Session, on_delete=models.CASCADE, null=True, blank=True)
-    user        = models.ForeignKey(User,    on_delete=models.CASCADE)
-    card        = models.ForeignKey(Card,    on_delete=models.CASCADE)
-    vote_choice = models.CharField(max_length=10, choices=VOTE_CHOICES)
-    reason      = models.TextField(blank=True)
-    created_at  = models.DateTimeField(auto_now_add=True)
+    card_id      = models.ForeignKey(Card,    on_delete=models.CASCADE)
+    session_id   = models.ForeignKey(Session, on_delete=models.CASCADE)
+    user_id      = models.ForeignKey(User,    on_delete=models.CASCADE)
+
+    created_at   = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
-        return f"{self.user.username} → {self.card.title} [{self.vote_choice}]"
+        return f"{self.user_id.email} → {self.card_id.card_name} [{self.vote_value}/{self.vote_opinion}]"
 
 
+
+#Summary 
+
+class Summary(models.Model):
+    summary_id             = models.AutoField(primary_key=True)
+    overall_health_rating  = models.TextField()
+    health_start_date      = models.DateField()
+    health_end_date        = models.DateField()
+    progress_over_time     = models.TextField()
+    team_id                = models.ForeignKey(Team,       on_delete=models.CASCADE)
+    card_id                = models.ForeignKey(Card,       on_delete=models.CASCADE)
+    department_id          = models.ForeignKey(Department, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.team_id.team_name} – {self.card_id.card_name} summary"
