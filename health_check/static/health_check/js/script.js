@@ -79,6 +79,10 @@ function nextStep(){
       const chosenRole = document.querySelector('input[name="role"]:checked').value;
 
       if (chosenRole === "Senior Manager") {
+        if (!document.getElementById('id_consent').checked) {
+          document.getElementById("result").innerHTML = "You must agree to the terms and data policy before submitting.";
+          return;
+        }
         document.querySelector('form').submit();
         return;
     }
@@ -226,3 +230,10 @@ function noTeamView() {
     teamList.style.display = 'block'; // show team
   }
 }
+
+//consent form 
+if (!document.getElementById('id_consent').checked) {
+  document.getElementById("result").innerHTML = "You must agree to the terms and data policy before submitting.";
+  return;
+}
+document.querySelector('form').submit();

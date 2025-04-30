@@ -205,39 +205,43 @@ def SenManagerHome(request):
     }) 
 
     
+@login_required
 def profile(request):
-        # 1) Redirect any anonymous user to your login
-        if not request.user.is_authenticated:
-            return redirect('login')
+    # ————————————— POST: save edits —————————————
+    if request.method == 'POST':
+        u = request.user
+        # match the <input name="..."> you’ll add in the template:
+        u.email        = request.POST.get('email',        u.email)
+        u.address      = request.POST.get('address',      u.address)
+        u.phone_number = request.POST.get('phone_number', u.phone_number)
+        u.fullname     = request.POST.get('fullname',     u.fullname)
+        u.save()
+        # back to GET /profile/ so the form won’t repost
+        return redirect('profile')
 
-        # 2) Safe to grab `request.user` fields now
-        user = request.user
+    # ————————————— GET: existing code unchanged —————————————
+    user = request.user
+    role_name  = user.role.name                              if user.role else ''
+    team_name  = user.team.team_name                         if getattr(user, 'team', None) else ''
+    account_id = user.Account_id.username                    if getattr(user, 'Account_id', None) else ''
+    department_id = user.department.department_id                  if getattr(user, 'department_id', None) else ''
 
-        # 3) Pull related names, guarding against None
-        role_name  = user.role.name                       if user.role else ''
-        team_name  = user.team.team_name                        if getattr(user, 'team', None) else ''
-        account_id = user.Account_id.username                   if getattr(user, 'Account_id', None) else ''
-            
-
-        # 4) Build your context dict
-        context = {
-            'fullname':     user.fullname,
-            'email':        user.email,
-            'address':      user.address,
-            'phone_number': user.phone_number,
-            'role_name':    role_name,
-            'team_name':    team_name,
-            'account_id':   account_id,
-            'password_mask': '••••••••',
-            'is_engineer': user.role.is_engineer if user.role else False,
-            'is_team_leader': user.role.is_team_leader if user.role else False,
-            'is_department_leader': user.role.is_department_leader if user.role else False,
-            'is_senior_manager': user.role.is_senior_manager if user.role else False,
-
-        }
-
-        # 5) Render the profile template
-        return render(request, 'health_check/profile.html', context)
+    context = {
+        'fullname':            user.fullname,
+        'email':               user.email,
+        'address':             user.address,
+        'phone_number':        user.phone_number,
+        'role_name':           role_name,
+        'team_name':           team_name,
+        'department_id':       department_id,
+        'account_id':          account_id,
+        'password_mask':       '••••••••',
+        'is_engineer':         user.role.is_engineer         if user.role else False,
+        'is_team_leader':      user.role.is_team_leader      if user.role else False,
+        'is_department_leader':user.role.is_department_leader if user.role else False,
+        'is_senior_manager':   user.role.is_senior_manager   if user.role else False,
+    }
+    return render(request, 'health_check/profile.html', context)
 
 @login_required
 def voting_page(request):
@@ -401,3 +405,7 @@ def get_vote_percentages(card_id):
     }
 
     return vote_percentages
+
+
+def privacy_policy(request):
+    return render(request, 'privacyPolicy.html')

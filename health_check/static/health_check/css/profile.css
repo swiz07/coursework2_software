@@ -134,7 +134,7 @@
   height: 36px;
   top: 159px;
   left: 30px;
-  color: white;  
+  color: rgb(0, 0, 0);  
   transition: background-color 0.3s, transform 0.2s; 
 }
 
@@ -552,3 +552,4 @@
   left: 26px;
   object-fit: cover;
 }
+ 

@@ -4,6 +4,7 @@ from django.contrib.auth import views as log_views
 from .views import CustomLoginView
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LogoutView
+from .views import profile
 
 
 urlpatterns = [
@@ -11,6 +12,7 @@ urlpatterns = [
     # Register URL
     path('register/', views.register, name='register'),  
    path('ajax/load-teams/', views.load_teams, name='ajax_load_teams'),
+   path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
 
 
 
@@ -24,8 +26,8 @@ urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', views.logout_view, name='logout'),
 
-    # Profile
-    path('profile/',   views.profile, name='profile'),
+ # Profile
+    path('profile/', views.profile, name='profile'),
 
     # Change password
     path('password_change/',auth_views.PasswordChangeView.as_view(template_name='health_check/password_change.html',success_url='/password_change/done/'),name='password_change'),
