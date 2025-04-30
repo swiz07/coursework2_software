@@ -7,46 +7,7 @@
     <div class="card" style="width: 10rem">
       <div class="card-body">
         <h5 class="card-title">{{ card.card_name }}</h5>
-
-        <!--
-            * Title: Animated Skills Progress Chart
-            * Author: Reza Farhadi
-            * Date: October 2024
-            * Code version: v5.3
-            * Availability:https://bootstrapexamples.com/@reza-f/animated-skills-progress-chart
-          -->
-
-        <div class="progressContainer d-flex gap-3">
-          <div class="vote-item mx-auto animated" data-skill="HTML" data-percent="90">
-            <svg class="vote-red" width="30" height="30">
-                <circle class="bg" cx="15" cy="15" r="10"></circle>
-                <circle class="progress" cx="15" cy="15" r="10"></circle>
-            </svg>
-            <div class="vote-text">
-                <div class="vote-percent">{{ vote_percentages.red }}</div> 
-            </div>
-        </div>
-
-          <div class="vote-item mx-auto animated" data-skill="HTML" data-percent="90">
-            <svg class="vote-green" width="45" height="40">
-                <circle class="bg" cx="15" cy="15" r="10"></circle>
-                <circle class="progress" cx="15" cy="15" r="10"></circle>
-            </svg>
-            <div class="vote-text">
-                <div class="vote-percent"> {{ vote_percentages.green }} </div> 
-            </div>
-        </div>
-
-        <div class="vote-item mx-auto animated" data-skill="HTML" data-percent="90">
-          <svg class="vote-yellow" width="30" height="30">
-              <circle class="bg" cx="15" cy="15" r="10"></circle>
-              <circle class="progress" cx="15" cy="15" r="10"></circle>
-          </svg>
-          <div class="vote-text">
-              <div class="vote-percent">{{ vote_percentages.yellow }} </div> 
-          </div>
-      </div>
-      </div> 
+        <p class="card-text">{{ card.card_descrip|truncatewords:10 }}</p>
       
         
       </div>

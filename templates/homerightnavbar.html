@@ -72,12 +72,12 @@
                 * Availability:https://bootstrapexamples.com/@reza-f/animated-skills-progress-chart
             -->
 
-
+            {% if request.resolver_match.view_name == 'voting_page' %}
                 <!-- Vote Progress -->
                 {%if is_engineer or is_team_leader%}
                 <div class="progress d-flex align-items-center">
                     <div class="col-sm-6 col-md-4 mb-4">
-                        <div class="skill-item mx-auto animated" data-skill="HTML" data-percent="90">
+                        <div class="skill-item mx-auto animated" data-skill="Votes" data-percent="{{ percentage_voted }}">
                             <svg class="skill-circle">
                                 <circle class="bg" cx="70" cy="70" r="70"></circle>
                                 <circle class="progress" cx="70" cy="70" r="70"></circle>
@@ -90,6 +90,7 @@
                     </div>  
                 </div>
                 {%endif%}
+                {% endif %}
             </div>
 
         </div>

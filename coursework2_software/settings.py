@@ -131,3 +131,6 @@ STATICFILES_DIRS=[os.path.join(BASE_DIR,'health_check/static')]
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = 'home'
+
+SESSION_COOKIE_AGE = 1800  # logs out after 30 minutes of inactivity
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True #logs out when you close browser
