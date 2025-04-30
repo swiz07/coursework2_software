@@ -1,3 +1,10 @@
+<!--#
+File Name: DeptLeaderHomeMain.html
+Description: home pages for Department leaders displaying teams in their department a piechart for current session progress and a barcahrt
+Author: Umayma Jabbar (W19694885)
+Co-Authors: None 
+-->
+
 {%extends 'DeptLeaderHomeMain.html'%}
 {%block content%}
 <div class="  container "> 
@@ -20,18 +27,14 @@
   
 
     <div class="d-flex flex-wrap gap-5">
-         
-        <div id="pieChart_container">
-        </div>
-        <div id="lContainer">
-        </div>
+          <!--Pie chart showing current session progress-->
+        <div id="pieChart_container"></div>
+         <!--Linear chart represening progress over time for sessions-->
+        <div id="lContainer"></div>
     </div>
-
-    
+    <!--Bar chart for current team session progress-->
     <div id="barChart_Container">
     </div>
-    
-    
 </div>
 
 {%endblock content%}

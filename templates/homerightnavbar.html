@@ -1,6 +1,16 @@
+<!--#
+File Name: homerightnavbar.html
+Description: right side navbar to display user profile in small box. and display progress bar for voting on voting page
+Author: Umayma Jabbar (W19694885)
+Co-Authors: None
+Date Created: 26/03/2025
+Last Modified: 30/04/2025
+#} -->
+
 {% load static %}
 
 <head>
+
     <link rel="stylesheet" href="{% static 'health_check/css/navstyle.css'%}">
 
     <script>
@@ -11,7 +21,7 @@
               * Code version: v5.3
               * Availability:https://bootstrapexamples.com/@reza-f/animated-skills-progress-chart
         */
-            
+
         document.addEventListener('DOMContentLoaded', () => {
             const skills = document.querySelectorAll('.skill-item');
             const animateSkill = (skill) => {
@@ -51,33 +61,41 @@
 
         <!-- User Profile Section -->
         <div class="col-auto col-md-3 col-xl-2   class2">
-
-            <!-- User Info -->
             <div class="d-flex flex-column align-items-sm-start px-1 pt-2 text-white min-vh-100">
-                <a href="{% url 'profile' %}" style="text-decoration: none; color: inherit;"> 
-                <div class="userprofile d-flex align-items-center p-2 mb-3">
-                    <img src="{% static 'health_check/images/biguser.png' %}" alt="" class="usericon me-2">
-                    <div class="d-flex flex-column">
-                        <p class="userinfo mb-0 username">{{ request.user.fullname }}</p>
-                        <p class="userinfo mb-0 rolename">{{ request.user.role.name }}</p>
-                    </div>
-                </div>
-            </a>
 
-            <!--
+                <!-- User Info -->
+                <!--Links to profile page-->
+                <a href="{% url 'profile' %}" style="text-decoration: none; color: inherit;">
+                    <div class="userprofile d-flex align-items-center p-2 mb-3">
+                        <img src="{% static 'health_check/images/biguser.png' %}" alt="" class="usericon me-2">
+                        <div class="d-flex flex-column">
+
+                             <!--Display user's name-->
+                            <p class="userinfo mb-0 username">{{ request.user.fullname }}</p> 
+
+                            <!--Displays user's role-->
+                            <p class="userinfo mb-0 rolename">{{ request.user.role.name }}</p>
+
+                        </div>
+                    </div>
+                </a>
+
+                <!--
                 * Title: Animated Skills Progress Chart
                 * Author: Reza Farhadi
                 * Date: October 2024
                 * Code version: v5.3
                 * Availability:https://bootstrapexamples.com/@reza-f/animated-skills-progress-chart
-            -->
+                -->
 
-            {% if request.resolver_match.view_name == 'voting_page' %}
+                <!--This progress circle box will be only visible in voting page-->
+                {% if request.resolver_match.view_name == 'voting_page' %}
                 <!-- Vote Progress -->
                 {%if is_engineer or is_team_leader%}
                 <div class="progress d-flex align-items-center">
                     <div class="col-sm-6 col-md-4 mb-4">
-                        <div class="skill-item mx-auto animated" data-skill="Votes" data-percent="{{ percentage_voted }}">
+                        <div class="skill-item mx-auto animated" data-skill="Votes"
+                            data-percent="{{ percentage_voted }}">
                             <svg class="skill-circle">
                                 <circle class="bg" cx="70" cy="70" r="70"></circle>
                                 <circle class="progress" cx="70" cy="70" r="70"></circle>
@@ -87,12 +105,11 @@
                                 <div class="skill-name">votes</div>
                             </div>
                         </div>
-                    </div>  
+                    </div>
                 </div>
                 {%endif%}
                 {% endif %}
             </div>
-
         </div>
     </div>
 </nav>

@@ -1,3 +1,9 @@
+#
+    #File Name: urls.py
+    #Author: Swizel De Melon
+    #Co-Authors: Umayma Jabbar, Daniel Javed
+#} 
+
 from django.urls import path
 from . import views
 from django.contrib.auth import views as log_views 

@@ -10,6 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+#
+    #File Name: settings.py
+    #Author: Swizel De Melo
+    #Co-Authors: Umayma Jabbar (w19694885)
+    #
+#
+
 import os
 from pathlib import Path
 

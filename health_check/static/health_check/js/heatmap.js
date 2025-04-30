@@ -1,3 +1,11 @@
+ /*--#
+File Name: deptPie.js
+Description:javaScript for charts in senior manger home page
+Author: Umayma Jabbar (W19694885)
+Co-Authors: None 
+*/
+
+
 /*
     * Title: Heat Map Chart
       * Author: AnyChart.com

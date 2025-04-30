@@ -1,3 +1,10 @@
+ /*--#
+File Name: calender.js
+Description:javaScript for calender in engineer and team leader home pages
+Author: Umayma Jabbar (W19694885)
+Co-Authors: None 
+*/
+
 const calendarDates  = document.querySelector('.calendar-dates');
 const monthYear = document.querySelector('#month-year');
 const prevMonth = document.getElementById('prev-month');
@@ -62,52 +69,4 @@ nextMonth.addEventListener('click', () => {
 });
 
 
-  /*
-    * Title: Animated Skills Progress Chart
-      * Author: Reza Farhadi
-      * Date: October 2024
-      * Code version: v5.3
-      * Availability:https://bootstrapexamples.com/@reza-f/animated-skills-progress-chart
-*/
-
-document.addEventListener('DOMContentLoaded', () => {
-    const voteItems = document.querySelectorAll('.vote-item');
-
-    // Function to animate the progress circle
-    const animateProgressCircle = (voteItem) => {
-        const circle = voteItem.querySelector('.progress');
-        const percent = parseInt(voteItem.dataset.percent); // Getting percentage from data attribute
-        const percentText = voteItem.querySelector('.vote-percent');
-        const radius = circle.r.baseVal.value;
-        const circumference = radius * 2 * Math.PI;
-        const offset = circumference - (percent / 100) * circumference;
-
-        // Set stroke-dashoffset to create the animation effect
-        circle.style.strokeDashoffset = offset;
-
-        // Animate percentage text
-        let count = 0;
-        const timer = setInterval(() => {
-            if (count >= percent) {
-                clearInterval(timer);
-            } else {
-                count++;
-                percentText.textContent = count + '%';
-            }
-        }, 15); // Increase/decrease the delay for animation speed
-    };
-
-    // IntersectionObserver to trigger the animation when the element comes into view
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('show');
-                animateProgressCircle(entry.target);
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.5 });
-
-    // Observe each vote item
-    voteItems.forEach(vote => observer.observe(vote));
-});
+  

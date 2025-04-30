@@ -1,124 +1,138 @@
+<!--{# 
+    File Name: homenavbar.html
+    Description: Navigation sidebar for the logged in pages. Displays role-based links and icons.
+    Author: Umayma Jabbar (W19694885)
+    Co-Authors: None
+    Date Created: 26/03/2025
+    Last Modified: 30/04/2025
+#} -->
+
 {% load static %}
+
 <head>
     <link rel="stylesheet" href="{% static 'health_check/css/navstyle.css'%}">
 </head>
-<nav class="col-auto col-md-3 col-xl-2 bg-dark class1 " >
+<nav class="col-auto col-md-3 col-xl-2 bg-dark class1 ">
     <div class="container-fluid p-0">
-    <nav class= "navbar-left col-auto col-md-3 col-xl-2 bg-dark class1 ">
-        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-         
-        <div class="col-auto col-md-3 col-xl-2 bg-dark class1 ">
+        <nav class="navbar-left col-auto col-md-3 col-xl-2 bg-dark class1 ">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
 
-            <!-- Sky Logo -->
-            <div class="d-flex flex-column align- align-items-sm-center px-1  pt-2 text-white" style="height: 100vh; width: 250px;">
-                <a href="{% url 'home' %}" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                    <img src="{% static 'health_check/images/logo.png' %}" alt="Sky Logo" class="logo">
-                </a>
+                <div class="col-auto col-md-3 col-xl-2 bg-dark class1 ">
 
-                <hr class="sidebar-divider"> 
-                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start  " id="menuone">
-
-
-                    <!-- Home -->
-                    <li> 
-                        {% if is_engineer %}
-                            <a href="{% url 'enghome' %}" class="nav-link px-0 py-2 align-middle">
-                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
-                                <span class="ms-1 d-none d-sm-inline">Home</span>
-                            </a>
-                        {% elif is_team_leader %}
-                            <a href="{% url 'teamLeaderHome' %}" class="nav-link px-0 py-2 align-middle">
-                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
-                                <span class="ms-1 d-none d-sm-inline">Home</span>
-                            </a>
-                        {% elif is_department_leader %}
-                            <a href="{% url 'deptLeaderHome' %}" class="nav-link px-0 py-2 align-middle">
-                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
-                                <span class="ms-1 d-none d-sm-inline">Home</span>
-                            </a>
-                        {% elif is_senior_manager %}
-                            <a href="{% url 'SenManagerHome' %}" class="nav-link px-0 py-2 align-middle">
-                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
-                                <span class="ms-1 d-none d-sm-inline">Home</span>
-                            </a>
-                        {% else %}
-                            <a href="{% url 'home' %}" class="nav-link px-0 py-2 align-middle">
-                                <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
-                                <span class="ms-1 d-none d-sm-inline">Home</span>
-                            </a>
-                        {% endif %}
-                    </li>
-
-
-                    <!-- Voting page -->
-                    {%if is_engineer or is_team_leader%}
-                    <li>
-                        <a href="{% url 'voting_page' %}" class="nav-link px-0 py-2 align-middle">
-                             
-                            <img src="{% static 'health_check/images/white_vote.png' %}" alt=""   class="navicon">
-                            <span class="ms-1 d-none d-sm-inline">Voting page</span></a>
-                    </li>
-                    {%endif%}
-
-
-
-                    <!-- Statistic page -->
-                    <li>
-                        <a href="#" class="nav-link px-0 py-2 align-middle">
-                            <i class="fs-4 bi-table"></i> 
-                            <img src="{% static 'health_check/images/white_Stats.png' %}" alt="" class="navicon">
-                            <span class="ms-1 d-none d-sm-inline">Statistic</span></a>
-                    </li>
-
-
-                    <!-- Manage Cards page -->
-                    {%if is_team_leader or is_department_leader%}
-                    <li>
-                        <a href="#" class="nav-link px-0 py-2 align-middle">
-                            <i class="fs-4 bi-table"></i> 
-                            <img src="{% static 'health_check/images/white_cards.png' %}" alt="" class="navicon ">
-                            <span class="ms-1 d-none d-sm-inline">Manage Cards</span></a>
-                    </li>
-                    {%endif%}
-
-                </ul>
-
-
-                <hr class="sidebar-divider ">
-
-                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-
-                
-                    <!-- profile -->
-                    <li>
-                        <a href="{% url 'profile' %}" class="nav-link px-0 py-2 align-middle"  >
-                            <i class="fs-4 bi-table"></i>
-                            <img src="{% static 'health_check/images/white_user.png' %}" alt="" class="navicon ">
-                             <span class="ms-1 d-none d-sm-inline">User</span>
+                    <!-- Sky Logo -->
+                    <div class="d-flex flex-column align- align-items-sm-center px-1  pt-2 text-white"
+                        style="height: 100vh; width: 250px;">
+                        <a href="{% url 'home' %}"
+                            class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                            <img src="{% static 'health_check/images/logo.png' %}" alt="Sky Logo" class="logo">
                         </a>
-                    </li>
+
+                        <hr class="sidebar-divider">
+                        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start  "
+                            id="menuone">
 
 
-                    <!-- Log out -->
-                    <li>
-                        <a href="{% url 'logout' %}" class="nav-link px-0 py-2 align-middle">
-                            <i class="fs-4 bi-table"></i>
-                            <img src="{% static 'health_check/images/white_out.png' %}" alt="" class="navicon">
-                             <span class="ms-1 d-none d-sm-inline">Log out</span></a>
-                    </li>
-                </ul>
+                            <!-- Home -->
+                            <li>
+                                {% if is_engineer %}
+                                <a href="{% url 'enghome' %}" class="nav-link px-0 py-2 align-middle">
+                                    <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                    <span class="ms-1 d-none d-sm-inline">Home</span>
+                                </a>
+                                {% elif is_team_leader %}
+                                <a href="{% url 'teamLeaderHome' %}" class="nav-link px-0 py-2 align-middle">
+                                    <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                    <span class="ms-1 d-none d-sm-inline">Home</span>
+                                </a>
+                                {% elif is_department_leader %}
+                                <a href="{% url 'deptLeaderHome' %}" class="nav-link px-0 py-2 align-middle">
+                                    <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                    <span class="ms-1 d-none d-sm-inline">Home</span>
+                                </a>
+                                {% elif is_senior_manager %}
+                                <a href="{% url 'SenManagerHome' %}" class="nav-link px-0 py-2 align-middle">
+                                    <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                    <span class="ms-1 d-none d-sm-inline">Home</span>
+                                </a>
+                                {% else %}
+                                <a href="{% url 'home' %}" class="nav-link px-0 py-2 align-middle">
+                                    <img src="{% static 'health_check/images/white_home.png' %}" alt="" class="navicon">
+                                    <span class="ms-1 d-none d-sm-inline">Home</span>
+                                </a>
+                                {% endif %}
+                            </li>
+
+
+                            <!-- Voting page -->
+                            {%if is_engineer or is_team_leader%}
+                            <li>
+                                <a href="{% url 'voting_page' %}" class="nav-link px-0 py-2 align-middle">
+
+                                    <img src="{% static 'health_check/images/white_vote.png' %}" alt="" class="navicon">
+                                    <span class="ms-1 d-none d-sm-inline">Voting page</span></a>
+                            </li>
+                            {%endif%}
+
+
+
+                            <!-- Statistic page -->
+                            <li>
+                                <a href="#" class="nav-link px-0 py-2 align-middle">
+                                    <i class="fs-4 bi-table"></i>
+                                    <img src="{% static 'health_check/images/white_Stats.png' %}" alt=""
+                                        class="navicon">
+                                    <span class="ms-1 d-none d-sm-inline">Statistic</span></a>
+                            </li>
+
+
+                            <!-- Manage Cards page -->
+                            {%if is_team_leader or is_department_leader%}
+                            <li>
+                                <a href="#" class="nav-link px-0 py-2 align-middle">
+                                    <i class="fs-4 bi-table"></i>
+                                    <img src="{% static 'health_check/images/white_cards.png' %}" alt=""
+                                        class="navicon ">
+                                    <span class="ms-1 d-none d-sm-inline">Manage Cards</span></a>
+                            </li>
+                            {%endif%}
+
+                        </ul>
+
+
+                        <hr class="sidebar-divider ">
+
+                        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
+                            id="menu">
+
+
+                            <!-- profile -->
+                            <li>
+                                <a href="{% url 'profile' %}" class="nav-link px-0 py-2 align-middle">
+                                    <i class="fs-4 bi-table"></i>
+                                    <img src="{% static 'health_check/images/white_user.png' %}" alt=""
+                                        class="navicon ">
+                                    <span class="ms-1 d-none d-sm-inline">User</span>
+                                </a>
+                            </li>
+
+
+                            <!-- Log out -->
+                            <li>
+                                <a href="{% url 'logout' %}" class="nav-link px-0 py-2 align-middle">
+                                    <i class="fs-4 bi-table"></i>
+                                    <img src="{% static 'health_check/images/white_out.png' %}" alt="" class="navicon">
+                                    <span class="ms-1 d-none d-sm-inline">Log out</span></a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                </div>
 
             </div>
 
-        </div>
-
-        </div>
-    
-    </nav>
+        </nav>
 
     </div>
 
 </nav>
-
-  
-    

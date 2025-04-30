@@ -1,3 +1,9 @@
+#
+    #File Name: backenf.py
+    #Author: Umayma Jabbar
+    #Co-Authors: none
+#} 
+
 # Title: Django Email Login (instead of using username)
 # Author: Adi Ramadhan
 # Date:26th August 2023

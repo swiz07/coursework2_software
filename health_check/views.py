@@ -1,3 +1,11 @@
+#
+    #File Name: views.py
+    #Author: Swizel De Melon
+    #Co-Authors: Umayma Jabbar, Daniel Javed
+#} 
+
+
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import authenticate, login as auth_login
@@ -256,23 +264,32 @@ def voting_page(request):
         is_team_leader = role.is_team_leader
         is_department_leader = role.is_department_leader
         is_senior_manager = role.is_senior_manager
- 
+
+    percentage_voted = 0
+    total_cards = 0
 
     if request.user.is_authenticated and request.user.team:
         cards = Card.objects.filter(session_id__team_id=request.user.team)
-  
- 
+        total_cards = cards.count()
+
+        voted_card_ids = Vote.objects.filter(user_id=request.user, card_id__in=cards).values_list('card_id', flat=True).distinct()
+        voted_count = voted_card_ids.count()
+
+        if total_cards > 0:
+            percentage_voted = round((voted_count / total_cards) * 100)
 
     context = {
         'is_engineer': is_engineer,
         'is_team_leader': is_team_leader,
         'is_department_leader': is_department_leader,
         'is_senior_manager': is_senior_manager,
+        'percentage_voted': percentage_voted,
         'page_title': 'Voting Page',
         'cards': cards, 
-        }
+    }
+
     return render(request, 'health_check/voting_page.html', context)
-   
+ 
     #Rest password page view
 def reset_password(request):
         if (request.method == 'POST'):
@@ -356,30 +373,6 @@ def update_card_colour(card_id):
     card.card_green_vote = vote_counts["green"]
     card.save()
 
-
-def get_vote_percentages(card_id):
-    votes = Vote.objects.filter(card_id=card_id)
-    vote_counts = {"red": 0, "yellow": 0, "green": 0}
-    total_votes = votes.count()
-
-    if total_votes == 0:
-        return {"red": 0, "yellow": 0, "green": 0}
-
-    for vote in votes:
-        if vote.vote_value == 'negative':
-            vote_counts["red"] += 1
-        elif vote.vote_value == 'neutral':
-            vote_counts["yellow"] += 1
-        elif vote.vote_value == 'positive':
-            vote_counts["green"] += 1
-
-    vote_percentages = {
-        "red": round((vote_counts["red"] / total_votes) * 100, 2),
-        "yellow": round((vote_counts["yellow"] / total_votes) * 100, 2),
-        "green": round((vote_counts["green"] / total_votes) * 100, 2),
-    }
-
-    return vote_percentages
 
 
 def privacy_policy(request):

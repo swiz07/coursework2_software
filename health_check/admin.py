@@ -1,3 +1,8 @@
+#
+    #File Name: admin.py
+    #Author: Swizel De Melon
+    #Co-Authors: Umayma Jabbar
+#} 
 # admin.py
 from django.contrib import admin
 from .models import User, Role, Account, Card, Session, Team, Department, Vote, Summary

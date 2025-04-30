@@ -1,3 +1,11 @@
+ /*--#
+File Name: deptPie.js
+Description:javaScript for piechart in engineer and team leader home page
+Author: Umayma Jabbar (W19694885)
+Co-Authors: None 
+*/
+
+
 // create data
 var data = [
     {x: "Red", value: 47700,

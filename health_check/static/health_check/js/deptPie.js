@@ -1,4 +1,12 @@
-  /*
+ /*--#
+File Name: deptPie.js
+Description:javaScript for charts in department leader home page
+Author: Umayma Jabbar (W19694885)
+Co-Authors: None 
+*/ 
+ 
+ 
+ /*
     * Title: Doughnut Chart
       * Author: AnyChart.com
       * Date: <date>

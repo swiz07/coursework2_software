@@ -1,3 +1,9 @@
+#
+    #File Name: admin.py
+    #Author: Swizel De Melon
+    #Co-Authors: Umayma Jabbar
+#} 
+
 # Create your models here.
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin,BaseUserManager,Group,Permission

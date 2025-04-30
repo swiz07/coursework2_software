@@ -1,3 +1,8 @@
+#
+    #File Name: admin.py
+    #Author: Swizel De Melon
+    #Co-Authors: none
+#} 
 from django.apps import AppConfig
 
 

@@ -1,11 +1,27 @@
-{%extends 'teamLeaderHomeMain.html'%} {%block content%}
+<!--{#
+File Name: teamLeaderHome.html
+Description: Home page for Team Leaders, displaying cards based on the team of users, dynamic calender and charts
+Author: Umayma Jabbar (W19694885)
+Co-Authors: None
+Date Created: 13/04/2025
+Last Modified: 30/04/2025
+#} -->
+
+{%extends 'enghomemain.html'%} 
+{%block content%}
 <div class="container">
+
+  <!--Welcome message-->
   <h3>Welcome to the Home Page</h3>
   <div class="cardContainer d-flex flex-wrap gap-3">
+
+    <!--Displays Cards Based on user's team-->
     {% for card in cards %} 
     <a href="{% url 'voting_page' %}" style="text-decoration: none; color: inherit;"> 
     <div class="card" style="width: 10rem">
       <div class="card-body">
+
+        <!--Card Name and Description-->
         <h5 class="card-title">{{ card.card_name }}</h5>
         <p class="card-text">{{ card.card_descrip|truncatewords:10 }}</p>
       
@@ -20,6 +36,8 @@
   </div>
 
   <div class="d-flex flex-wrap gap-5">
+
+    <!--Calender-->
     <div class="calendar_container">
       <div class="calendar">
         <div class="calendar-header">
@@ -43,9 +61,10 @@
         </div>
       </div>
     </div>
+    <!--Pie chart showing current session progress-->
     <div id="pieChart_container"></div>
   </div>
-
+  <!--Linear chart represening progress over time for sessions-->
   <div id="lContainer"></div>
 </div>
 
