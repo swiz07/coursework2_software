@@ -92,9 +92,8 @@ class Card(models.Model):
     card_progress=models.TextField(null=True, blank=True)
     colour_code=models.TextField(null=True, blank=True) #has values like red, green and yellow
     session_id=models.ForeignKey('Session',on_delete=models.CASCADE,null=True, blank=True)
-    
     def __str__(self):
-        return f"{self.card_name} " 
+        return f"{self.card_name} - {self.card_descrip}" 
     
 class Session(models.Model):
     session_id=models.AutoField(primary_key=True)
@@ -105,7 +104,7 @@ class Session(models.Model):
     team_id=models.ForeignKey('Team',on_delete=models.CASCADE)
     
     def __str__(self):
-        return f"{self.team_id.team_name} - {self.session_name}"
+        return f"{self.session_name}"
 
 class Team(models.Model):
     team_id=models.AutoField(primary_key=True)

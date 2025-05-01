@@ -62,6 +62,11 @@ function nextStep(){
         document.getElementById("result").innerHTML="Please fill in all the required fields in step 1";
         return;
       }
+      //consent form 
+      if (!document.getElementById('id_consent').checked) {
+        document.getElementById("result").innerHTML = "You must agree to the terms and data policy before submitting.";
+      return;
+      } 
     }
 
     if(currentStep===2){
@@ -238,9 +243,3 @@ function noTeamView() {
   }
 }
 
-//consent form 
-if (!document.getElementById('id_consent').checked) {
-  document.getElementById("result").innerHTML = "You must agree to the terms and data policy before submitting.";
-  return;
-}
-document.querySelector('form').submit();

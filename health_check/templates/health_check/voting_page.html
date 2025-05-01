@@ -11,7 +11,7 @@
 
 {# health_check/voting_page.html #}
 {% extends 'enghomemain.html' %}  <!-- Inherit base layout from enghomemain.html -->
-{% load static %}                <!-- Enable use of {% static %} for asset URLs -->
+
 
 {% block content %}              <!-- Main content block insertion point -->
 
@@ -20,9 +20,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Voting</title>
 
-  <!-- Page-specific and global styles -->
-  <link rel="stylesheet" href="{% static 'health_check/css/voting.css' %}" />
-  <link rel="stylesheet" href="{% static 'health_check/css/globals.css' %}" />
+
 </head>
 
 <div class="box">  <!-- Outer wrapper for the voting panel -->

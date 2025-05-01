@@ -13,7 +13,7 @@ Co-Authors: None
     {% for department in departments %} 
     <div class="card" style="width: 10rem">
       <div class="card-body">
-        <h5 class="card-title">{{ department.department_name }}</h5> 
+        <h5 class="card-title" style="font-size: medium; font-weight:bold;">{{ department.department_name }}- Department</h5> 
       </div>
     </div> 
     {% empty %}
@@ -25,7 +25,7 @@ Co-Authors: None
     <a href="#" class="button">
       <div class="qube">
          <div class="front">Progress over time</div>
-         <div class="back">Current session Health</div>
+         <div class="back" style="font-size: small ">Current session Health</div>
       </div>
    </a>
   </div> 

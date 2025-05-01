@@ -10,7 +10,6 @@ Co-Authors: none
   min-height: 100vh;
   flex-grow: 1; 
   padding:2%;
-
   margin-bottom: 10px;
   padding-bottom: 10px;
   border: 2px solid #c9e6ec;
@@ -27,6 +26,11 @@ Co-Authors: none
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
   height: auto;
 }
+#card{
+  height: max-content;
+}
+ 
+ 
 .calendar_container{
   background-color:#3A7D9A;
   width: 330px; 
@@ -134,7 +138,7 @@ cursor: pointer;
 #lContainer{
   background-color:#DBE9EA;
   width: auto; 
-  height:250px;
+  height:350px;
   padding: 15px;
   margin-bottom: 10px;
   box-sizing: border-box;
